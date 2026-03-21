@@ -84,7 +84,7 @@ export default function Navbar() {
               >
                 <LogoBrand
                   variant={isScrolled ? "dark" : "light"}
-                  height={isScrolled ? 42 : 48}
+                  height={80}
                 />
               </motion.div>
             </Link>
