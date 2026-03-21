@@ -37,7 +37,6 @@ const categoryEmoji: Record<string, string> = {
   honey: "🍯",
   millets: "🌾",
   jaggery: "🟫",
-  pulses: "🫘",
   grains: "🌿",
 };
 
@@ -78,11 +77,11 @@ export default function ProductCard({
 
   const discount = product.originalPrice
     ? Math.round(
-        (1 -
-          parseInt(product.price.replace(/\D/g, "")) /
-            parseInt(product.originalPrice.replace(/\D/g, ""))) *
-          100,
-      )
+      (1 -
+        parseInt(product.price.replace(/\D/g, "")) /
+        parseInt(product.originalPrice.replace(/\D/g, ""))) *
+      100,
+    )
     : null;
 
   const badge = product.badge ? badgeConfig[product.badge] : null;

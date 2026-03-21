@@ -26,16 +26,16 @@ export interface Category {
 export const products: Product[] = [
   {
     id: 1,
-    name: "Himalayan Wild Honey",
+    name: "Pure Organic Honey",
     category: "honey",
     price: "₹399",
     originalPrice: "₹499",
     badge: "Best Seller",
     image:
-      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600&q=80",
+      "https://images.unsplash.com/photo-1555055926-c5778f87751e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG9yZ2FuaWMlMjBob25leXxlbnwwfHwwfHx8MA%3D%3D",
     shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
     description:
-      "Our Himalayan Wild Honey is sourced directly from the untouched forests of the Himalayas, where bees feed on wildflowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
+      "Our Pure Organic Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
     benefits: [
       "Boosts Immunity",
       "Rich in Antioxidants",
@@ -44,8 +44,8 @@ export const products: Product[] = [
     ],
     weight: "500g",
     amazonLink: "https://www.amazon.in",
-    rating: 4.8,
-    reviews: 234,
+    rating: 0,
+    reviews: 0,
     limited: false,
     featured: true,
   },
@@ -69,33 +69,8 @@ export const products: Product[] = [
     ],
     weight: "500g",
     amazonLink: "https://www.amazon.in",
-    rating: 4.7,
-    reviews: 189,
-    limited: false,
-    featured: true,
-  },
-  {
-    id: 3,
-    name: "Foxtail Millet (Kangni)",
-    category: "millets",
-    price: "₹149",
-    originalPrice: "₹199",
-    badge: "New",
-    image:
-      "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=80",
-    shortDesc: "Gluten-free ancient grain rich in protein and dietary fiber",
-    description:
-      "Foxtail Millet, known as Kangni in Hindi, is one of India's oldest cultivated grains. Naturally gluten-free with a remarkably low glycemic index, it's the perfect grain alternative for diabetics and health-conscious individuals. Our millet is minimally processed to retain maximum nutrition.",
-    benefits: [
-      "Gluten Free",
-      "Low Glycemic",
-      "High Protein",
-      "Heart Healthy",
-    ],
-    weight: "1kg",
-    amazonLink: "https://www.amazon.in",
-    rating: 4.6,
-    reviews: 156,
+    rating: 0,
+    reviews: 0,
     limited: false,
     featured: true,
   },
@@ -118,30 +93,7 @@ export const products: Product[] = [
     limited: true,
     featured: false,
   },
-  {
-    id: 5,
-    name: "Organic Red Lentils (Masoor)",
-    category: "pulses",
-    price: "₹179",
-    badge: "Best Seller",
-    image:
-      "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80",
-    shortDesc: "Farm-fresh red lentils, high in plant-based protein",
-    description:
-      "Our Organic Red Lentils are sourced from certified organic farms in Rajasthan. Carefully hand-cleaned, sorted, and packed without any artificial preservatives or additives. Rich in folate, iron, and dietary fiber, they cook quickly and are gentle on the digestive system.",
-    benefits: [
-      "High Protein",
-      "Folate Rich",
-      "Easy Digestion",
-      "Low Fat",
-    ],
-    weight: "1kg",
-    amazonLink: "https://www.amazon.in",
-    rating: 4.7,
-    reviews: 201,
-    limited: false,
-    featured: false,
-  },
+
   {
     id: 6,
     name: "Organic Brown Rice",
@@ -150,7 +102,7 @@ export const products: Product[] = [
     originalPrice: "₹269",
     badge: "Trending",
     image:
-      "https://images.unsplash.com/photo-1536304993881-ff86e0c9da41?w=600&q=80",
+      "https://plus.unsplash.com/premium_photo-1726072357584-b613d4134334?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     shortDesc: "Whole grain brown rice with bran intact for maximum nutrition",
     description:
       "Unlike polished white rice, our Organic Brown Rice retains its natural bran layer, making it a powerhouse of nutrients. Packed with magnesium, phosphorus, and B vitamins, it supports healthy metabolism, provides sustained energy, and keeps you feeling full longer.",
@@ -162,54 +114,7 @@ export const products: Product[] = [
     limited: false,
     featured: false,
   },
-  {
-    id: 7,
-    name: "Black Gram (Urad Dal)",
-    category: "pulses",
-    price: "₹189",
-    image:
-      "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&q=80",
-    shortDesc: "Premium whole black gram for traditional Ayurvedic recipes",
-    description:
-      "Our Urad Dal (Black Gram) is sourced from organic farms in Madhya Pradesh. Revered in Ayurveda for its strengthening properties, it's known for its rich, creamy texture and exceptional protein content. Perfect for dal makhani, idli-dosa batter, and traditional vadas.",
-    benefits: [
-      "Protein Packed",
-      "Bone Health",
-      "Energy Boost",
-      "Ayurvedic",
-    ],
-    weight: "500g",
-    amazonLink: "https://www.amazon.in",
-    rating: 4.5,
-    reviews: 98,
-    limited: false,
-    featured: false,
-  },
-  {
-    id: 8,
-    name: "Finger Millet (Ragi)",
-    category: "millets",
-    price: "₹139",
-    originalPrice: "₹179",
-    badge: "New",
-    image:
-      "https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=600&q=80",
-    shortDesc: "Calcium-rich ancient grain ideal for growing children",
-    description:
-      "Finger Millet, known as Ragi, is a nutritional treasure from South India revered for its exceptionally high calcium content — more than any other cereal grain. Highly recommended for children, elderly, and pregnant women. Ideal for making rotis, porridge, dosas, and healthy cookies.",
-    benefits: [
-      "Calcium King",
-      "Bone Density",
-      "Gluten Free",
-      "Natural Cooling",
-    ],
-    weight: "1kg",
-    amazonLink: "https://www.amazon.in",
-    rating: 4.8,
-    reviews: 167,
-    limited: false,
-    featured: false,
-  },
+
 ];
 
 export const featuredProducts: Product[] = products.filter(
@@ -221,7 +126,6 @@ export const categories: Category[] = [
   { id: "honey", label: "Honey", emoji: "🍯" },
   { id: "millets", label: "Millets", emoji: "🌾" },
   { id: "jaggery", label: "Jaggery", emoji: "🟫" },
-  { id: "pulses", label: "Pulses", emoji: "🫘" },
   { id: "grains", label: "Grains", emoji: "🌾" },
 ];
 

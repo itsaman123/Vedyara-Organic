@@ -88,7 +88,6 @@ const categoryLabels: Record<string, string> = {
   honey: "🍯 Honey",
   millets: "🌾 Millets",
   jaggery: "🟫 Jaggery",
-  pulses: "🫘 Pulses",
   grains: "🌿 Grains",
 };
 

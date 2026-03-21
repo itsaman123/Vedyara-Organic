@@ -51,16 +51,16 @@ export default function Navbar() {
         style={
           isScrolled
             ? {
-                background: "rgba(248,245,240,0.96)",
-                backdropFilter: "blur(20px)",
-                WebkitBackdropFilter: "blur(20px)",
-                boxShadow:
-                  "0 4px 30px rgba(62,47,28,0.1), 0 1px 0 rgba(212,175,55,0.15)",
-              }
+              background: "rgba(248,245,240,0.96)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow:
+                "0 4px 30px rgba(62,47,28,0.1), 0 1px 0 rgba(212,175,55,0.15)",
+            }
             : {
-                background:
-                  "linear-gradient(to bottom, rgba(20,12,4,0.55) 0%, transparent 100%)",
-              }
+              background:
+                "linear-gradient(to bottom, rgba(20,12,4,0.55) 0%, transparent 100%)",
+            }
         }
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -97,8 +97,7 @@ export default function Navbar() {
                   to={link.to}
                   end={link.to === "/"}
                   className={({ isActive }) =>
-                    `nav-link text-sm font-medium transition-colors duration-300 ${
-                      isActive ? "active" : ""
+                    `nav-link text-sm font-medium transition-colors duration-300 ${isActive ? "active" : ""
                     }`
                   }
                   style={({ isActive }) => ({
@@ -279,10 +278,9 @@ export default function Navbar() {
                       end={link.to === "/"}
                       onClick={() => setIsMobileOpen(false)}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base transition-all duration-200 ${
-                          isActive
-                            ? "bg-brand-gold text-brand-brown shadow-gold-sm"
-                            : "text-brand-brown hover:bg-brand-cream-dark"
+                        `flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base transition-all duration-200 ${isActive
+                          ? "bg-brand-gold text-brand-brown shadow-gold-sm"
+                          : "text-brand-brown hover:bg-brand-cream-dark"
                         }`
                       }
                     >
