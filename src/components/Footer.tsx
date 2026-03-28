@@ -4,8 +4,8 @@ import { containerVariants, itemVariants } from "../utils/animations";
 import LogoBrand from "./LogoBrand";
 import {
   FaInstagram,
-  FaFacebookF,
-  FaYoutube,
+  // FaFacebookF,
+  // FaYoutube,
   FaAmazon,
   FaWhatsapp,
 } from "react-icons/fa";
