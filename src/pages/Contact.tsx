@@ -12,9 +12,9 @@ import {
 import {
   FaWhatsapp,
   FaInstagram,
-  FaFacebookF,
-  FaYoutube,
-  FaAmazon,
+  // FaFacebookF,
+  // FaYoutube,
+  // FaAmazon,
 } from "react-icons/fa";
 import {
   fadeUp,
