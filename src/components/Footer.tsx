@@ -41,21 +41,21 @@ const socialLinks = [
     label: "Instagram",
     color: "hover:text-pink-400",
   },
-  {
-    icon: FaFacebookF,
-    href: "https://facebook.com",
-    label: "Facebook",
-    color: "hover:text-blue-400",
-  },
-  {
-    icon: FaYoutube,
-    href: "https://youtube.com",
-    label: "YouTube",
-    color: "hover:text-red-400",
-  },
+  // {
+  //   icon: FaFacebookF,
+  //   href: "https://facebook.com",
+  //   label: "Facebook",
+  //   color: "hover:text-blue-400",
+  // },
+  // {
+  //   icon: FaYoutube,
+  //   href: "https://youtube.com",
+  //   label: "YouTube",
+  //   color: "hover:text-red-400",
+  // },
   {
     icon: FaWhatsapp,
-    href: "https://wa.me/919999999999",
+    href: "https://wa.me/919509628400",
     label: "WhatsApp",
     color: "hover:text-green-400",
   },
@@ -385,7 +385,7 @@ export default function Footer() {
 
             <div className="space-y-4 mb-7">
               <a
-                href="mailto:hello@vedyaraorganic.com"
+                href="mailto:vedyaraorg@gmail.comvedyaraorganic.com"
                 className="flex items-start gap-3 group"
               >
                 <div
@@ -405,13 +405,13 @@ export default function Footer() {
                     className="text-sm transition-colors duration-300 group-hover:text-yellow-300"
                     style={{ color: "rgba(248,245,240,0.6)" }}
                   >
-                    hello@vedyaraorganic.com
+                    vedyaraorg@gmail.comvedyaraorganic.com
                   </span>
                 </div>
               </a>
 
               <a
-                href="tel:+919999999999"
+                href="tel:+919509628400"
                 className="flex items-start gap-3 group"
               >
                 <div
@@ -431,7 +431,7 @@ export default function Footer() {
                     className="text-sm transition-colors duration-300 group-hover:text-yellow-300"
                     style={{ color: "rgba(248,245,240,0.6)" }}
                   >
-                    +91 99999 99999
+                    +91 9509628400
                   </span>
                 </div>
               </a>
@@ -454,15 +454,15 @@ export default function Footer() {
                     className="text-sm"
                     style={{ color: "rgba(248,245,240,0.6)" }}
                   >
-                    Himalayas · Rajasthan · MP · South India
+                    Uttar Pradesh | Uttarakhand | Bihar
                   </span>
                 </div>
               </div>
             </div>
 
             {/* WhatsApp CTA */}
-            <a
-              href="https://wa.me/919999999999?text=Hi%20Vedyara%20Organic!%20I%20want%20to%20know%20more%20about%20your%20products."
+            {/* <a
+              href="https://wa.me/919509628400?text=Hi%20Vedyara%20Organic!%20I%20want%20to%20know%20more%20about%20your%20products."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 px-5 py-3.5 rounded-2xl font-semibold text-sm transition-all duration-300 hover:-translate-y-1"
@@ -479,7 +479,7 @@ export default function Footer() {
                   Quick response guaranteed
                 </span>
               </div>
-            </a>
+            </a> */}
           </motion.div>
         </div>
       </motion.div>
@@ -505,12 +505,12 @@ export default function Footer() {
                 className="hover:text-brand-gold transition-colors duration-200"
                 style={{ color: "rgba(248,245,240,0.35)" }}
                 onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLAnchorElement).style.color =
-                    "#D4AF37")
+                ((e.currentTarget as HTMLAnchorElement).style.color =
+                  "#D4AF37")
                 }
                 onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLAnchorElement).style.color =
-                    "rgba(248,245,240,0.35)")
+                ((e.currentTarget as HTMLAnchorElement).style.color =
+                  "rgba(248,245,240,0.35)")
                 }
               >
                 Privacy Policy
@@ -521,12 +521,12 @@ export default function Footer() {
                 className="hover:text-brand-gold transition-colors duration-200"
                 style={{ color: "rgba(248,245,240,0.35)" }}
                 onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLAnchorElement).style.color =
-                    "#D4AF37")
+                ((e.currentTarget as HTMLAnchorElement).style.color =
+                  "#D4AF37")
                 }
                 onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLAnchorElement).style.color =
-                    "rgba(248,245,240,0.35)")
+                ((e.currentTarget as HTMLAnchorElement).style.color =
+                  "rgba(248,245,240,0.35)")
                 }
               >
                 Terms of Use
@@ -537,12 +537,12 @@ export default function Footer() {
                 className="hover:text-brand-gold transition-colors duration-200"
                 style={{ color: "rgba(248,245,240,0.35)" }}
                 onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLAnchorElement).style.color =
-                    "#D4AF37")
+                ((e.currentTarget as HTMLAnchorElement).style.color =
+                  "#D4AF37")
                 }
                 onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLAnchorElement).style.color =
-                    "rgba(248,245,240,0.35)")
+                ((e.currentTarget as HTMLAnchorElement).style.color =
+                  "rgba(248,245,240,0.35)")
                 }
               >
                 Sitemap

@@ -61,23 +61,23 @@ const contactItems = [
   {
     icon: FiMail,
     label: "Email Us",
-    value: "hello@vedyaraorganic.com",
-    href: "mailto:hello@vedyaraorganic.com",
+    value: "vedyaraorg@gmail.com",
+    href: "mailto:vedyaraorg@gmail.com",
     desc: "We reply within 24 hours",
     color: "#D4AF37",
   },
   {
     icon: FiPhone,
     label: "Call Us",
-    value: "+91 99999 99999",
-    href: "tel:+919999999999",
-    desc: "Mon–Sat, 9am–6pm IST",
+    value: "+91 9509628400",
+    href: "tel:+91 9509628400",
+    desc: "Mon-Sun, 9am-10pm IST",
     color: "#6B8E23",
   },
   {
     icon: FiMapPin,
     label: "Sourced From",
-    value: "Pan India — Himalayas · Rajasthan · MP",
+    value: "Uttar Pradesh | Uttarakhand | Bihar",
     href: null,
     desc: "Direct from organic farms",
     color: "#D4AF37",
@@ -88,7 +88,7 @@ const socialLinks = [
   {
     icon: FaWhatsapp,
     label: "WhatsApp",
-    href: "https://wa.me/919999999999?text=Hi%20Vedyara%20Organic!",
+    href: "https://wa.me/919509628400?text=Hi%20Vedyara%20Organic!",
     color: "#25D366",
     bg: "rgba(37,211,102,0.12)",
     border: "rgba(37,211,102,0.25)",
@@ -96,41 +96,41 @@ const socialLinks = [
   {
     icon: FaInstagram,
     label: "Instagram",
-    href: "https://instagram.com",
+    href: "https://www.instagram.com/vedyara.organic",
     color: "#E1306C",
     bg: "rgba(225,48,108,0.08)",
     border: "rgba(225,48,108,0.2)",
   },
-  {
-    icon: FaFacebookF,
-    label: "Facebook",
-    href: "https://facebook.com",
-    color: "#1877F2",
-    bg: "rgba(24,119,242,0.08)",
-    border: "rgba(24,119,242,0.2)",
-  },
-  {
-    icon: FaYoutube,
-    label: "YouTube",
-    href: "https://youtube.com",
-    color: "#FF0000",
-    bg: "rgba(255,0,0,0.08)",
-    border: "rgba(255,0,0,0.18)",
-  },
-  {
-    icon: FaAmazon,
-    label: "Amazon",
-    href: "https://www.amazon.in",
-    color: "#D4AF37",
-    bg: "rgba(212,175,55,0.1)",
-    border: "rgba(212,175,55,0.25)",
-  },
+  // {
+  //   icon: FaFacebookF,
+  //   label: "Facebook",
+  //   href: "https://facebook.com",
+  //   color: "#1877F2",
+  //   bg: "rgba(24,119,242,0.08)",
+  //   border: "rgba(24,119,242,0.2)",
+  // },
+  // {
+  //   icon: FaYoutube,
+  //   label: "YouTube",
+  //   href: "https://youtube.com",
+  //   color: "#FF0000",
+  //   bg: "rgba(255,0,0,0.08)",
+  //   border: "rgba(255,0,0,0.18)",
+  // },
+  // {
+  //   icon: FaAmazon,
+  //   label: "Amazon",
+  //   href: "https://www.amazon.in",
+  //   color: "#D4AF37",
+  //   bg: "rgba(212,175,55,0.1)",
+  //   border: "rgba(212,175,55,0.25)",
+  // },
 ];
 
 const faqs = [
   {
     q: "Where are your products sourced from?",
-    a: "All our products are sourced directly from certified organic farms across India — including the Himalayas, Rajasthan, Madhya Pradesh, and South India.",
+    a: "All our products are sourced directly from certified organic farms across India — including the Uttar Pradesh, Uttarakhand and Bihar.",
   },
   {
     q: "Where can I buy Vedyara Organic products?",
@@ -159,6 +159,7 @@ export default function Contact() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const validate = () => {
@@ -193,10 +194,33 @@ export default function Contact() {
       return;
     }
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1800));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    setSubmitError("");
+
+    try {
+      const res = await fetch("https://api.staticforms.dev/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: "sf_1523fb872fc7b7a279b5bba5",
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success !== false) {
+        setIsSubmitted(true);
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        throw new Error(data.message || "Submission failed");
+      }
+    } catch (err: any) {
+      setSubmitError(err?.message || "Submission failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -492,9 +516,9 @@ export default function Contact() {
             </div>
 
             {/* WhatsApp CTA — prominent */}
-            <motion.div variants={fadeUp} custom={0.3}>
+            {/* <motion.div variants={fadeUp} custom={0.3}>
               <a
-                href="https://wa.me/919999999999?text=Hi%20Vedyara%20Organic!%20I%20have%20a%20question%20about%20your%20products."
+                href="https://wa.me/919509628400?text=Hi%20Vedyara%20Organic!%20I%20have%20a%20question%20about%20your%20products."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1 group"
@@ -542,7 +566,7 @@ export default function Contact() {
                   </motion.div>
                 </div>
               </a>
-            </motion.div>
+            </motion.div> */}
 
             {/* Social media links */}
             <motion.div variants={fadeUp} custom={0.4}>
@@ -990,6 +1014,16 @@ export default function Contact() {
                         )}
                       </motion.button>
 
+                      {/* Submission error */}
+                      {submitError && (
+                        <p
+                          className="text-xs text-center mt-2"
+                          style={{ color: "#e74c3c" }}
+                        >
+                          {submitError}
+                        </p>
+                      )}
+
                       {/* Privacy note */}
                       <p
                         className="text-xs text-center"
@@ -1098,7 +1132,7 @@ export default function Contact() {
                         Send Another
                       </button>
                       <a
-                        href="https://wa.me/919999999999"
+                        href="https://wa.me/919509628400"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm transition-all duration-300 hover:-translate-y-1"
@@ -1273,7 +1307,7 @@ export default function Contact() {
           </div>
 
           {/* Bottom CTA */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1284,7 +1318,7 @@ export default function Contact() {
               Still have questions?
             </p>
             <a
-              href="https://wa.me/919999999999"
+              href="https://wa.me/919509628400"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-1"
@@ -1297,9 +1331,20 @@ export default function Contact() {
               <FaWhatsapp size={18} />
               Chat With Us on WhatsApp
             </a>
-          </motion.div>
+          </motion.div> */}
         </div>
       </section>
+      {/* Floating WhatsApp quick action */}
+      <a
+        href="https://wa.me/919509628400?text=Hi%20Vedyara%20Organic!"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat on WhatsApp"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform transform hover:scale-105"
+        style={{ background: "#25D366", color: "white" }}
+      >
+        <FaWhatsapp size={22} />
+      </a>
     </div>
   );
 }
