@@ -45,20 +45,23 @@
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
-            {
-                "@context": "https://schema.org",
-                "@type": "Organization",
-                "name": "Vedyara Organic",
-                "url": "https://vedyara.in",
-                "description": "Premium organic food brand offering honey, jaggery powder, millets, pulses and grains.",
-                "sameAs": ["https://www.amazon.in/vedyara-organic"],
-                "contactPoint": {
-                    "@type": "ContactPoint",
-                    "contactType": "customer service",
-                    "availableLanguage": ["English", "Hindi"]
-                }
-            }
-        </script>
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Organic Himalayan Honey",
+  "image": "https://vedyara.in/honey.jpg",
+  "description": "Pure farm-sourced organic honey, 100% natural.",
+  "sku": "HONEY-500",
+  "brand": {"@type": "Brand", "name": "Vedyara Organic"},
+  "offers": {
+    "@type": "Offer",
+    "url": "https://vedyara.in/",
+    "priceCurrency": "INR",
+    "price": "299",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
 
     <title>Vedyara Organic | Buy Pure Honey, Jaggery & Rice Online</title>
 </head>
