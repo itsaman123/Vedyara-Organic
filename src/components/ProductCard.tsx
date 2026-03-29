@@ -35,9 +35,9 @@ const badgeConfig: Record<
 
 const categoryEmoji: Record<string, string> = {
   honey: "🍯",
-  millets: "🌾",
+  // millets: "🌾",
   jaggery: "🟫",
-  grains: "🌿",
+  // grains: "🌿",
 };
 
 /* ─────────────────────────────────────────────────────────────
