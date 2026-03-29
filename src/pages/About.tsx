@@ -8,7 +8,7 @@ import {
   FiUsers,
   FiAward,
 } from "react-icons/fi";
-import { FaAmazon, FaLeaf, FaQuoteLeft } from "react-icons/fa";
+import { FaLeaf, FaQuoteLeft } from "react-icons/fa";
 import {
   fadeUp,
   fadeLeft,
@@ -1296,22 +1296,17 @@ export default function About() {
               custom={0.35}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <motion.a
-                href="https://www.amazon.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, y: -3 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-3 px-9 py-4 rounded-full font-bold text-base transition-all duration-300"
+              <motion.div
+                className="flex items-center gap-3 px-9 py-4 rounded-full font-bold text-base"
                 style={{
-                  background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-                  color: "#3E2F1C",
-                  boxShadow: "0 12px 40px rgba(212,175,55,0.5)",
+                  background: "rgba(248,245,240,0.15)",
+                  color: "rgba(248,245,240,0.5)",
+                  cursor: "not-allowed",
+                  userSelect: "none",
                 }}
               >
-                <FaAmazon size={20} />
-                <span>Shop on Amazon</span>
-              </motion.a>
+                <span>Coming Soon</span>
+              </motion.div>
 
               <motion.div whileHover={{ scale: 1.03, y: -2 }}>
                 <Link

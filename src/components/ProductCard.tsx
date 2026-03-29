@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FiEye } from "react-icons/fi";
-import { FaAmazon } from "react-icons/fa";
 import type { Product } from "../data/products";
 
 /* ─────────────────────────────────────────────────────────────
@@ -97,6 +96,9 @@ export default function ProductCard({
       /* Lift on hover via framer */
       whileHover={{ y: -8 }}
       style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
         willChange: "transform",
         borderRadius: "18px",
         overflow: "hidden",
@@ -302,7 +304,7 @@ export default function ProductCard({
       {/* ════════════════════
           CONTENT ZONE
       ════════════════════ */}
-      <div style={{ padding: "14px 16px 16px" }}>
+      <div style={{ padding: "14px 16px 16px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
         {/* Category + weight */}
         <p
           style={{
@@ -444,6 +446,7 @@ export default function ProductCard({
             justifyContent: "space-between",
             paddingTop: "12px",
             borderTop: "1px solid rgba(62,47,28,0.08)",
+            marginTop: "auto",
           }}
         >
           {/* Price */}
@@ -478,14 +481,9 @@ export default function ProductCard({
             )}
           </div>
 
-          {/* Buy on Amazon CTA */}
-          <motion.a
-            href={product.amazonLink}
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* Coming Soon CTA */}
+          <div
             onClick={(e) => e.stopPropagation()}
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.96 }}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -495,18 +493,14 @@ export default function ProductCard({
               fontSize: "0.72rem",
               fontWeight: 700,
               letterSpacing: "0.03em",
-              textDecoration: "none",
-              background: "linear-gradient(135deg,#D4AF37,#e8c84a)",
-              color: "#3E2F1C",
-              boxShadow: hovered
-                ? "0 6px 20px rgba(212,175,55,0.52)"
-                : "0 3px 10px rgba(212,175,55,0.32)",
-              transition: "box-shadow 0.3s ease",
+              background: "rgba(62,47,28,0.08)",
+              color: "rgba(62,47,28,0.5)",
+              cursor: "not-allowed",
+              userSelect: "none",
             }}
           >
-            <FaAmazon size={12} />
-            Buy Now
-          </motion.a>
+            Coming Soon
+          </div>
         </div>
       </div>
 

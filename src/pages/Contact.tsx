@@ -134,7 +134,7 @@ const faqs = [
   },
   {
     q: "Where can I buy Vedyara Organic products?",
-    a: "Our products are available exclusively on Amazon India. Click any 'Buy on Amazon' button on our site to be redirected to our store.",
+    a: "Our products will soon be available exclusively on Amazon India.",
   },
   {
     q: "Are your products certified organic?",

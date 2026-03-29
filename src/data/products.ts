@@ -96,7 +96,7 @@ export const products: Product[] = [
     rating: 4.6,
     reviews: 145,
     limited: false,
-    featured: false,
+    featured: true,
   },
 ];
 
