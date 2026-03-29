@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiSearch, FiX, FiFilter, FiGrid, FiList } from "react-icons/fi";
-import { FaAmazon } from "react-icons/fa";
+
 import ProductCard from "../components/ProductCard";
 import ProductModal from "../components/ProductModal";
 import { products, categories } from "../data/products";
@@ -181,21 +181,18 @@ export default function Products() {
                 border: "1px solid rgba(212,175,55,0.2)",
               }}
             >
-              <FaAmazon size={18} style={{ color: "#D4AF37" }} />
+              <span style={{ fontSize: "1.2rem" }}>🛒</span>
               <span
                 className="text-sm font-medium"
                 style={{ color: "rgba(248,245,240,0.75)" }}
               >
-                All products available on{" "}
-                <a
-                  href="https://www.amazon.in"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-bold transition-colors hover:underline"
+                Coming soon on{" "}
+                <span
+                  className="font-bold"
                   style={{ color: "#D4AF37" }}
                 >
                   Amazon India
-                </a>
+                </span>
               </span>
             </motion.div>
           </div>
@@ -551,21 +548,17 @@ export default function Products() {
                             >
                               Quick View
                             </button>
-                            <a
-                              href={product.amazonLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5"
+                            <div
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300"
                               style={{
-                                background:
-                                  "linear-gradient(135deg, #D4AF37, #e8c84a)",
-                                color: "#3E2F1C",
-                                boxShadow: "0 4px 14px rgba(212,175,55,0.3)",
+                                background: "rgba(62,47,28,0.08)",
+                                color: "rgba(62,47,28,0.5)",
+                                cursor: "not-allowed",
+                                userSelect: "none",
                               }}
                             >
-                              <FaAmazon size={12} />
-                              Buy Now
-                            </a>
+                              Coming Soon
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -649,20 +642,17 @@ export default function Products() {
                 </strong>{" "}
                 products
               </p>
-              <a
-                href="https://www.amazon.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full font-bold text-sm transition-all duration-300 hover:-translate-y-1"
+              <div
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full font-bold text-sm"
                 style={{
-                  background: "linear-gradient(135deg, #3E2F1C, #5a4532)",
-                  color: "#F8F5F0",
-                  boxShadow: "0 8px 28px rgba(62,47,28,0.3)",
+                  background: "rgba(62,47,28,0.08)",
+                  color: "rgba(62,47,28,0.5)",
+                  cursor: "not-allowed",
+                  userSelect: "none",
                 }}
               >
-                <FaAmazon size={18} />
-                View All on Amazon India
-              </a>
+                Coming Soon to Amazon India
+              </div>
             </motion.div>
           )}
         </div>
@@ -676,26 +666,23 @@ export default function Products() {
               className="text-xs font-semibold"
               style={{ color: "rgba(248,245,240,0.7)" }}
             >
-              All products on
+              Coming soon on
             </p>
             <p className="text-sm font-bold" style={{ color: "#F8F5F0" }}>
               Amazon India 🛒
             </p>
           </div>
-          <a
-            href="https://www.amazon.in"
-            target="_blank"
-            rel="noopener noreferrer"
+          <div
             className="flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm"
             style={{
-              background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-              color: "#3E2F1C",
-              boxShadow: "0 4px 16px rgba(212,175,55,0.4)",
+              background: "rgba(248,245,240,0.2)",
+              color: "rgba(248,245,240,0.5)",
+              cursor: "not-allowed",
+              userSelect: "none",
             }}
           >
-            <FaAmazon size={16} />
-            Buy Now
-          </a>
+            Coming Soon
+          </div>
         </div>
 
         {/* Bottom padding for mobile CTA */}

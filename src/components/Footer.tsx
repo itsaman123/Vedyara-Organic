@@ -6,7 +6,7 @@ import {
   FaInstagram,
   // FaFacebookF,
   // FaYoutube,
-  FaAmazon,
+
   FaWhatsapp,
 } from "react-icons/fa";
 import { FiMail, FiPhone, FiMapPin, FiArrowRight } from "react-icons/fi";
@@ -116,45 +116,25 @@ export default function Footer() {
             className="text-xs font-semibold uppercase tracking-widest mb-2"
             style={{ color: "#D4AF37", letterSpacing: "0.22em" }}
           >
-            Now Available On
+            Coming Soon On
           </p>
           <h3
             className="font-serif font-bold mb-5"
             style={{ color: "#F8F5F0", fontSize: "1.65rem" }}
           >
-            Shop Vedyara Organic on Amazon
+            Vedyara Organic on Amazon
           </h3>
-          <a
-            href="https://www.amazon.in"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-bold text-brand-brown transition-all duration-300 group"
+          <div
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-bold transition-all duration-300 group"
             style={{
-              background: "linear-gradient(135deg, #D4AF37, #e8c84a, #D4AF37)",
-              backgroundSize: "200% 200%",
-              boxShadow: "0 8px 28px rgba(212,175,55,0.4)",
-              letterSpacing: "0.03em",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.transform =
-                "translateY(-3px)";
-              (e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                "0 14px 40px rgba(212,175,55,0.55)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.transform =
-                "translateY(0)";
-              (e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                "0 8px 28px rgba(212,175,55,0.4)";
+              background: "rgba(248,245,240,0.15)",
+              color: "rgba(248,245,240,0.5)",
+              cursor: "not-allowed",
+              userSelect: "none",
             }}
           >
-            <FaAmazon size={20} />
-            <span>Buy on Amazon</span>
-            <FiArrowRight
-              size={18}
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            />
-          </a>
+            <span>Coming Soon</span>
+          </div>
           <p
             className="mt-4 text-xs"
             style={{ color: "rgba(248,245,240,0.4)" }}
@@ -351,10 +331,9 @@ export default function Footer() {
                 className="text-xs mb-2"
                 style={{ color: "rgba(248,245,240,0.4)" }}
               >
-                All products available on
+                All products will be available on
               </p>
               <div className="flex items-center gap-2">
-                <FaAmazon size={22} style={{ color: "#D4AF37" }} />
                 <span
                   className="font-bold text-sm"
                   style={{ color: "#F8F5F0" }}
@@ -362,15 +341,12 @@ export default function Footer() {
                   amazon.in
                 </span>
               </div>
-              <a
-                href="https://www.amazon.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 text-xs inline-flex items-center gap-1 font-semibold transition-all duration-300 hover:gap-2"
-                style={{ color: "#D4AF37" }}
+              <div
+                className="mt-3 text-xs inline-flex items-center gap-1 font-semibold"
+                style={{ color: "rgba(248,245,240,0.4)", cursor: "not-allowed" }}
               >
-                Shop now <FiArrowRight size={12} />
-              </a>
+                Coming soon
+              </div>
             </div>
           </motion.div>
 
@@ -385,7 +361,7 @@ export default function Footer() {
 
             <div className="space-y-4 mb-7">
               <a
-                href="mailto:vedyaraorg@gmail.comvedyaraorganic.com"
+                href="mailto:vedyaraorg@gmail.com.com"
                 className="flex items-start gap-3 group"
               >
                 <div
@@ -405,7 +381,7 @@ export default function Footer() {
                     className="text-sm transition-colors duration-300 group-hover:text-yellow-300"
                     style={{ color: "rgba(248,245,240,0.6)" }}
                   >
-                    vedyaraorg@gmail.comvedyaraorganic.com
+                    vedyaraorg@gmail.com.com
                   </span>
                 </div>
               </a>

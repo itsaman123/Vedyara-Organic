@@ -133,7 +133,7 @@ export default function Navbar() {
                 }}
               >
                 <span>🛒</span>
-                <span>Available on Amazon</span>
+                <span>Coming Soon</span>
               </motion.div>
 
               <motion.button
@@ -313,15 +313,17 @@ export default function Navbar() {
                   className="divider-gold mb-1"
                   style={{ width: "100%", height: "1px" }}
                 />
-                <a
-                  href="https://www.amazon.in"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsMobileOpen(false)}
-                  className="btn-gold w-full text-center text-sm font-semibold py-4"
+                <div
+                  className="w-full text-center text-sm font-semibold py-4 rounded-xl"
+                  style={{
+                    background: "rgba(62,47,28,0.08)",
+                    color: "rgba(62,47,28,0.5)",
+                    cursor: "not-allowed",
+                    userSelect: "none"
+                  }}
                 >
-                  🛒 &nbsp; Buy on Amazon
-                </a>
+                  🛒 &nbsp; Coming Soon
+                </div>
                 <p
                   className="text-center text-xs"
                   style={{ color: "rgba(62,47,28,0.42)" }}

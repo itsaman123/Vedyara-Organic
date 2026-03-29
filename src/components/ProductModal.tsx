@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiStar, FiShoppingBag, FiCheck, FiExternalLink } from "react-icons/fi";
-import { FaAmazon } from "react-icons/fa";
+import { FiX, FiStar, FiShoppingBag, FiCheck } from "react-icons/fi";
+
 import type { Product } from "../data/products";
 
 interface ProductModalProps {
@@ -424,27 +424,18 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                       transition={{ delay: 0.65, type: "spring", stiffness: 200 }}
                       className="flex flex-col sm:flex-row gap-3 pt-1"
                     >
-                      {/* Primary: Buy on Amazon */}
-                      <motion.a
-                        href={product.amazonLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.03, y: -2 }}
-                        whileTap={{ scale: 0.97 }}
-                        className="flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-sm transition-all duration-300 focus:outline-none"
+                      {/* Primary: Coming soon */}
+                      <motion.div
+                        className="flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-sm"
                         style={{
-                          background:
-                            "linear-gradient(135deg, #D4AF37 0%, #e8c84a 50%, #D4AF37 100%)",
-                          backgroundSize: "200% 200%",
-                          color: "#3E2F1C",
-                          boxShadow: "0 8px 28px rgba(212,175,55,0.4)",
-                          letterSpacing: "0.03em",
+                          background: "rgba(62,47,28,0.08)",
+                          color: "rgba(62,47,28,0.5)",
+                          cursor: "not-allowed",
+                          userSelect: "none"
                         }}
                       >
-                        <FaAmazon size={17} />
-                        <span>Buy on Amazon</span>
-                        <FiExternalLink size={14} strokeWidth={2.5} />
-                      </motion.a>
+                        <span>Coming Soon</span>
+                      </motion.div>
 
                       {/* Secondary: View all products */}
                       <motion.button
@@ -471,7 +462,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                       className="text-xs text-center pb-1"
                       style={{ color: "rgba(62,47,28,0.38)" }}
                     >
-                      🔒 Secure checkout on Amazon · Easy returns · Fast delivery
+                      🚀 Coming soon on Amazon India
                     </motion.p>
                   </div>
                 </div>

@@ -12,7 +12,7 @@ import {
   FiChevronDown,
   FiCheck,
 } from "react-icons/fi";
-import { FaAmazon, FaStar, FaQuoteLeft } from "react-icons/fa";
+import { FaStar, FaQuoteLeft } from "react-icons/fa";
 import ProductCard from "../components/ProductCard";
 import ProductModal from "../components/ProductModal";
 import {
@@ -293,25 +293,17 @@ export default function Home() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
           >
             {/* Primary CTA */}
-            <motion.a
-              href="https://www.amazon.in"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2.5 px-8 py-4 rounded-full font-bold text-base transition-all duration-300"
+            <motion.div
+              className="flex items-center gap-2.5 px-8 py-4 rounded-full font-bold text-base"
               style={{
-                background:
-                  "linear-gradient(135deg, #D4AF37, #e8c84a, #D4AF37)",
-                backgroundSize: "200% 200%",
-                color: "#3E2F1C",
-                boxShadow: "0 10px 35px rgba(212,175,55,0.5)",
-                letterSpacing: "0.04em",
+                background: "rgba(248,245,240,0.15)",
+                color: "rgba(248,245,240,0.5)",
+                cursor: "not-allowed",
+                userSelect: "none"
               }}
             >
-              <FaAmazon size={18} />
-              <span>Shop on Amazon</span>
-            </motion.a>
+              <span>Coming Soon</span>
+            </motion.div>
 
             {/* Secondary CTA */}
             <motion.div
@@ -951,21 +943,19 @@ export default function Home() {
                     className="transition-transform duration-300 group-hover:translate-x-1"
                   />
                 </Link>
-                <a
-                  href="https://www.amazon.in"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-1"
+                <div
+                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full font-semibold text-sm"
                   style={{
-                    border: "1.5px solid rgba(62,47,28,0.15)",
-                    color: "#3E2F1C",
+                    border: "1.5px solid rgba(62,47,28,0.1)",
+                    color: "rgba(62,47,28,0.4)",
                     background: "transparent",
                     letterSpacing: "0.03em",
+                    cursor: "not-allowed",
+                    userSelect: "none"
                   }}
                 >
-                  <FaAmazon size={15} />
-                  <span>Shop Now</span>
-                </a>
+                  <span>Coming Soon</span>
+                </div>
               </motion.div>
             </motion.div>
           </div>
@@ -1118,22 +1108,17 @@ export default function Home() {
             transition={{ delay: 0.4, duration: 0.6 }}
             className="text-center mt-10"
           >
-            <a
-              href="https://www.amazon.in"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 hover:-translate-y-1"
+            <div
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300"
               style={{
-                background: "white",
-                color: "#3E2F1C",
-                boxShadow: "0 4px 14px rgba(62,47,28,0.08)",
-                border: "1px solid rgba(62,47,28,0.1)",
+                background: "rgba(62,47,28,0.08)",
+                color: "rgba(62,47,28,0.5)",
+                cursor: "not-allowed",
+                userSelect: "none"
               }}
             >
-              <FaAmazon size={16} color="#D4AF37" />
-              <span>See 1,000+ reviews on Amazon</span>
-              <FiArrowRight size={14} />
-            </a>
+              <span>Coming Soon to Amazon India</span>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -1333,25 +1318,18 @@ export default function Home() {
               custom={0.35}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <motion.a
-                href="https://www.amazon.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, y: -3 }}
-                whileTap={{ scale: 0.97 }}
+              <motion.div
                 className="flex items-center gap-3 px-9 py-4 rounded-full font-bold text-base transition-all duration-300"
                 style={{
-                  background:
-                    "linear-gradient(135deg, #D4AF37, #e8c84a, #D4AF37)",
-                  backgroundSize: "200% 200%",
-                  color: "#3E2F1C",
-                  boxShadow: "0 12px 40px rgba(212,175,55,0.55)",
-                  letterSpacing: "0.04em",
+                  background: "rgba(248,245,240,0.15)",
+                  color: "rgba(248,245,240,0.5)",
+                  cursor: "not-allowed",
+                  userSelect: "none",
+                  letterSpacing: "0.04em"
                 }}
               >
-                <FaAmazon size={20} />
-                <span>Buy on Amazon</span>
-              </motion.a>
+                <span>Coming Soon</span>
+              </motion.div>
 
               <motion.div whileHover={{ scale: 1.03, y: -2 }}>
                 <Link
@@ -1412,21 +1390,17 @@ export default function Home() {
           className="fixed bottom-0 left-0 right-0 z-30 mobile-sticky-cta px-4 py-3 md:hidden"
           style={{ paddingBottom: "calc(12px + env(safe-area-inset-bottom))" }}
         >
-          <a
-            href="https://www.amazon.in"
-            target="_blank"
-            rel="noopener noreferrer"
+          <div
             className="flex items-center justify-center gap-2.5 w-full py-4 rounded-2xl font-bold text-sm"
             style={{
-              background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-              color: "#3E2F1C",
-              boxShadow: "0 -4px 20px rgba(212,175,55,0.3)",
+              background: "rgba(248,245,240,0.2)",
+              color: "rgba(248,245,240,0.5)",
+              cursor: "not-allowed",
+              userSelect: "none"
             }}
           >
-            <FaAmazon size={18} />
-            <span>Buy Now on Amazon</span>
-            <FiArrowRight size={16} />
-          </a>
+            <span>Coming Soon</span>
+          </div>
         </motion.div>
       </AnimatePresence>
 
