@@ -1,5 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import FarmImage from "../../public/farm-image.jpg";
+import BeeFarm from "../../public/bee-farm.jpg";
 import {
   motion,
   useScroll,
@@ -764,7 +766,7 @@ export default function Home() {
               >
                 <div className="absolute inset-0 img-zoom-wrap">
                   <img
-                    src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=900&q=80"
+                    src={FarmImage}
                     alt="Organic farm fields"
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -831,7 +833,7 @@ export default function Home() {
                 }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=300&q=80"
+                  src={BeeFarm}
                   alt="Pure honey jar"
                   className="w-full h-full object-cover"
                 />

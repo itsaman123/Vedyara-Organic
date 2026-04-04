@@ -1,5 +1,8 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import FarmImage from "../../public/farm-image.jpg";
+import BeeFarm from "../../public/bee-farm.jpg";
+import HoneyBottle from '../../public/honey-bottle.png';
 import {
   FiArrowRight,
   FiCheck,
@@ -381,7 +384,7 @@ export default function About() {
                 style={{ paddingBottom: "110%" }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80"
+                  src={FarmImage}
                   alt="Organic farm landscape"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
@@ -443,7 +446,7 @@ export default function About() {
                 }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1555055926-c5778f87751e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG9yZ2FuaWMlMjBob25leXxlbnwwfHwwfHx8MA%3D%3D"
+                  src={BeeFarm}
                   alt="Pure honey"
                   className="w-full h-full object-cover"
                 />
@@ -586,7 +589,7 @@ export default function About() {
                 style={{ paddingBottom: "75%" }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=900&q=80"
+                  src={HoneyBottle}
                   alt="Organic farm worker"
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                 />
@@ -931,17 +934,15 @@ export default function About() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, amount: 0.4 }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className={`relative flex items-start gap-6 sm:gap-0 ${
-                    i % 2 === 0 ? "sm:flex-row" : "sm:flex-row-reverse"
-                  }`}
+                  className={`relative flex items-start gap-6 sm:gap-0 ${i % 2 === 0 ? "sm:flex-row" : "sm:flex-row-reverse"
+                    }`}
                 >
                   {/* Content card */}
                   <div
-                    className={`ml-14 sm:ml-0 sm:w-[calc(50%-32px)] ${
-                      i % 2 === 0
+                    className={`ml-14 sm:ml-0 sm:w-[calc(50%-32px)] ${i % 2 === 0
                         ? "sm:pr-10 sm:text-right"
                         : "sm:pl-10 sm:text-left"
-                    }`}
+                      }`}
                   >
                     <div
                       className="inline-block p-5 rounded-2xl"
@@ -1122,19 +1123,19 @@ export default function About() {
             >
               {[
                 {
-                  src: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600&q=80",
+                  src: FarmImage,
                   alt: "Farm landscape",
                   className: "col-span-2 row-span-1",
                   height: "220px",
                 },
                 {
-                  src: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80",
+                  src: BeeFarm,
                   alt: "Millet field",
                   className: "col-span-1",
                   height: "180px",
                 },
                 {
-                  src: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=80",
+                  src: HoneyBottle,
                   alt: "Organic lentils",
                   className: "col-span-1",
                   height: "180px",
@@ -1246,7 +1247,7 @@ export default function About() {
         {/* Background image */}
         <div className="absolute inset-0 opacity-10">
           <img
-            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=75"
+            src={FarmImage}
             alt=""
             className="w-full h-full object-cover"
           />
