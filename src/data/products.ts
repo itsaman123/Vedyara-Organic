@@ -1,6 +1,5 @@
 import Honey from '../../public/honey-bottle.png'
 import Jaggery from '../../public/Jaggery-Benefits.png'
-import Rice from '../../public/brown-rice.jpg';
 
 export interface Product {
   id: number;
