@@ -37,7 +37,7 @@ const footerLinks = {
 const socialLinks = [
   {
     icon: FaInstagram,
-    href: "https://instagram.com",
+    href: "https://www.instagram.com/vedyara.organic",
     label: "Instagram",
     color: "hover:text-pink-400",
   },

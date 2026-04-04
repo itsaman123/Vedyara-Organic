@@ -32,8 +32,8 @@ export const products: Product[] = [
     id: 1,
     name: "Pure Organic Honey",
     category: "honey",
-    price: "₹399",
-    originalPrice: "₹499",
+    price: "₹449",
+    originalPrice: "₹899",
     badge: "Best Seller",
     image:
       Honey,

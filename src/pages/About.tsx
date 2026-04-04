@@ -110,7 +110,7 @@ const values = [
     icon: "🔬",
     title: "Science Backed",
     description:
-      "Every batch is tested in certified laboratories for purity, nutritional content, and safety — before it ever reaches your family.",
+      "Every batch is tested in certified laboratories for purity, nutritional content, and safety - before it ever reaches your family.",
     color: "rgba(62,47,28,0.07)",
     border: "rgba(62,47,28,0.12)",
   },
@@ -134,7 +134,7 @@ const values = [
     icon: "💛",
     title: "Trusted by Families",
     description:
-      "Over 10,000 families across India choose Vedyara Organic for their daily nutrition — and we carry that trust with pride.",
+      "Over 10,000 families across India choose Vedyara Organic for their daily nutrition - and we carry that trust with pride.",
     color: "rgba(62,47,28,0.06)",
     border: "rgba(62,47,28,0.1)",
   },
@@ -142,32 +142,14 @@ const values = [
 
 const milestones = [
   {
-    year: "2019",
-    event:
-      "Vedyara Organic founded with a vision to bring pure food to every Indian home",
-  },
-  {
-    year: "2020",
-    event:
-      "First products launched — Himalayan Wild Honey and Organic Jaggery Powder",
-  },
-  {
-    year: "2021",
-    event: "Launched on Amazon India; crossed 1,000 orders in first 3 months",
-  },
-  {
     year: "2022",
     event:
-      "Expanded to millets & pulses range; reached 200+ farmer partnerships",
+      "First products launched - HoneyKalash Honey",
   },
   {
-    year: "2023",
-    event: "Launched women farmer empowerment initiative across 5 states",
-  },
-  {
-    year: "2024",
+    year: "2026",
     event:
-      "10,000+ happy customers; planning NGO for organic farming education",
+      "1000+ happy customers Offline; now moving online with honey, brown rice, and jaggery",
   },
 ];
 
@@ -279,7 +261,7 @@ export default function About() {
                 style={{ color: "rgba(248,245,240,0.65)" }}
               >
                 Vedyara Organic was born from a deep belief that every Indian
-                family deserves food that is truly pure — grown without
+                family deserves food that is truly pure - grown without
                 chemicals, processed without shortcuts, and delivered with
                 complete transparency.
               </motion.p>
@@ -292,7 +274,7 @@ export default function About() {
               >
                 We started small, with two products and a handful of farmer
                 partners. Today, we work with 200+ organic farms across India
-                and reach thousands of homes — but our promise has never
+                and reach thousands of homes - but our promise has never
                 changed.
               </motion.p>
 
@@ -302,9 +284,9 @@ export default function About() {
                 className="grid grid-cols-3 gap-4 mb-8"
               >
                 {[
-                  { value: "2019", label: "Founded" },
-                  { value: "200+", label: "Farm Partners" },
-                  { value: "10K+", label: "Families Served" },
+                  { value: "2022", label: "Founded" },
+                  { value: "10+", label: "Farm Partners" },
+                  { value: "1000+", label: "Families Served" },
                 ].map((s) => (
                   <motion.div
                     key={s.label}
@@ -511,7 +493,7 @@ export default function About() {
                 }}
               />
               <span className="relative z-10 block mt-8">
-                "To make pure, honest food accessible to every Indian family —
+                "To make pure, honest food accessible to every Indian family -
                 by empowering the farmers who grow it and{" "}
                 <span
                   style={{
@@ -567,7 +549,7 @@ export default function About() {
       </section>
 
       {/* ════════════════════════════════════════════════════
-          3. BRAND STORY — Two-column
+          3. BRAND STORY - Two-column
       ════════════════════════════════════════════════════ */}
       <section
         className="relative py-20 lg:py-28 overflow-hidden"
@@ -656,7 +638,7 @@ export default function About() {
                   className="text-xs mt-1"
                   style={{ color: "rgba(212,175,55,0.7)" }}
                 >
-                  — Vedyara Organic Founding Principle
+                  - Vedyara Organic Founding Principle
                 </p>
               </motion.div>
             </motion.div>
@@ -711,7 +693,7 @@ export default function About() {
                 className="text-base leading-relaxed mb-8"
                 style={{ color: "rgba(62,47,28,0.68)" }}
               >
-                In 2019, Vedyara Organic launched with just two SKUs — a jar of
+                In 2022, Vedyara Organic launched with just two SKUs - a jar of
                 Himalayan wild honey and a pack of stone-ground jaggery powder.
                 Both sold out in weeks. The response confirmed what we believed:
                 people were hungry for something real.
@@ -940,8 +922,8 @@ export default function About() {
                   {/* Content card */}
                   <div
                     className={`ml-14 sm:ml-0 sm:w-[calc(50%-32px)] ${i % 2 === 0
-                        ? "sm:pr-10 sm:text-right"
-                        : "sm:pl-10 sm:text-left"
+                      ? "sm:pr-10 sm:text-right"
+                      : "sm:pl-10 sm:text-left"
                       }`}
                   >
                     <div
@@ -1035,7 +1017,7 @@ export default function About() {
               >
                 Vedyara Organic has always been more than a food brand. From day
                 one, our mission has been intertwined with the people who grow
-                our food — India's small-scale, organic farmers.
+                our food - India's small-scale, organic farmers.
               </motion.p>
 
               <motion.p
@@ -1100,7 +1082,7 @@ export default function About() {
                     className="font-semibold text-sm"
                     style={{ color: "#3E2F1C" }}
                   >
-                    Foundation Launch: 2025
+                    Foundation Launch: 2022
                   </p>
                   <p
                     className="text-xs mt-0.5"
