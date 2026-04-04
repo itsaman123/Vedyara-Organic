@@ -1,4 +1,4 @@
-import Honey from '../../public/honey-bottle.jpg'
+import Honey from '../../public/honey-bottle.png'
 import Jaggery from '../../public/Jaggery-Benefits.png'
 import Rice from '../../public/brown-rice.jpg';
 
@@ -80,24 +80,49 @@ export const products: Product[] = [
   },
   {
     id: 3,
-    name: "Organic Brown Rice",
-    category: "grains",
-    price: "₹219",
-    originalPrice: "₹269",
-    badge: "Trending",
+    name: "Pure Organic Honey",
+    category: "honey",
+    price: "₹699",
+    originalPrice: "₹1799",
+    badge: "Best Seller",
     image:
-      Rice,
-    shortDesc: "Whole grain brown rice with bran intact for maximum nutrition",
+      Honey,
+    shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
     description:
-      "Unlike polished white rice, our Organic Brown Rice retains its natural bran layer, making it a powerhouse of nutrients. Packed with magnesium, phosphorus, and B vitamins, it supports healthy metabolism, provides sustained energy, and keeps you feeling full longer.",
-    benefits: ["Whole Grain", "Magnesium Rich", "Low GI", "Fiber Dense"],
-    weight: "1kg",
+      "Our Pure Organic Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
+    benefits: [
+      "Boosts Immunity",
+      "Rich in Antioxidants",
+      "Natural Energy",
+      "Aids Digestion",
+    ],
+    weight: "1Kg",
     amazonLink: "https://www.amazon.in",
-    rating: 4.6,
-    reviews: 145,
+    rating: 0,
+    reviews: 0,
     limited: false,
     featured: true,
   },
+  // {
+  //   id: 3,
+  //   name: "Organic Brown Rice",
+  //   category: "grains",
+  //   price: "₹219",
+  //   originalPrice: "₹269",
+  //   badge: "Trending",
+  //   image:
+  //     Rice,
+  //   shortDesc: "Whole grain brown rice with bran intact for maximum nutrition",
+  //   description:
+  //     "Unlike polished white rice, our Organic Brown Rice retains its natural bran layer, making it a powerhouse of nutrients. Packed with magnesium, phosphorus, and B vitamins, it supports healthy metabolism, provides sustained energy, and keeps you feeling full longer.",
+  //   benefits: ["Whole Grain", "Magnesium Rich", "Low GI", "Fiber Dense"],
+  //   weight: "1kg",
+  //   amazonLink: "https://www.amazon.in",
+  //   rating: 4.6,
+  //   reviews: 145,
+  //   limited: false,
+  //   featured: true,
+  // },
 ];
 
 export const featuredProducts: Product[] = products.filter(
