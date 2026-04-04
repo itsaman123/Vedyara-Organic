@@ -224,6 +224,7 @@ export default function Home() {
           </motion.div>
         ))}
 
+
         {/* Hero content */}
         <motion.div
           className="relative z-10 text-center px-4 max-w-5xl mx-auto"

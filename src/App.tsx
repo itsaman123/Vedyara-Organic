@@ -10,6 +10,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Loader from "./components/Loader";
 import FloatingLeaves from "./components/FloatingLeaves";
+import GlobalBee from "./components/GlobalBee";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import About from "./pages/About";
@@ -215,6 +216,7 @@ export default function App() {
 
       {/* ── Floating leaves background layer ── */}
       <FloatingLeaves />
+      <GlobalBee />
 
       {/* ── Main layout ── */}
       <div
