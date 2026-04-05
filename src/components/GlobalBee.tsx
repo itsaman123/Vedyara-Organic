@@ -3,13 +3,13 @@ import { motion } from "framer-motion";
 export default function GlobalBee() {
   return (
     <motion.div
-      className="fixed pointer-events-none z-[9999]"
+      className="fixed pointer-events-none z-[9999] will-change-transform"
       initial={{ x: "-10vw", y: 0 }}
       animate={{
         x: ["-10vw", "110vw"],
       }}
       transition={{
-        duration: 12,
+        duration: 16,
         repeat: Infinity,
         ease: "linear",
       }}
@@ -19,15 +19,16 @@ export default function GlobalBee() {
     >
       <motion.div
         animate={{
-          y: [-25, 25],
-          rotate: [-5, 5],
+          y: [-20, 20],
+          rotate: [-4, 4],
         }}
         transition={{
-          duration: 2,
+          duration: 2.5,
           repeat: Infinity,
           repeatType: "mirror",
           ease: "easeInOut",
         }}
+        className="will-change-transform"
       >
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
           {/* Bee body */}
@@ -38,8 +39,8 @@ export default function GlobalBee() {
           <path d="M24 19h4v10h-4z" fill="#1A1A1A" />
           <path d="M32 20h2v8h-2z" fill="#1A1A1A" />
 
-          {/* Back Wing */}
-          <motion.ellipse
+          {/* Back Wing - CSS animation for better performance */}
+          <ellipse
             cx="14"
             cy="18"
             rx="8"
@@ -47,18 +48,11 @@ export default function GlobalBee() {
             fill="rgba(255,255,255,0.7)"
             stroke="rgba(200,200,200,0.5)"
             strokeWidth="0.5"
-            style={{ originX: "22px", originY: "24px" }}
-            animate={{ rotate: [-20, 20] }}
-            transition={{
-              duration: 0.1,
-              repeat: Infinity,
-              repeatType: "mirror",
-              ease: "linear",
-            }}
+            className="animate-bee-wing-back"
           />
 
-          {/* Front Wing */}
-          <motion.ellipse
+          {/* Front Wing - CSS animation for better performance */}
+          <ellipse
             cx="14"
             cy="30"
             rx="8"
@@ -66,14 +60,7 @@ export default function GlobalBee() {
             fill="rgba(255,255,255,0.9)"
             stroke="rgba(200,200,200,0.5)"
             strokeWidth="0.5"
-            style={{ originX: "22px", originY: "24px" }}
-            animate={{ rotate: [20, -20] }}
-            transition={{
-              duration: 0.1,
-              repeat: Infinity,
-              repeatType: "mirror",
-              ease: "linear",
-            }}
+            className="animate-bee-wing-front"
           />
 
           {/* Eyes */}

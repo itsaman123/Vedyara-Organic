@@ -6,6 +6,7 @@
    BASE RESET & ROOT
    ============================================================ */
 @layer base {
+
     *,
     *::before,
     *::after {
@@ -141,10 +142,12 @@
         transform: scale(0) rotate(-40deg);
         opacity: 0;
     }
+
     60% {
         transform: scale(1.12) rotate(5deg);
         opacity: 1;
     }
+
     100% {
         transform: scale(1) rotate(0deg);
         opacity: 1;
@@ -157,6 +160,7 @@
         opacity: 0;
         transform: translateY(16px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -168,6 +172,7 @@
     from {
         width: 0%;
     }
+
     to {
         width: 100%;
     }
@@ -179,20 +184,25 @@
         transform: translateY(110vh) translateX(0px) rotate(0deg);
         opacity: 0;
     }
+
     5% {
         opacity: 0.65;
     }
+
     40% {
         transform: translateY(55vh) translateX(25px) rotate(120deg);
         opacity: 0.5;
     }
+
     70% {
         transform: translateY(20vh) translateX(-15px) rotate(260deg);
         opacity: 0.35;
     }
+
     95% {
         opacity: 0.15;
     }
+
     100% {
         transform: translateY(-15vh) translateX(10px) rotate(360deg);
         opacity: 0;
@@ -205,16 +215,20 @@
         transform: translateY(0) rotate(0deg) scale(1);
         opacity: 0;
     }
+
     10% {
         opacity: 0.8;
     }
+
     50% {
         transform: translateY(-45px) rotate(180deg) scale(0.9);
         opacity: 0.6;
     }
+
     90% {
         opacity: 0.3;
     }
+
     100% {
         transform: translateY(-90px) rotate(360deg) scale(0.7);
         opacity: 0;
@@ -223,11 +237,13 @@
 
 /* Hero scroll indicator bounce */
 @keyframes scrollBounce {
+
     0%,
     100% {
         transform: translateY(0);
         opacity: 1;
     }
+
     50% {
         transform: translateY(10px);
         opacity: 0.5;
@@ -239,6 +255,7 @@
     0% {
         background-position: -300% 0;
     }
+
     100% {
         background-position: 300% 0;
     }
@@ -250,10 +267,12 @@
         height: 0;
         opacity: 1;
     }
+
     60% {
         height: 64px;
         opacity: 1;
     }
+
     100% {
         height: 90px;
         opacity: 0;
@@ -265,9 +284,11 @@
     0% {
         box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.55);
     }
+
     70% {
         box-shadow: 0 0 0 18px rgba(212, 175, 55, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
     }
@@ -275,10 +296,12 @@
 
 /* Badge gentle scale */
 @keyframes badgePop {
+
     0%,
     100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.06);
     }
@@ -286,10 +309,12 @@
 
 /* Soft float up/down */
 @keyframes softFloat {
+
     0%,
     100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-14px);
     }
@@ -301,6 +326,7 @@
         transform: scale(0) rotate(-90deg);
         opacity: 0;
     }
+
     to {
         transform: scale(1) rotate(0deg);
         opacity: 1;
@@ -313,6 +339,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -325,6 +352,7 @@
         opacity: 0;
         transform: translateY(40px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -337,6 +365,7 @@
         opacity: 0;
         transform: translateX(50px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -349,6 +378,7 @@
         opacity: 0;
         transform: translateX(-50px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -357,10 +387,12 @@
 
 /* WhatsApp button pulse */
 @keyframes whatsappPulse {
+
     0%,
     100% {
         box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
     }
+
     50% {
         box-shadow: 0 0 0 16px rgba(37, 211, 102, 0);
     }
@@ -372,6 +404,7 @@
         opacity: 0;
         transform: translateY(24px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -383,8 +416,34 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* Bee wing flutter - optimized for performance */
+@keyframes beeWingFlutterBack {
+
+    0%,
+    100% {
+        transform: rotate(-20deg);
+    }
+
+    50% {
+        transform: rotate(20deg);
+    }
+}
+
+@keyframes beeWingFlutterFront {
+
+    0%,
+    100% {
+        transform: rotate(20deg);
+    }
+
+    50% {
+        transform: rotate(-20deg);
     }
 }
 
@@ -392,15 +451,14 @@
    COMPONENT LAYER
    ============================================================ */
 @layer components {
+
     /* ------ Buttons ------ */
     .btn-gold {
         @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-brand-brown transition-all duration-300;
-        background: linear-gradient(
-            135deg,
-            #d4af37 0%,
-            #e8c84a 40%,
-            #d4af37 100%
-        );
+        background: linear-gradient(135deg,
+                #d4af37 0%,
+                #e8c84a 40%,
+                #d4af37 100%);
         background-size: 200% 200%;
         position: relative;
         overflow: hidden;
@@ -609,11 +667,9 @@
     /* ------ Why-choose icon box ------ */
     .feature-icon-box {
         @apply w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition-transform duration-300;
-        background: linear-gradient(
-            135deg,
-            rgba(212, 175, 55, 0.15),
-            rgba(212, 175, 55, 0.05)
-        );
+        background: linear-gradient(135deg,
+                rgba(212, 175, 55, 0.15),
+                rgba(212, 175, 55, 0.05));
         border: 1px solid rgba(212, 175, 55, 0.25);
     }
 
@@ -649,12 +705,10 @@
 
     /* ------ Shimmer effect (skeleton) ------ */
     .shimmer-effect {
-        background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(212, 175, 55, 0.45) 50%,
-            transparent 100%
-        );
+        background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(212, 175, 55, 0.45) 50%,
+                transparent 100%);
         background-size: 300% 100%;
         animation: shimmerSweep 2.5s linear infinite;
     }
@@ -703,13 +757,11 @@
 
     /* ------ CTA banner gradient ------ */
     .cta-banner {
-        background: linear-gradient(
-            135deg,
-            #2a1f12 0%,
-            #3e2f1c 35%,
-            #4d3820 60%,
-            #2a1f12 100%
-        );
+        background: linear-gradient(135deg,
+                #2a1f12 0%,
+                #3e2f1c 35%,
+                #4d3820 60%,
+                #2a1f12 100%);
         position: relative;
         overflow: hidden;
     }
@@ -718,11 +770,9 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: radial-gradient(
-            ellipse at 30% 50%,
-            rgba(212, 175, 55, 0.12) 0%,
-            transparent 60%
-        );
+        background: radial-gradient(ellipse at 30% 50%,
+                rgba(212, 175, 55, 0.12) 0%,
+                transparent 60%);
         pointer-events: none;
     }
 
@@ -764,12 +814,10 @@
     .divider-gold {
         width: 100%;
         height: 1px;
-        background: linear-gradient(
-            to right,
-            transparent,
-            rgba(212, 175, 55, 0.4),
-            transparent
-        );
+        background: linear-gradient(to right,
+                transparent,
+                rgba(212, 175, 55, 0.4),
+                transparent);
     }
 
     /* ------ Modal backdrop ------ */
@@ -805,6 +853,7 @@
    UTILITY LAYER
    ============================================================ */
 @layer utilities {
+
     /* Softer float animation utility classes */
     .animate-float {
         animation: softFloat 6s ease-in-out infinite;
@@ -847,6 +896,19 @@
         animation: countUp 0.8s ease forwards;
     }
 
+    /* Bee wing animations - GPU accelerated */
+    .animate-bee-wing-back {
+        animation: beeWingFlutterBack 0.15s ease-in-out infinite;
+        will-change: transform;
+        transform-origin: 22px 24px;
+    }
+
+    .animate-bee-wing-front {
+        animation: beeWingFlutterFront 0.15s ease-in-out infinite;
+        will-change: transform;
+        transform-origin: 22px 24px;
+    }
+
     /* Text gradient */
     .text-gradient-gold {
         background: linear-gradient(135deg, #b8961f, #d4af37, #f0d060);
@@ -869,12 +931,10 @@
     }
 
     .bg-dark-section {
-        background: linear-gradient(
-            135deg,
-            #2a1f12 0%,
-            #3e2f1c 50%,
-            #2a1f12 100%
-        );
+        background: linear-gradient(135deg,
+                #2a1f12 0%,
+                #3e2f1c 50%,
+                #2a1f12 100%);
     }
 
     /* Glass card */
@@ -990,6 +1050,7 @@
 
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
