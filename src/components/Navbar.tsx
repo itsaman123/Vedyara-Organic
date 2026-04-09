@@ -97,17 +97,26 @@ export default function Navbar() {
                   to={link.to}
                   end={link.to === "/"}
                   className={({ isActive }) =>
-                    `nav-link text-sm font-medium transition-colors duration-300 ${isActive ? "active" : ""
+                    `nav-link text-sm transition-colors duration-300 ${
+                      isActive ? "active font-semibold" : "font-medium"
                     }`
                   }
                   style={({ isActive }) => ({
                     color: isScrolled
                       ? isActive
                         ? "#3E2F1C"
-                        : "#5a4532"
+                        : "rgba(62,47,28,0.55)"
                       : isActive
-                        ? "#D4AF37"
-                        : "rgba(248,245,240,0.88)",
+                        ? "#ffffff"
+                        : "rgba(248,245,240,0.75)",
+                    ...(isScrolled && isActive
+                      ? {
+                          background: "rgba(212,175,55,0.14)",
+                          padding: "4px 12px",
+                          borderRadius: "999px",
+                          border: "1px solid rgba(212,175,55,0.28)",
+                        }
+                      : {}),
                   })}
                 >
                   {link.label}
