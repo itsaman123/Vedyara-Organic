@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
-import FarmImage from "../../public/farm-image.jpg";
-import BeeFarm from "../../public/bee-farm.jpg";
-import HoneyBottle from "../../public/honey-bottle.png";
+import FarmImage from "../../public/farm-image.webp";
+import BeeFarm from "../../public/bee-farm.webp";
+import HoneyBottle from "../../public/honey-bottle.webp";
 import {
   FiArrowRight,
   FiCheck,

@@ -1,5 +1,5 @@
-import Honey from '../../public/honey-bottle.png'
-import Jaggery from '../../public/Jaggery-Benefits.png'
+import Honey from '../../public/honey-bottle.webp'
+import Jaggery from '../../public/Jaggery-Benefits.webp'
 
 export interface Product {
   id: number;

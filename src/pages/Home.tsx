@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import HoneyBottle from "../../public/honey-bottle.png";
+import HoneyBottle from "../../public/honey-bottle.webp";
 import {
   motion,
   AnimatePresence,

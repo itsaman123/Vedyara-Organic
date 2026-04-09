@@ -156,7 +156,7 @@ export default function LogoBrand({
 
   return (
     <img
-      src="/vedyara-logo.png"
+      src="/vedyara-logo.webp"
       alt="Vedyara Organic"
       width={pngWidth}
       height={height}
