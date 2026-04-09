@@ -1,129 +1,423 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import FarmImage from "../../public/farm-image.jpg";
-import BeeFarm from "../../public/bee-farm.jpg";
+import HoneyBottle from "../../public/honey-bottle.png";
 import {
   motion,
-  useScroll,
-  useTransform,
   AnimatePresence,
+  useInView,
 } from "framer-motion";
 import {
   FiArrowRight,
   FiShoppingBag,
   FiChevronDown,
-  FiCheck,
+  FiPackage,
+  FiShield,
+  FiTrendingUp,
 } from "react-icons/fi";
-import { FaStar, FaQuoteLeft } from "react-icons/fa";
-import ProductCard from "../components/ProductCard";
+import { FaStar, FaQuoteLeft, FaLeaf, FaHandHoldingHeart } from "react-icons/fa";
 import ProductModal from "../components/ProductModal";
 import {
   featuredProducts,
   testimonials,
   whyChooseUs,
   stats,
+  categories,
 } from "../data/products";
 import type { Product } from "../data/products";
-import { fadeUp, fadeRight, staggerContainer } from "../utils/animations";
+import { fadeUp, staggerContainer } from "../utils/animations";
 
-/* ─────────────────────────────────────────────────────────────
-   Hero grain particles
-───────────────────────────────────────────────────────────── */
-const grainConfigs = [
-  { x: "12%", delay: 0, duration: 7 },
-  { x: "28%", delay: 1.2, duration: 9 },
-  { x: "44%", delay: 0.5, duration: 6 },
-  { x: "61%", delay: 2, duration: 8 },
-  { x: "76%", delay: 0.8, duration: 10 },
-  { x: "88%", delay: 1.6, duration: 7 },
-];
-
-/* ─────────────────────────────────────────────────────────────
-   Leaf SVG decoration
-───────────────────────────────────────────────────────────── */
-const LeafAccent = ({
-  size = 40,
-  opacity = 0.25,
-}: {
-  size?: number;
-  opacity?: number;
-}) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 40 40"
-    fill="none"
-    style={{ opacity }}
-  >
-    <path
-      d="M20 38 C9 38 2 28 2 18 C2 6 11 1 20 3 C29 1 38 6 38 18 C38 28 31 38 20 38Z"
-      fill="#6B8E23"
-    />
-    <line
-      x1="20"
-      y1="38"
-      x2="20"
-      y2="3"
-      stroke="rgba(255,255,255,0.4)"
-      strokeWidth="1.5"
-    />
-  </svg>
-);
-
-/* ─────────────────────────────────────────────────────────────
-   Section divider with leaf
-───────────────────────────────────────────────────────────── */
-const SectionTag = ({ label }: { label: string }) => (
+/* ═══════════════════════════════════════════════════════════
+   MORPHING BLOB BACKGROUND
+═══════════════════════════════════════════════════════════ */
+const MorphingBlob = ({ color, className }: { color: string; className?: string }) => (
   <motion.div
-    variants={fadeUp}
-    custom={0}
-    className="inline-flex items-center gap-2 mb-4"
-  >
-    <div
-      className="w-6 h-px"
-      style={{ background: "linear-gradient(to right, transparent, #D4AF37)" }}
-    />
-    <span
-      className="text-xs font-semibold uppercase tracking-widest"
-      style={{ color: "#D4AF37", letterSpacing: "0.22em" }}
-    >
-      {label}
-    </span>
-    <div
-      className="w-6 h-px"
-      style={{ background: "linear-gradient(to left, transparent, #D4AF37)" }}
-    />
-  </motion.div>
+    className={`absolute rounded-full blur-3xl ${className}`}
+    style={{ background: color }}
+    animate={{
+      borderRadius: [
+        "60% 40% 30% 70% / 60% 30% 70% 40%",
+        "30% 60% 70% 40% / 50% 60% 30% 60%",
+        "60% 40% 30% 70% / 60% 30% 70% 40%",
+      ],
+      scale: [1, 1.05, 0.98, 1],
+    }}
+    transition={{
+      duration: 20,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }}
+  />
 );
 
-/* ─────────────────────────────────────────────────────────────
-   Animated star row
-───────────────────────────────────────────────────────────── */
-const AnimatedStars = ({ rating }: { rating: number }) => (
-  <div className="flex items-center gap-1">
-    {[1, 2, 3, 4, 5].map((s) => (
-      <motion.span
-        key={s}
-        initial={{ scale: 0, rotate: -120 }}
-        whileInView={{ scale: 1, rotate: 0 }}
-        viewport={{ once: true }}
-        transition={{
-          delay: s * 0.07,
-          type: "spring",
-          stiffness: 280,
-          damping: 18,
-        }}
+/* ═══════════════════════════════════════════════════════════
+   FLOATING PARTICLES
+═══════════════════════════════════════════════════════════ */
+const FloatingParticle = ({ delay, x, size }: { delay: number; x: number; size: number }) => (
+  <motion.div
+    className="absolute rounded-full pointer-events-none"
+    style={{
+      left: `${x}%`,
+      top: "100%",
+      width: size,
+      height: size,
+      background: "linear-gradient(135deg, #D4AF37, #6B8E23)",
+    }}
+    animate={{
+      y: [-200, -600, -200],
+      opacity: [0, 0.6, 0],
+      scale: [0.5, 1.2, 0.5],
+      rotate: [0, 180],
+    }}
+    transition={{
+      duration: 8,
+      delay,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }}
+  />
+);
+
+/* ═══════════════════════════════════════════════════════════
+   PRODUCT SHOWCASE CARD
+═══════════════════════════════════════════════════════════ */
+const ProductShowcaseCard = ({
+  product,
+  index,
+  onView,
+}: {
+  product: Product;
+  index: number;
+  onView: (p: Product) => void;
+}) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 80, scale: 0.9 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{
+        duration: 0.7,
+        delay: index * 0.15,
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+      }}
+      whileHover={{
+        y: -12,
+        scale: 1.03,
+        transition: { duration: 0.3 },
+      }}
+      className="group relative cursor-pointer h-full flex flex-col"
+      onClick={() => onView(product)}
+    >
+      <div
+        className="relative bg-white rounded-3xl p-6 shadow-lg shadow-black/5 overflow-hidden transition-shadow duration-500 group-hover:shadow-xl group-hover:shadow-amber-900/10 flex flex-col h-full"
       >
-        <FaStar
-          size={14}
+        {/* Badge */}
+        {product.badge && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.15 + 0.3 }}
+            className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full text-xs font-bold"
+            style={{
+              background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+              color: "#3E2F1C",
+            }}
+          >
+            {product.badge}
+          </motion.div>
+        )}
+
+        {/* Product Image */}
+        <motion.div
+          className="relative flex-shrink-0 h-48 flex items-center justify-center mb-6 overflow-hidden"
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div
+            className="absolute inset-0 rounded-2xl opacity-30"
+            style={{
+              background:
+                "radial-gradient(circle at center, rgba(212,175,55,0.3) 0%, transparent 70%)",
+            }}
+          />
+          <img
+            src={product.image}
+            alt={product.name}
+            className="relative z-10 w-full h-full object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-110"
+            style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))" }}
+          />
+        </motion.div>
+
+        {/* Product Info */}
+        <div className="flex flex-col flex-1">
+          <h3 className="font-serif font-bold text-lg text-brand-brown mb-2">
+            {product.name}
+          </h3>
+          <p className="text-sm text-gray-500 leading-relaxed mb-3">
+            {product.shortDesc}
+          </p>
+
+          {/* Benefits */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {product.benefits.slice(0, 2).map((benefit) => (
+              <span
+                key={benefit}
+                className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-100"
+              >
+                {benefit}
+              </span>
+            ))}
+          </div>
+
+          {/* Price & CTA — pinned to bottom */}
+          <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
+            <div>
+              <span className="text-2xl font-bold text-brand-brown">
+                {product.price}
+              </span>
+              {product.originalPrice && (
+                <span className="ml-2 text-sm text-gray-400 line-through">
+                  {product.originalPrice}
+                </span>
+              )}
+            </div>
+            <motion.div
+              className="w-10 h-10 rounded-full flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)" }}
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <FiArrowRight className="text-brand-brown" />
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Hover Overlay */}
+        <motion.div
+          className="absolute inset-0 rounded-3xl pointer-events-none"
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
           style={{
-            color: s <= rating ? "#D4AF37" : "rgba(212,175,55,0.25)",
+            background:
+              "linear-gradient(to top, rgba(212,175,55,0.05) 0%, transparent 50%)",
           }}
         />
-      </motion.span>
-    ))}
-  </div>
-);
+      </div>
+    </motion.div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   CATEGORY CARD
+═══════════════════════════════════════════════════════════ */
+const CategoryCard = ({
+  category,
+  index,
+}: {
+  category: { id: string; label: string; emoji: string };
+  index: number;
+}) => {
+  const icons: Record<string, React.ReactNode> = {
+    all: <FaLeaf size={28} />,
+    honey: <span className="text-3xl">🍯</span>,
+    millets: <span className="text-3xl">🌾</span>,
+    jaggery: <span className="text-3xl">🟫</span>,
+    grains: <FiPackage size={28} />,
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="group cursor-pointer"
+    >
+      <div
+        className="relative p-8 rounded-3xl bg-white shadow-lg overflow-hidden transition-all duration-500 group-hover:shadow-xl"
+        style={{
+          background: "linear-gradient(145deg, #ffffff 0%, #faf9f7 100%)",
+        }}
+      >
+        {/* Animated Gradient */}
+        <motion.div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(107,142,35,0.1) 100%)",
+          }}
+        />
+
+        <div className="relative z-10 text-center space-y-4">
+          <motion.div
+            className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center"
+            style={{
+              background: "linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05))",
+              border: "1px solid rgba(212,175,55,0.2)",
+            }}
+            whileHover={{ rotate: 10, scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <span className="text-2xl">{icons[category.id]}</span>
+          </motion.div>
+          <h3 className="font-serif font-bold text-lg text-brand-brown">
+            {category.label}
+          </h3>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATED COUNTER
+═══════════════════════════════════════════════════════════ */
+const AnimatedCounter = ({
+  value,
+  label,
+  index,
+}: {
+  value: string;
+  label: string;
+  index: number;
+}) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay: index * 0.1, duration: 0.6 }}
+      className="text-center"
+    >
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={isInView ? { scale: 1 } : {}}
+        transition={{
+          delay: index * 0.1 + 0.2,
+          type: "spring",
+          stiffness: 200,
+        }}
+        className="text-4xl md:text-5xl font-bold mb-2"
+        style={{
+          background: "linear-gradient(135deg, #D4AF37, #6B8E23)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+      >
+        {value}
+      </motion.div>
+      <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">
+        {label}
+      </p>
+    </motion.div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   TESTIMONIAL CARD
+═══════════════════════════════════════════════════════════ */
+const TestimonialCard = ({
+  testimonial,
+  index,
+}: {
+  testimonial: (typeof testimonials)[0];
+  index: number;
+}) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.12, duration: 0.6 }}
+      whileHover={{ y: -8, transition: { duration: 0.3 } }}
+      className="bg-white rounded-3xl p-6 shadow-lg shadow-black/5 relative overflow-hidden group"
+    >
+      {/* Quote Icon */}
+      <motion.div
+        className="absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity"
+        style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)" }}
+      >
+        <FaQuoteLeft className="text-brand-brown" size={16} />
+      </motion.div>
+
+      {/* Stars */}
+      <div className="flex gap-1 mb-4">
+        {[...Array(5)].map((_, i) => (
+          <motion.span
+            key={i}
+            initial={{ scale: 0, rotate: -180 }}
+            whileInView={{ scale: 1, rotate: 0 }}
+            viewport={{ once: true }}
+            transition={{
+              delay: index * 0.12 + i * 0.05,
+              type: "spring",
+              stiffness: 300,
+            }}
+          >
+            <FaStar
+              size={14}
+              style={{ color: i < testimonial.rating ? "#D4AF37" : "#ddd" }}
+            />
+          </motion.span>
+        ))}
+      </div>
+
+      {/* Review */}
+      <p className="text-gray-600 text-sm leading-relaxed mb-6 italic">
+        "{testimonial.review}"
+      </p>
+
+      {/* Divider */}
+      <div
+        className="h-px w-full mb-4"
+        style={{
+          background:
+            "linear-gradient(to right, transparent, rgba(212,175,55,0.3), transparent)",
+        }}
+      />
+
+      {/* Author */}
+      <div className="flex items-center gap-3">
+        <div
+          className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm"
+          style={{
+            background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+            color: "#3E2F1C",
+          }}
+        >
+          {testimonial.avatar}
+        </div>
+        <div>
+          <p className="font-semibold text-brand-brown">{testimonial.name}</p>
+          <p className="text-xs text-gray-400">
+            {testimonial.location} · {testimonial.date}
+          </p>
+        </div>
+      </div>
+
+      {/* Product Tag */}
+      <div
+        className="absolute bottom-4 right-4 px-3 py-1 rounded-full text-xs font-medium"
+        style={{
+          background: "rgba(107,142,35,0.1)",
+          color: "#506a1a",
+        }}
+      >
+        {testimonial.product}
+      </div>
+    </motion.div>
+  );
+};
 
 /* ═══════════════════════════════════════════════════════════
    HOME PAGE
@@ -131,16 +425,7 @@ const AnimatedStars = ({ rating }: { rating: number }) => (
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const heroRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "35%"]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleQuickView = (product: Product) => {
     setSelectedProduct(product);
@@ -148,551 +433,531 @@ export default function Home() {
   };
 
   return (
-    <main className="relative overflow-x-hidden">
+    <main ref={containerRef} className="relative overflow-x-hidden bg-[#faf9f7]">
       {/* ════════════════════════════════════════════════════
-          1. HERO
+          1. MODERN HERO SECTION
       ════════════════════════════════════════════════════ */}
       <section
-        ref={heroRef}
-        className="relative flex items-center justify-center overflow-hidden"
-        style={{ minHeight: "100svh" }}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #fef9f3 0%, #f5f0e8 50%, #ebe6d9 100%)" }}
       >
-        {/* Parallax background image */}
-        <motion.div
-          className="absolute inset-0 will-change-transform"
-          style={{ y: heroY, scale: heroScale }}
-        >
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage:
-                "url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=85')",
-            }}
-          />
-          {/* Multi-layer gradient overlay */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to bottom, rgba(22,14,5,0.7) 0%, rgba(22,14,5,0.42) 45%, rgba(22,14,5,0.68) 100%)",
-            }}
-          />
-          {/* Vignette */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, transparent 40%, rgba(10,6,2,0.55) 100%)",
-            }}
-          />
-        </motion.div>
+        {/* Animated Background Blobs */}
+        <MorphingBlob
+          color="rgba(212,175,55,0.15)"
+          className="w-[600px] h-[600px] -top-48 -left-48"
+        />
+        <MorphingBlob
+          color="rgba(107,142,35,0.12)"
+          className="w-[500px] h-[500px] -bottom-32 -right-32"
+        />
+        <MorphingBlob
+          color="rgba(212,175,55,0.08)"
+          className="w-[400px] h-[400px] top-1/4 right-1/4"
+        />
 
-        {/* Grain overlay texture */}
+        {/* Floating Particles */}
+        {[...Array(8)].map((_, i) => (
+          <FloatingParticle
+            key={i}
+            delay={i * 0.8}
+            x={10 + i * 12}
+            size={6 + (i % 3) * 2}
+          />
+        ))}
+
+        {/* Grid Pattern Overlay */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
           style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E\")",
-            zIndex: 1,
+            backgroundImage: `
+              linear-gradient(rgba(212,175,55,0.5) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(212,175,55,0.5) 1px, transparent 1px)
+            `,
+            backgroundSize: "60px 60px",
           }}
         />
 
-        {/* Floating grain particles */}
-        {grainConfigs.map((g, i) => (
-          <motion.div
-            key={i}
-            className="absolute bottom-0 pointer-events-none"
-            style={{ left: g.x, zIndex: 2 }}
-            animate={{ y: [0, -80, -160], opacity: [0, 0.6, 0] }}
-            transition={{
-              duration: g.duration,
-              delay: g.delay,
-              repeat: Infinity,
-              ease: "easeOut",
-            }}
-          >
-            <svg width="6" height="14" viewBox="0 0 6 14" fill="none">
-              <ellipse
-                cx="3"
-                cy="7"
-                rx="2.5"
-                ry="6"
-                fill="#D4AF37"
-                fillOpacity="0.7"
-              />
-            </svg>
-          </motion.div>
-        ))}
-
-
-        {/* Hero content */}
-        <motion.div
-          className="relative z-10 text-center px-4 max-w-5xl mx-auto"
-          style={{ opacity: heroOpacity }}
-        >
-          {/* Pre-heading pill */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-8"
-            style={{
-              background: "rgba(212,175,55,0.15)",
-              border: "1px solid rgba(212,175,55,0.35)",
-              backdropFilter: "blur(8px)",
-            }}
-          >
-            <span
-              className="text-xs font-semibold uppercase tracking-widest"
-              style={{ color: "#D4AF37", letterSpacing: "0.2em" }}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+              className="space-y-8"
             >
-              🌿 &nbsp; 100% Organic · Farm to Home
-            </span>
-          </motion.div>
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
+                style={{
+                  background: "rgba(212,175,55,0.15)",
+                  border: "1px solid rgba(212,175,55,0.3)",
+                }}
+              >
+                <motion.span
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  🌿
+                </motion.span>
+                <span className="text-sm font-semibold text-brand-brown">
+                  100% Organic · Farm to Home
+                </span>
+              </motion.div>
 
-          {/* Main heading */}
-          <div className="overflow-hidden mb-4">
-            <motion.h1
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.9, ease: [0.4, 0, 0.2, 1] }}
-              className="font-serif font-bold text-white leading-[1.08]"
-              style={{ fontSize: "clamp(2.4rem, 6vw, 5rem)" }}
+              {/* Main Heading */}
+              <div className="space-y-4">
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.7 }}
+                  className="font-serif font-bold leading-[1.1]"
+                  style={{
+                    fontSize: "clamp(2.5rem, 5vw, 4rem)",
+                    color: "#3E2F1C",
+                  }}
+                >
+                  Pure & Natural
+                  <br />
+                  <span
+                    style={{
+                      background: "linear-gradient(135deg, #D4AF37, #6B8E23)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    Organic Products
+                  </span>
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.6 }}
+                  className="text-lg text-gray-600 max-w-md leading-relaxed"
+                >
+                  Handpicked millets, golden honey, organic jaggery, and more —
+                  straight from India's finest organic farms to your kitchen.
+                </motion.p>
+              </div>
+
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="flex flex-wrap gap-4"
+              >
+                <motion.div
+                  className="flex items-center gap-2.5 px-8 py-4 rounded-full font-bold text-base"
+                  style={{
+                    background: "rgba(248,245,240,0.5)",
+                    color: "rgba(62,47,28,0.5)",
+                    cursor: "not-allowed",
+                  }}
+                >
+                  <span>Coming Soon</span>
+                </motion.div>
+
+                <Link to="/products">
+                  <motion.button
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex items-center gap-3 px-8 py-4 rounded-full font-bold text-base shadow-lg shadow-amber-900/20"
+                    style={{
+                      background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                      color: "#3E2F1C",
+                    }}
+                  >
+                    <FiShoppingBag size={18} />
+                    <span>Shop Now</span>
+                    <motion.span
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <FiArrowRight size={18} />
+                    </motion.span>
+                  </motion.button>
+                </Link>
+              </motion.div>
+
+              {/* Trust Badges */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="flex flex-wrap gap-6 pt-4"
+              >
+                {[
+                  { icon: <FaHandHoldingHeart size={18} />, text: "Lab Tested" },
+                  { icon: <FiShield size={18} />, text: "FSSAI Certified" },
+                  { icon: <FiTrendingUp size={18} />, text: "4.8★ Rating" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1 + i * 0.1 }}
+                    className="flex items-center gap-2 text-sm text-gray-500"
+                  >
+                    <span style={{ color: "#D4AF37" }}>{item.icon}</span>
+                    <span>{item.text}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            {/* Right - Product Showcase */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="relative"
             >
-              Pure.{" "}
-              <span
+              {/* Glow Effect */}
+              <div
+                className="absolute inset-0 rounded-full blur-3xl"
                 style={{
                   background:
-                    "linear-gradient(135deg, #D4AF37, #f0d060, #D4AF37)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
+                    "radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 70%)",
+                  transform: "scale(1.3)",
                 }}
-              >
-                Natural.
-              </span>
-              <br />
-              Trusted by Tradition.
-            </motion.h1>
-          </div>
+              />
 
-          {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.85, duration: 0.7 }}
-            className="text-lg md:text-xl leading-relaxed mb-10 max-w-2xl mx-auto"
-            style={{ color: "rgba(248,245,240,0.78)", fontWeight: 300 }}
-          >
-            Handpicked millets, golden honey, organic jaggery, pulses & grains —
-            straight from India's farms to your kitchen.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.05, duration: 0.7 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
-          >
-            {/* Primary CTA */}
-            <motion.div
-              className="flex items-center gap-2.5 px-8 py-4 rounded-full font-bold text-base"
-              style={{
-                background: "rgba(248,245,240,0.15)",
-                color: "rgba(248,245,240,0.5)",
-                cursor: "not-allowed",
-                userSelect: "none"
-              }}
-            >
-              <span>Coming Soon</span>
-            </motion.div>
-
-            {/* Secondary CTA */}
-            <motion.div
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <Link
-                to="/products"
-                className="flex items-center gap-2.5 px-8 py-4 rounded-full font-semibold text-base transition-all duration-300 group"
-                style={{
-                  background: "rgba(255,255,255,0.1)",
-                  color: "rgba(248,245,240,0.92)",
-                  border: "1.5px solid rgba(255,255,255,0.25)",
-                  backdropFilter: "blur(10px)",
-                  letterSpacing: "0.03em",
+              {/* Main Product Image */}
+              <motion.div
+                animate={{
+                  y: [0, -15, 0],
+                  rotate: [-2, 2, -2],
                 }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="relative"
               >
-                <FiShoppingBag size={18} strokeWidth={2} />
-                <span>Explore Products</span>
-                <FiArrowRight
-                  size={16}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
+                <img
+                  src={HoneyBottle}
+                  alt="Pure Honey"
+                  className="w-full max-w-md mx-auto drop-shadow-2xl"
+                  style={{ filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.2))" }}
                 />
-              </Link>
-            </motion.div>
-          </motion.div>
+              </motion.div>
 
-          {/* Trust row */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.3, duration: 0.6 }}
-            className="flex items-center justify-center gap-6 flex-wrap"
-          >
-            {[
-              "🌿 100% Organic",
-              "🔬 Lab Tested",
-              "🚜 Farm Direct",
-              "🚫 No Chemicals",
-            ].map((item) => (
-              <span
-                key={item}
-                className="text-xs font-medium"
-                style={{ color: "rgba(248,245,240,0.55)" }}
+              {/* Floating Badge */}
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.2 }}
+                className="absolute -left-4 top-1/4 px-4 py-3 rounded-2xl bg-white shadow-xl"
               >
-                {item}
-              </span>
-            ))}
-          </motion.div>
-        </motion.div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">
+                  Starting at
+                </p>
+                <p className="text-2xl font-bold text-brand-brown">₹199</p>
+              </motion.div>
 
-        {/* Scroll indicator */}
+              {/* Floating Rating */}
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.4 }}
+                className="absolute -right-4 top-1/3 px-4 py-3 rounded-2xl bg-white shadow-xl"
+              >
+                <div className="flex items-center gap-2">
+                  <FaStar size={18} color="#D4AF37" />
+                  <span className="font-bold text-brand-brown">4.8</span>
+                </div>
+                <p className="text-xs text-gray-400">10K+ Reviews</p>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.6 }}
-          onClick={() => {
-            document
-              .getElementById("featured")
-              ?.scrollIntoView({ behavior: "smooth" });
-          }}
+          transition={{ delay: 1.8 }}
         >
-          <span
-            className="text-xs uppercase tracking-widest"
-            style={{ color: "rgba(212,175,55,0.6)", letterSpacing: "0.22em" }}
-          >
+          <span className="text-xs text-gray-400 uppercase tracking-widest">
             Scroll
           </span>
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <FiChevronDown
-              size={22}
-              style={{ color: "rgba(212,175,55,0.6)" }}
-            />
+            <FiChevronDown size={24} className="text-amber-600" />
           </motion.div>
         </motion.div>
-
-        {/* Corner decorative leaves */}
-        <div
-          className="absolute bottom-12 left-8 pointer-events-none"
-          style={{ zIndex: 2 }}
-        >
-          <motion.div
-            animate={{ rotate: [-5, 5, -5] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <LeafAccent size={52} opacity={0.18} />
-          </motion.div>
-        </div>
-        <div
-          className="absolute top-32 right-8 pointer-events-none"
-          style={{ zIndex: 2 }}
-        >
-          <motion.div
-            animate={{ rotate: [5, -5, 5] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <LeafAccent size={36} opacity={0.14} />
-          </motion.div>
-        </div>
       </section>
 
       {/* ════════════════════════════════════════════════════
-          2. STATS STRIP
+          2. STATS SECTION
       ════════════════════════════════════════════════════ */}
-      <section
-        className="relative py-6 overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(135deg, #2a1f12 0%, #3e2f1c 50%, #2a1f12 100%)",
-        }}
-      >
-        {/* Ambient glow */}
+      <section className="relative py-16 bg-white overflow-hidden">
+        {/* Decorative Line */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute top-0 left-0 right-0 h-1"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.07) 0%, transparent 70%)",
+              "linear-gradient(to right, transparent, #D4AF37, #6B8E23, #D4AF37, transparent)",
           }}
         />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-px">
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
             {stats.map((stat, i) => (
-              <motion.div
+              <AnimatedCounter
                 key={stat.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="flex flex-col items-center justify-center py-5 px-4 text-center"
-              >
-                <span
-                  className="font-serif font-bold leading-none mb-1"
-                  style={{
-                    fontSize: "1.75rem",
-                    background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                >
-                  {stat.value}
-                </span>
-                <span
-                  className="text-xs font-medium uppercase tracking-wide"
-                  style={{
-                    color: "rgba(248,245,240,0.5)",
-                    letterSpacing: "0.12em",
-                  }}
-                >
-                  {stat.label}
-                </span>
-              </motion.div>
+                value={stat.value}
+                label={stat.label}
+                index={i}
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════
-          3. FEATURED PRODUCTS
+          3. CATEGORIES SECTION
       ════════════════════════════════════════════════════ */}
-      <section
-        id="featured"
-        className="relative py-20 lg:py-28 bg-texture-cream overflow-hidden"
-      >
-        {/* Background decoration */}
+      <section className="relative py-20 overflow-hidden bg-[#faf9f7]">
+        {/* Background Accents */}
         <div
-          className="absolute top-0 right-0 w-96 h-96 pointer-events-none"
+          className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-30"
           style={{
             background:
-              "radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 65%)",
-            filter: "blur(40px)",
+              "radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 70%)",
           }}
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Section header */}
           <motion.div
-            variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: true }}
+            variants={staggerContainer}
             className="text-center mb-14"
           >
-            <SectionTag label="Featured Products" />
+            <motion.span
+              variants={fadeUp}
+              custom={0}
+              className="inline-block text-sm font-semibold text-amber-600 uppercase tracking-widest mb-4"
+            >
+              Explore
+            </motion.span>
+            <motion.h2
+              variants={fadeUp}
+              custom={0.1}
+              className="font-serif font-bold text-brand-brown"
+              style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
+            >
+              Shop by Category
+            </motion.h2>
+          </motion.div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+            {categories.map((cat, i) => (
+              <CategoryCard key={cat.id} category={cat} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════
+          4. FEATURED PRODUCTS
+      ════════════════════════════════════════════════════ */}
+      <section className="relative py-20 bg-white overflow-hidden">
+        {/* Background Pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, #3E2F1C 1px, transparent 0)`,
+            backgroundSize: "40px 40px",
+          }}
+        />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-14"
+          >
+            <motion.span
+              variants={fadeUp}
+              custom={0}
+              className="inline-block text-sm font-semibold text-amber-600 uppercase tracking-widest mb-4"
+            >
+              Our Bestsellers
+            </motion.span>
             <motion.h2
               variants={fadeUp}
               custom={0.1}
               className="font-serif font-bold text-brand-brown mb-4"
-              style={{ fontSize: "clamp(1.9rem, 3.5vw, 2.8rem)" }}
+              style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
             >
-              Nature's Best,{" "}
-              <span className="text-gradient-gold">Carefully Curated</span>
+              Featured Products
             </motion.h2>
             <motion.p
               variants={fadeUp}
               custom={0.2}
-              className="max-w-xl mx-auto text-base leading-relaxed"
-              style={{ color: "rgba(62,47,28,0.6)" }}
+              className="max-w-2xl mx-auto text-gray-500"
             >
-              From golden wild honey to ancient grain millets — each product is
-              sourced directly from trusted organic farms across India.
+              Handpicked organic essentials — from pure Himalayan honey to
+              farm-fresh jaggery. Every product tells a story of purity.
             </motion.p>
           </motion.div>
 
-          {/* Product cards grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-7 mb-12">
-            {featuredProducts.map((product, idx) => (
-              <ProductCard
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {featuredProducts.map((product, i) => (
+              <ProductShowcaseCard
                 key={product.id}
                 product={product}
-                onQuickView={handleQuickView}
-                index={idx}
+                index={i}
+                onView={handleQuickView}
               />
             ))}
           </div>
 
-          {/* View all CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.55 }}
-            className="text-center"
+            className="text-center mt-14"
           >
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300 group hover:-translate-y-1"
-              style={{
-                border: "1.5px solid rgba(62,47,28,0.15)",
-                color: "#3E2F1C",
-                background: "white",
-                boxShadow: "0 4px 14px rgba(62,47,28,0.06)",
-              }}
-            >
-              <FiShoppingBag size={16} strokeWidth={2.2} />
-              <span>View All Products</span>
-              <FiArrowRight
-                size={15}
-                className="transition-transform duration-300 group-hover:translate-x-1.5"
-              />
+            <Link to="/products">
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold shadow-lg"
+                style={{
+                  background: "linear-gradient(135deg, #3E2F1C, #5a4532)",
+                  color: "white",
+                }}
+              >
+                <FiShoppingBag size={18} />
+                <span>View All Products</span>
+                <FiArrowRight size={18} />
+              </motion.button>
             </Link>
           </motion.div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════
-          4. WHY CHOOSE US
+          5. WHY CHOOSE US
       ════════════════════════════════════════════════════ */}
       <section
-        className="relative py-20 lg:py-28 overflow-hidden"
+        className="relative py-24 overflow-hidden"
         style={{
-          background:
-            "linear-gradient(160deg, #1a1208 0%, #2a1f12 40%, #3e2f1c 70%, #2a1f12 100%)",
+          background: "linear-gradient(135deg, #3E2F1C 0%, #2a1f12 50%, #1a1208 100%)",
         }}
       >
-        {/* Ambient glows */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%)",
-            filter: "blur(60px)",
-          }}
+        {/* Decorative Elements */}
+        <MorphingBlob
+          color="rgba(212,175,55,0.08)"
+          className="w-[500px] h-[500px] top-0 right-0"
+        />
+        <MorphingBlob
+          color="rgba(107,142,35,0.06)"
+          className="w-[400px] h-[400px] bottom-0 left-0"
         />
 
-        {/* Leaf decorations */}
-        <div className="absolute top-8 left-8 opacity-10 pointer-events-none">
-          <motion.div
-            animate={{ rotate: [-8, 8, -8] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <LeafAccent size={70} opacity={1} />
-          </motion.div>
-        </div>
-        <div className="absolute bottom-8 right-8 opacity-8 pointer-events-none">
-          <motion.div
-            animate={{ rotate: [6, -6, 6] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <LeafAccent size={55} opacity={0.8} />
-          </motion.div>
-        </div>
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Section header */}
           <motion.div
-            variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: true }}
+            variants={staggerContainer}
             className="text-center mb-16"
           >
-            <SectionTag label="Our Promise" />
+            <motion.span
+              variants={fadeUp}
+              custom={0}
+              className="inline-block text-sm font-semibold text-amber-400 uppercase tracking-widest mb-4"
+            >
+              Our Promise
+            </motion.span>
             <motion.h2
               variants={fadeUp}
               custom={0.1}
               className="font-serif font-bold text-white mb-4"
-              style={{ fontSize: "clamp(1.9rem, 3.5vw, 2.8rem)" }}
+              style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
             >
               Why Choose{" "}
-              <span className="text-gradient-gold">Vedyara Organic</span>
+              <span style={{ color: "#D4AF37" }}>Vedyara Organic</span>
             </motion.h2>
             <motion.p
               variants={fadeUp}
               custom={0.2}
-              className="max-w-lg mx-auto text-base"
-              style={{ color: "rgba(248,245,240,0.55)" }}
+              className="max-w-lg mx-auto text-gray-400"
             >
               No shortcuts. No compromise. Every product upholds our four core
               pillars of purity.
             </motion.p>
           </motion.div>
 
-          {/* Feature cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {whyChooseUs.map((feature, i) => (
               <motion.div
                 key={feature.id}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{
-                  duration: 0.6,
-                  delay: i * 0.12,
-                  ease: [0.4, 0, 0.2, 1],
-                }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="relative p-7 rounded-3xl text-center cursor-default group"
+                className="relative p-8 rounded-3xl text-center group cursor-default"
                 style={{
                   background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(212,175,55,0.14)",
-                  backdropFilter: "blur(8px)",
+                  border: "1px solid rgba(212,175,55,0.15)",
+                  backdropFilter: "blur(10px)",
                 }}
               >
-                {/* Hover glow */}
+                {/* Glow on hover */}
                 <motion.div
-                  className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-400"
+                  className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
                     background:
-                      "radial-gradient(ellipse at center, rgba(212,175,55,0.08) 0%, transparent 70%)",
+                      "radial-gradient(ellipse at center, rgba(212,175,55,0.1) 0%, transparent 70%)",
                   }}
                 />
 
                 {/* Icon */}
                 <motion.div
-                  className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-5 relative"
+                  className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-6 relative"
                   style={{
-                    background:
-                      "linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05))",
-                    border: "1px solid rgba(212,175,55,0.22)",
+                    background: "linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05))",
+                    border: "1px solid rgba(212,175,55,0.25)",
                   }}
-                  whileHover={{ rotate: 8, scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  whileHover={{ rotate: 10, scale: 1.1 }}
                 >
                   <span className="text-2xl">{feature.icon}</span>
                 </motion.div>
 
-                {/* Title */}
-                <h3
-                  className="font-serif font-bold mb-3 text-lg"
-                  style={{ color: "#F8F5F0" }}
-                >
+                <h3 className="font-serif font-bold text-lg text-white mb-3">
                   {feature.title}
                 </h3>
-
-                {/* Description */}
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: "rgba(248,245,240,0.5)" }}
-                >
+                <p className="text-sm text-gray-400 leading-relaxed">
                   {feature.description}
                 </p>
 
-                {/* Bottom accent line */}
+                {/* Bottom Line */}
                 <motion.div
                   className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full"
                   style={{
                     background: "linear-gradient(to right, #D4AF37, #6B8E23)",
-                    transformOrigin: "center",
                   }}
                   initial={{ width: 0 }}
-                  whileInView={{ width: "60%" }}
+                  whileInView={{ width: "50%" }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.5 + i * 0.1, duration: 0.7 }}
                 />
@@ -700,682 +965,226 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Bottom certifications row */}
+          {/* Certifications */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-14 flex flex-wrap items-center justify-center gap-6"
+            transition={{ delay: 0.5 }}
+            className="mt-16 flex flex-wrap justify-center gap-4"
           >
             {[
               { icon: "🏆", label: "FSSAI Certified" },
               { icon: "🌿", label: "Organic Certified" },
               { icon: "🔬", label: "Lab Verified" },
-              { icon: "🚜", label: "Direct Farm" },
+              { icon: "🚜", label: "Farm Direct" },
               { icon: "♻️", label: "Eco Packaging" },
             ].map((cert) => (
-              <div
+              <motion.div
                 key={cert.label}
-                className="flex items-center gap-2 px-4 py-2 rounded-full"
+                whileHover={{ scale: 1.05 }}
+                className="flex items-center gap-2 px-5 py-3 rounded-full"
                 style={{
-                  background: "rgba(212,175,55,0.08)",
-                  border: "1px solid rgba(212,175,55,0.15)",
+                  background: "rgba(212,175,55,0.1)",
+                  border: "1px solid rgba(212,175,55,0.2)",
                 }}
               >
-                <span className="text-sm">{cert.icon}</span>
-                <span
-                  className="text-xs font-semibold"
-                  style={{ color: "rgba(248,245,240,0.6)" }}
-                >
+                <span className="text-lg">{cert.icon}</span>
+                <span className="text-sm font-medium text-gray-300">
                   {cert.label}
                 </span>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════
-          5. STORY SECTION — From Farm to Your Home
-      ════════════════════════════════════════════════════ */}
-      <section className="relative py-20 lg:py-28 bg-texture-cream overflow-hidden">
-        {/* Background accent */}
-        <div
-          className="absolute left-0 top-0 bottom-0 w-1/3 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(to right, rgba(212,175,55,0.04), transparent)",
-          }}
-        />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
-            {/* Image column */}
-            <motion.div
-              variants={fadeRight}
-              custom={0}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              className="relative order-2 lg:order-1"
-            >
-              {/* Main image */}
-              <div
-                className="relative rounded-3xl overflow-hidden"
-                style={{ paddingBottom: "120%" }}
-              >
-                <div className="absolute inset-0 img-zoom-wrap">
-                  <img
-                    src={FarmImage}
-                    alt="Organic farm fields"
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    style={{
-                      minHeight: "100%",
-                      transition: "transform 0.7s ease",
-                    }}
-                  />
-                  {/* Image overlay */}
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background:
-                        "linear-gradient(to bottom, transparent 50%, rgba(22,14,5,0.5) 100%)",
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Floating "100% Organic" card */}
-              <motion.div
-                initial={{ opacity: 0, x: -20, y: 20 }}
-                whileInView={{ opacity: 1, x: 0, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="absolute -bottom-6 -right-4 sm:-right-8 p-5 rounded-2xl"
-                style={{
-                  background: "white",
-                  boxShadow: "0 12px 40px rgba(62,47,28,0.15)",
-                  minWidth: "160px",
-                }}
-              >
-                <p
-                  className="text-xs font-semibold uppercase tracking-widest mb-2"
-                  style={{ color: "#6B8E23", letterSpacing: "0.16em" }}
-                >
-                  Since 2019
-                </p>
-                <p
-                  className="font-serif font-bold text-lg leading-tight"
-                  style={{ color: "#3E2F1C" }}
-                >
-                  Trusted by
-                  <br />
-                  10,000+ families
-                </p>
-                <div className="flex mt-2">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} size={11} color="#D4AF37" />
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Secondary image (offset) */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.35, duration: 0.65 }}
-                className="absolute -top-6 -left-4 sm:-left-8 w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden"
-                style={{
-                  boxShadow: "0 8px 24px rgba(62,47,28,0.18)",
-                  border: "3px solid white",
-                }}
-              >
-                <img
-                  src={BeeFarm}
-                  alt="Pure honey jar"
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
-            </motion.div>
-
-            {/* Text column */}
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              className="order-1 lg:order-2"
-            >
-              <SectionTag label="Our Story" />
-
-              <motion.h2
-                variants={fadeUp}
-                custom={0.1}
-                className="font-serif font-bold leading-tight mb-6"
-                style={{
-                  fontSize: "clamp(2rem, 3.8vw, 3rem)",
-                  color: "#3E2F1C",
-                }}
-              >
-                From Farm to{" "}
-                <span className="text-gradient-gold">Your Home</span>
-              </motion.h2>
-
-              <motion.p
-                variants={fadeUp}
-                custom={0.2}
-                className="text-base leading-relaxed mb-5"
-                style={{ color: "rgba(62,47,28,0.68)" }}
-              >
-                Vedyara Organic was born from a simple belief — that every
-                family deserves food that is as pure and honest as nature
-                intended. We work directly with small-scale farmers across
-                India, paying fair prices and eliminating middlemen so that
-                quality reaches your plate without compromise.
-              </motion.p>
-
-              <motion.p
-                variants={fadeUp}
-                custom={0.3}
-                className="text-base leading-relaxed mb-8"
-                style={{ color: "rgba(62,47,28,0.68)" }}
-              >
-                From the Himalayan beehives to the millet fields of Rajasthan —
-                every product carries the story of the land it grew on and the
-                hands that nurtured it.
-              </motion.p>
-
-              {/* Values list */}
-              <motion.div
-                variants={staggerContainer}
-                className="space-y-3 mb-10"
-              >
-                {[
-                  "Direct partnerships with 200+ organic farmers",
-                  "Zero middlemen — fresher products, better prices",
-                  "Every batch lab-tested for purity & quality",
-                  "Empowering rural communities & women farmers",
-                ].map((item) => (
-                  <motion.div
-                    key={item}
-                    variants={fadeUp}
-                    custom={0.1}
-                    className="flex items-start gap-3"
-                  >
-                    <div
-                      className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                      style={{ background: "rgba(107,142,35,0.15)" }}
-                    >
-                      <FiCheck
-                        size={11}
-                        style={{ color: "#506a1a" }}
-                        strokeWidth={3}
-                      />
-                    </div>
-                    <span
-                      className="text-sm leading-snug"
-                      style={{ color: "rgba(62,47,28,0.72)" }}
-                    >
-                      {item}
-                    </span>
-                  </motion.div>
-                ))}
-              </motion.div>
-
-              <motion.div
-                variants={fadeUp}
-                custom={0.5}
-                className="flex flex-col sm:flex-row gap-4"
-              >
-                <Link
-                  to="/about"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full font-semibold text-sm transition-all duration-300 group hover:-translate-y-1"
-                  style={{
-                    background: "linear-gradient(135deg, #3E2F1C, #5a4532)",
-                    color: "#F8F5F0",
-                    boxShadow: "0 8px 24px rgba(62,47,28,0.25)",
-                    letterSpacing: "0.03em",
-                  }}
-                >
-                  <span>Read Our Story</span>
-                  <FiArrowRight
-                    size={15}
-                    className="transition-transform duration-300 group-hover:translate-x-1"
-                  />
-                </Link>
-                <div
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full font-semibold text-sm"
-                  style={{
-                    border: "1.5px solid rgba(62,47,28,0.1)",
-                    color: "rgba(62,47,28,0.4)",
-                    background: "transparent",
-                    letterSpacing: "0.03em",
-                    cursor: "not-allowed",
-                    userSelect: "none"
-                  }}
-                >
-                  <span>Coming Soon</span>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════
           6. TESTIMONIALS
       ════════════════════════════════════════════════════ */}
-      <section
-        className="relative py-20 lg:py-28 overflow-hidden"
-        style={{ background: "#EDE8E0" }}
-      >
+      <section className="relative py-24 bg-[#faf9f7] overflow-hidden">
+        {/* Background Accents */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute top-0 left-0 w-full h-32"
           style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+            background:
+              "linear-gradient(to bottom, rgba(212,175,55,0.05), transparent)",
           }}
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Section header */}
           <motion.div
-            variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: true }}
+            variants={staggerContainer}
             className="text-center mb-14"
           >
-            <SectionTag label="Customer Love" />
+            <motion.span
+              variants={fadeUp}
+              custom={0}
+              className="inline-block text-sm font-semibold text-amber-600 uppercase tracking-widest mb-4"
+            >
+              Customer Love
+            </motion.span>
             <motion.h2
               variants={fadeUp}
               custom={0.1}
               className="font-serif font-bold text-brand-brown mb-4"
-              style={{ fontSize: "clamp(1.9rem, 3.5vw, 2.8rem)" }}
+              style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
             >
-              What Our Customers{" "}
-              <span className="text-gradient-gold">Are Saying</span>
+              What Our Customers Say
             </motion.h2>
-            <motion.p
-              variants={fadeUp}
-              custom={0.2}
-              className="max-w-lg mx-auto text-sm"
-              style={{ color: "rgba(62,47,28,0.55)" }}
-            >
-              Thousands of families across India have made Vedyara Organic a
-              part of their daily life. Here's what they love.
-            </motion.p>
           </motion.div>
 
-          {/* Testimonial cards grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {testimonials.map((t, i) => (
-              <motion.div
-                key={t.id}
-                initial={{ opacity: 0, y: 44 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.15 }}
-                transition={{
-                  duration: 0.6,
-                  delay: i * 0.1,
-                  ease: [0.4, 0, 0.2, 1],
-                }}
-                whileHover={{ y: -6 }}
-                className="testimonial-card relative"
-              >
-                {/* Quote icon */}
-                <div
-                  className="absolute -top-3 -left-1 w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{
-                    background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-                    boxShadow: "0 4px 12px rgba(212,175,55,0.35)",
-                  }}
-                >
-                  <FaQuoteLeft size={11} color="#3E2F1C" />
-                </div>
-
-                {/* Stars */}
-                <div className="mb-3 mt-2">
-                  <AnimatedStars rating={t.rating} />
-                </div>
-
-                {/* Review text */}
-                <p
-                  className="text-sm leading-relaxed mb-5 italic"
-                  style={{ color: "rgba(62,47,28,0.72)" }}
-                >
-                  "{t.review}"
-                </p>
-
-                {/* Divider */}
-                <div
-                  style={{
-                    height: "1px",
-                    background:
-                      "linear-gradient(to right, rgba(62,47,28,0.1), transparent)",
-                    marginBottom: "14px",
-                  }}
-                />
-
-                {/* Customer info */}
-                <div className="flex items-center gap-3">
-                  {/* Avatar */}
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
-                    style={{
-                      background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-                      color: "#3E2F1C",
-                    }}
-                  >
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <p
-                      className="font-semibold text-sm leading-none mb-0.5"
-                      style={{ color: "#3E2F1C" }}
-                    >
-                      {t.name}
-                    </p>
-                    <p
-                      className="text-xs"
-                      style={{ color: "rgba(62,47,28,0.45)" }}
-                    >
-                      {t.location} · {t.date}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Product tag */}
-                <div
-                  className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium"
-                  style={{
-                    background: "rgba(107,142,35,0.1)",
-                    color: "#506a1a",
-                    border: "1px solid rgba(107,142,35,0.18)",
-                  }}
-                >
-                  {t.product}
-                </div>
-              </motion.div>
+              <TestimonialCard key={t.id} testimonial={t} index={i} />
             ))}
           </div>
 
-          {/* Amazon reviews note */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-center mt-10"
+            className="text-center mt-12"
           >
             <div
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium"
               style={{
                 background: "rgba(62,47,28,0.08)",
                 color: "rgba(62,47,28,0.5)",
-                cursor: "not-allowed",
-                userSelect: "none"
               }}
             >
-              <span>Coming Soon to Amazon India</span>
+              Coming Soon to Amazon India
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════
-          7. HONEY DRIP PROCESS SECTION
+          7. CTA SECTION
       ════════════════════════════════════════════════════ */}
-      <section
-        className="relative py-20 lg:py-24 overflow-hidden"
-        style={{ background: "#F8F5F0" }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.25 }}
-            variants={staggerContainer}
-            className="text-center mb-14"
-          >
-            <SectionTag label="How It Works" />
-            <motion.h2
-              variants={fadeUp}
-              custom={0.1}
-              className="font-serif font-bold text-brand-brown"
-              style={{ fontSize: "clamp(1.9rem, 3.5vw, 2.8rem)" }}
-            >
-              Our <span className="text-gradient-gold">Simple Promise</span>
-            </motion.h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-            {/* Connecting line for desktop */}
-            <div
-              className="hidden lg:block absolute top-8 left-[12.5%] right-[12.5%] h-px"
-              style={{
-                background:
-                  "linear-gradient(to right, transparent, #D4AF37, #6B8E23, #D4AF37, transparent)",
-              }}
-            />
-
-            {[
-              {
-                step: "01",
-                icon: "🌾",
-                title: "Farm Sourced",
-                desc: "Direct from certified organic farms across India",
-              },
-              {
-                step: "02",
-                icon: "🔬",
-                title: "Lab Tested",
-                desc: "Every batch rigorously tested for purity & quality",
-              },
-              {
-                step: "03",
-                icon: "📦",
-                title: "Packed Fresh",
-                desc: "Eco-friendly packaging, no artificial preservatives",
-              },
-              {
-                step: "04",
-                icon: "🏠",
-                title: "Your Home",
-                desc: "Delivered to your door via Amazon's trusted network",
-              },
-            ].map((step, i) => (
-              <motion.div
-                key={step.step}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{
-                  delay: i * 0.14,
-                  duration: 0.6,
-                  ease: [0.4, 0, 0.2, 1],
-                }}
-                className="flex flex-col items-center text-center relative"
-              >
-                {/* Step number */}
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10 text-2xl"
-                  style={{
-                    background: "white",
-                    border: "2px solid rgba(212,175,55,0.3)",
-                    boxShadow: "0 6px 20px rgba(212,175,55,0.15)",
-                  }}
-                >
-                  {step.icon}
-                </div>
-                <span
-                  className="text-xs font-bold mb-2 tracking-wider"
-                  style={{ color: "#D4AF37", letterSpacing: "0.14em" }}
-                >
-                  Step {step.step}
-                </span>
-                <h4
-                  className="font-serif font-bold mb-2 text-lg"
-                  style={{ color: "#3E2F1C" }}
-                >
-                  {step.title}
-                </h4>
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: "rgba(62,47,28,0.6)", maxWidth: "180px" }}
-                >
-                  {step.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════
-          8. CTA BANNER
-      ════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden cta-banner py-20 lg:py-28">
-        {/* Background image with overlay */}
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1506368249639-73a05d6f6488?w=1600&q=80"
-            alt="Organic fields background"
-            className="w-full h-full object-cover"
-            style={{ opacity: 0.12 }}
-          />
-        </div>
-
-        {/* Decorative rings */}
+      <section className="relative py-24 overflow-hidden">
+        {/* Background */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
+          className="absolute inset-0"
           style={{
-            border: "1px solid rgba(212,175,55,0.06)",
-          }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full pointer-events-none"
-          style={{
-            border: "1px solid rgba(212,175,55,0.1)",
+            background:
+              "linear-gradient(135deg, #fef9f3 0%, #f5f0e8 50%, #ebe6d9 100%)",
           }}
         />
 
-        {/* Floating leaves in dark background */}
-        <div className="absolute top-8 left-12 opacity-20 pointer-events-none">
-          <motion.div
-            animate={{ rotate: [-6, 6, -6], y: [0, -8, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <LeafAccent size={48} opacity={1} />
-          </motion.div>
-        </div>
-        <div className="absolute bottom-8 right-12 opacity-15 pointer-events-none">
-          <motion.div
-            animate={{ rotate: [5, -5, 5], y: [0, 10, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <LeafAccent size={60} opacity={1} />
-          </motion.div>
-        </div>
+        {/* Decorative Elements */}
+        <MorphingBlob
+          color="rgba(212,175,55,0.15)"
+          className="w-[600px] h-[600px] -top-48 -left-48"
+        />
+        <MorphingBlob
+          color="rgba(107,142,35,0.1)"
+          className="w-[500px] h-[500px] -bottom-32 -right-32"
+        />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.4 }}
+            viewport={{ once: true }}
             variants={staggerContainer}
           >
-            {/* Eyebrow */}
-            <SectionTag label="Start Your Journey" />
+            <motion.span
+              variants={fadeUp}
+              custom={0}
+              className="inline-block text-sm font-semibold text-amber-600 uppercase tracking-widest mb-6"
+            >
+              Start Your Journey
+            </motion.span>
 
-            {/* Heading */}
             <motion.h2
               variants={fadeUp}
               custom={0.1}
-              className="font-serif font-bold text-white mb-5 leading-tight"
-              style={{ fontSize: "clamp(2rem, 4vw, 3.2rem)" }}
+              className="font-serif font-bold text-brand-brown mb-6 leading-tight"
+              style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
             >
-              Switch to Organic. <br className="hidden sm:block" />
-              <span className="text-gradient-gold">
-                No Chemicals. No Compromise.
+              Switch to Organic.
+              <br />
+              <span
+                style={{
+                  background: "linear-gradient(135deg, #D4AF37, #6B8E23)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Live Healthier.
               </span>
             </motion.h2>
 
-            {/* Subtext */}
             <motion.p
               variants={fadeUp}
               custom={0.2}
-              className="text-lg mb-10 max-w-xl mx-auto"
-              style={{ color: "rgba(248,245,240,0.65)", fontWeight: 300 }}
+              className="text-lg text-gray-600 mb-10 max-w-xl mx-auto"
             >
-              Join 10,000+ families who have already made the switch to
-              healthier, purer, organic living with Vedyara.
+              Join 10,000+ families who have made the switch to purer, healthier
+              organic living with Vedyara.
             </motion.p>
 
-            {/* CTA Buttons */}
             <motion.div
               variants={fadeUp}
-              custom={0.35}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+              custom={0.3}
+              className="flex flex-wrap justify-center gap-4"
             >
               <motion.div
-                className="flex items-center gap-3 px-9 py-4 rounded-full font-bold text-base transition-all duration-300"
+                className="flex items-center gap-3 px-9 py-4 rounded-full font-bold"
                 style={{
-                  background: "rgba(248,245,240,0.15)",
-                  color: "rgba(248,245,240,0.5)",
+                  background: "rgba(62,47,28,0.1)",
+                  color: "rgba(62,47,28,0.5)",
                   cursor: "not-allowed",
-                  userSelect: "none",
-                  letterSpacing: "0.04em"
                 }}
               >
-                <span>Coming Soon</span>
+                Coming Soon
               </motion.div>
 
-              <motion.div whileHover={{ scale: 1.03, y: -2 }}>
-                <Link
-                  to="/products"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300"
+              <Link to="/products">
+                <motion.button
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex items-center gap-3 px-9 py-4 rounded-full font-bold shadow-lg shadow-amber-900/20"
                   style={{
-                    background: "rgba(255,255,255,0.08)",
-                    color: "rgba(248,245,240,0.88)",
-                    border: "1.5px solid rgba(255,255,255,0.2)",
-                    backdropFilter: "blur(8px)",
+                    background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                    color: "#3E2F1C",
                   }}
                 >
-                  <FiShoppingBag size={17} strokeWidth={2} />
-                  <span>Explore All Products</span>
-                </Link>
-              </motion.div>
+                  <FiShoppingBag size={18} />
+                  <span>Explore Products</span>
+                  <FiArrowRight size={18} />
+                </motion.button>
+              </Link>
             </motion.div>
 
-            {/* Trust micro-row */}
+            {/* Trust Badges */}
             <motion.div
               variants={fadeUp}
               custom={0.5}
-              className="mt-10 flex flex-wrap items-center justify-center gap-8"
+              className="mt-12 flex flex-wrap justify-center gap-8"
             >
               {[
-                {
-                  icon: <FaStar size={14} color="#D4AF37" />,
-                  text: "4.8★ Amazon Rating",
-                },
-                { icon: "🌿", text: "100% Organic Certified" },
-                { icon: "🔒", text: "Secure Amazon Checkout" },
-                { icon: "🚚", text: "Pan-India Delivery" },
+                { icon: <FaStar size={16} />, text: "4.8★ Rating" },
+                { icon: <FaLeaf size={16} />, text: "100% Organic" },
+                { icon: <FiShield size={16} />, text: "Secure Checkout" },
+                { icon: <FiPackage size={16} />, text: "Pan-India Delivery" },
               ].map((item, i) => (
-                <div
+                <motion.div
                   key={i}
-                  className="flex items-center gap-1.5 text-xs font-medium"
-                  style={{ color: "rgba(248,245,240,0.5)" }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.6 + i * 0.1 }}
+                  className="flex items-center gap-2 text-sm text-gray-500"
                 >
-                  <span style={{ color: "#D4AF37" }}>
-                    {typeof item.icon === "string" ? item.icon : item.icon}
-                  </span>
+                  <span style={{ color: "#D4AF37" }}>{item.icon}</span>
                   <span>{item.text}</span>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
           </motion.div>
@@ -1383,31 +1192,30 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════
-          MOBILE STICKY CTA
+          8. MOBILE STICKY CTA
       ════════════════════════════════════════════════════ */}
       <AnimatePresence>
         <motion.div
           initial={{ y: 100 }}
           animate={{ y: 0 }}
+          exit={{ y: 100 }}
           transition={{ delay: 2, type: "spring", stiffness: 200, damping: 24 }}
-          className="fixed bottom-0 left-0 right-0 z-30 mobile-sticky-cta px-4 py-3 md:hidden"
-          style={{ paddingBottom: "calc(12px + env(safe-area-inset-bottom))" }}
+          className="fixed bottom-0 left-0 right-0 z-30 bg-white/90 backdrop-blur-lg px-4 py-3 md:hidden border-t border-gray-100"
         >
           <div
             className="flex items-center justify-center gap-2.5 w-full py-4 rounded-2xl font-bold text-sm"
             style={{
-              background: "rgba(248,245,240,0.2)",
-              color: "rgba(248,245,240,0.5)",
+              background: "rgba(62,47,28,0.1)",
+              color: "rgba(62,47,28,0.5)",
               cursor: "not-allowed",
-              userSelect: "none"
             }}
           >
-            <span>Coming Soon</span>
+            Coming Soon
           </div>
         </motion.div>
       </AnimatePresence>
 
-      {/* Product Quick View Modal */}
+      {/* Product Modal */}
       <ProductModal
         product={selectedProduct}
         isOpen={modalOpen}

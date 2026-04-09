@@ -361,7 +361,7 @@ export default function Footer() {
 
             <div className="space-y-4 mb-7">
               <a
-                href="mailto:vedyaraorg@gmail.com.com"
+                href="mailto:vedyaraorg@gmail.com"
                 className="flex items-start gap-3 group"
               >
                 <div
@@ -381,7 +381,7 @@ export default function Footer() {
                     className="text-sm transition-colors duration-300 group-hover:text-yellow-300"
                     style={{ color: "rgba(248,245,240,0.6)" }}
                   >
-                    vedyaraorg@gmail.com.com
+                    vedyaraorg@gmail.com
                   </span>
                 </div>
               </a>
