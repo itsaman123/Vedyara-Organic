@@ -1,7 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiStar, FiShoppingBag, FiCheck, FiPackage } from "react-icons/fi";
-
+import { FiX, FiCheck, FiPackage, FiHeart, FiShare2 } from "react-icons/fi";
 import type { Product } from "../data/products";
 
 interface ProductModalProps {
@@ -10,51 +9,11 @@ interface ProductModalProps {
   onClose: () => void;
 }
 
-/* ─── Star Rating ──────────────────────────────────────────── */
-const StarRating = ({ rating, reviews }: { rating: number; reviews: number }) => (
-  <div className="flex items-center gap-2">
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => {
-        const filled = star <= Math.floor(rating);
-        const partial = !filled && star === Math.ceil(rating) && rating % 1 !== 0;
-        return (
-          <motion.span
-            key={star}
-            initial={{ scale: 0, rotate: -90 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ delay: 0.35 + star * 0.06, type: "spring", stiffness: 320, damping: 18 }}
-          >
-            {partial ? (
-              <span className="relative inline-block w-4 h-4">
-                <FiStar size={16} style={{ color: "rgba(212,175,55,0.25)" }} className="absolute inset-0" />
-                <span className="absolute inset-0 overflow-hidden" style={{ width: `${(rating % 1) * 100}%` }}>
-                  <FiStar size={16} style={{ color: "#D4AF37", fill: "#D4AF37" }} />
-                </span>
-              </span>
-            ) : (
-              <FiStar
-                size={16}
-                style={{
-                  color: filled ? "#D4AF37" : "rgba(212,175,55,0.25)",
-                  fill: filled ? "#D4AF37" : "transparent",
-                }}
-              />
-            )}
-          </motion.span>
-        );
-      })}
-    </div>
-    <span className="font-bold text-sm" style={{ color: "#3E2F1C" }}>{rating}</span>
-    <span className="text-xs" style={{ color: "rgba(62,47,28,0.5)" }}>({reviews.toLocaleString()} reviews)</span>
-  </div>
-);
-
-/* ─── Config maps ──────────────────────────────────────────── */
-const badgeStyleMap: Record<string, React.CSSProperties> = {
-  "Best Seller": { background: "linear-gradient(135deg, #D4AF37, #e8c84a)", color: "#3E2F1C" },
-  Trending:      { background: "linear-gradient(135deg, #6B8E23, #7fa828)", color: "white" },
-  New:           { background: "linear-gradient(135deg, #3E2F1C, #5a4532)", color: "#D4AF37" },
-  Limited:       { background: "linear-gradient(135deg, #c0392b, #e74c3c)", color: "white" },
+const badgeConfig: Record<string, { bg: string; color: string; emoji: string }> = {
+  "Best Seller": { bg: "linear-gradient(135deg,#D4AF37,#e8c84a)", color: "#3E2F1C", emoji: "🏆" },
+  Trending:      { bg: "linear-gradient(135deg,#6B8E23,#7fa828)", color: "#fff", emoji: "🔥" },
+  New:           { bg: "linear-gradient(135deg,#3E2F1C,#5a4532)", color: "#D4AF37", emoji: "✨" },
+  Limited:       { bg: "linear-gradient(135deg,#c0392b,#e74c3c)", color: "#fff", emoji: "⚡" },
 };
 
 const categoryLabels: Record<string, string> = {
@@ -64,323 +23,336 @@ const categoryLabels: Record<string, string> = {
   grains:  "🌿 Grains",
 };
 
-/* ═══════════════════════════════════════════════════════════
-   PRODUCT MODAL — Premium redesign
-═══════════════════════════════════════════════════════════ */
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map((s) => (
+        <svg key={s} width="14" height="14" viewBox="0 0 24 24">
+          <path
+            d="M12 2l2.9 8.7H23l-7.4 5.4 2.8 8.7L12 19.4l-6.4 5.4 2.8-8.7L1 10.7h8.1z"
+            fill={s <= Math.round(rating) ? "#D4AF37" : "rgba(212,175,55,0.25)"}
+          />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
 export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
-  /* Escape key */
+  const [imgError, setImgError] = useState(false);
+  const [liked, setLiked] = useState(false);
+
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     if (isOpen) window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [isOpen, onClose]);
 
-  /* Body scroll lock */
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
+  if (!product) return null;
+
+  const discount = product.originalPrice
+    ? Math.round(
+        (1 -
+          parseInt(product.price.replace(/\D/g, "")) /
+          parseInt(product.originalPrice.replace(/\D/g, ""))) *
+        100,
+      )
+    : null;
+
+  const badge = product.badge ? badgeConfig[product.badge] : null;
+
   return (
     <AnimatePresence>
-      {isOpen && product && (
+      {isOpen && (
         <>
-          {/* ── Backdrop ── */}
           <motion.div
             key="modal-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.28 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5"
-            style={{
-              background: "rgba(14,8,2,0.85)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-            }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ background: "rgba(14,8,2,0.75)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
             onClick={onClose}
           >
-            {/* ── Modal Panel ── */}
             <motion.div
               key="modal-panel"
-              initial={{ opacity: 0, scale: 0.86, y: 48 }}
+              initial={{ opacity: 0, scale: 0.92, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 32 }}
-              transition={{ type: "spring", stiffness: 260, damping: 26 }}
-              className="relative w-full max-w-4xl overflow-hidden rounded-3xl"
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", stiffness: 280, damping: 26 }}
+              className="relative w-full max-w-5xl overflow-hidden"
               style={{
-                maxHeight: "90vh",
-                background: "#F8F5F0",
-                boxShadow: "0 48px 120px rgba(14,8,2,0.65), 0 12px 32px rgba(14,8,2,0.4)",
+                maxHeight: "92vh",
+                borderRadius: "24px",
+                background: "#fff",
+                boxShadow: "0 40px 100px rgba(14,8,2,0.5), 0 16px 40px rgba(14,8,2,0.3)",
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* ── Close Button ── */}
-              <motion.button
-                whileHover={{ scale: 1.12, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 320 }}
+              <button
                 onClick={onClose}
                 aria-label="Close"
-                className="absolute top-4 right-4 z-30 w-9 h-9 flex items-center justify-center rounded-full focus:outline-none"
+                className="absolute top-4 right-4 z-30 w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 hover:scale-110 focus:outline-none"
                 style={{
-                  background: "rgba(62,47,28,0.12)",
+                  background: "rgba(255,255,255,0.95)",
                   color: "#3E2F1C",
-                  border: "1px solid rgba(62,47,28,0.15)",
+                  boxShadow: "0 4px 16px rgba(62,47,28,0.15)",
                 }}
               >
-                <FiX size={17} strokeWidth={2.5} />
-              </motion.button>
+                <FiX size={18} strokeWidth={2.5} />
+              </button>
 
-              {/* ═══════════════════════════════════════════
-                  BODY: flex column on mobile → row on desktop
-              ═══════════════════════════════════════════ */}
-              <div
-                className="flex flex-col md:flex-row"
-                style={{ minHeight: "min(90vh, 560px)" }}
-              >
-
-                {/* ════════════════════
-                    LEFT — IMAGE HERO
-                ════════════════════ */}
+              <div className="flex flex-col md:flex-row" style={{ minHeight: "min(92vh, 580px)" }}>
                 <div
-                  className="relative md:w-[44%] flex-shrink-0 flex items-center justify-center overflow-hidden"
+                  className="relative md:w-[48%] flex-shrink-0 flex items-center justify-center overflow-hidden"
                   style={{
-                    minHeight: "300px",
-                    background: "linear-gradient(150deg, #fef8ef 0%, #f5e9d5 45%, #eddcc0 100%)",
+                    minHeight: "340px",
+                    background: "linear-gradient(145deg, #fefcf7 0%, #f8f0e3 50%, #f0e4cc 100%)",
                   }}
                 >
-                  {/* Dot pattern */}
                   <div
-                    className="absolute inset-0 opacity-[0.045] pointer-events-none"
+                    className="absolute inset-0 pointer-events-none"
                     style={{
-                      backgroundImage: "radial-gradient(circle at 2px 2px, #6B4C2A 1px, transparent 0)",
-                      backgroundSize: "24px 24px",
+                      backgroundImage: "radial-gradient(circle at 3px 3px, rgba(212,175,55,0.08) 1px, transparent 0)",
+                      backgroundSize: "28px 28px",
                     }}
                   />
 
-                  {/* Large gold radial glow */}
                   <div
                     className="absolute pointer-events-none"
                     style={{
-                      width: "340px",
-                      height: "340px",
+                      width: "320px",
+                      height: "320px",
                       borderRadius: "50%",
-                      background: "radial-gradient(circle, rgba(212,175,55,0.22) 0%, transparent 68%)",
+                      background: "radial-gradient(circle, rgba(212,175,55,0.18) 0%, transparent 70%)",
                       top: "50%",
                       left: "50%",
                       transform: "translate(-50%, -50%)",
                     }}
                   />
 
-                  {/* Secondary green glow */}
-                  <div
-                    className="absolute pointer-events-none"
-                    style={{
-                      width: "200px",
-                      height: "200px",
-                      borderRadius: "50%",
-                      background: "radial-gradient(circle, rgba(107,142,35,0.12) 0%, transparent 70%)",
-                      top: "20%",
-                      right: "-10%",
-                    }}
-                  />
+                  {!imgError ? (
+                    <motion.img
+                      key={product.id}
+                      src={product.image}
+                      alt={product.name}
+                      className="relative z-10"
+                      style={{
+                        width: "72%",
+                        height: "auto",
+                        maxHeight: "380px",
+                        objectFit: "contain",
+                        filter: "drop-shadow(0 24px 48px rgba(62,47,28,0.22)) drop-shadow(0 8px 16px rgba(62,47,28,0.1))",
+                      }}
+                      initial={{ scale: 1.1, opacity: 0, y: 20 }}
+                      animate={{ scale: 1, opacity: 1, y: 0 }}
+                      transition={{ duration: 0.65, ease: [0.34, 1.1, 0.64, 1] }}
+                      onError={() => setImgError(true)}
+                    />
+                  ) : (
+                    <div className="relative z-10 flex flex-col items-center gap-3">
+                      <span style={{ fontSize: "5rem" }}>
+                        {categoryLabels[product.category]?.split(" ")[0] ?? "🌿"}
+                      </span>
+                      <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "rgba(62,47,28,0.4)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                        {product.category}
+                      </span>
+                    </div>
+                  )}
 
-                  {/* ★ PRODUCT IMAGE — large & centered ★ */}
-                  <motion.img
-                    key={product.id}
-                    src={product.image}
-                    alt={product.name}
-                    className="relative z-10"
-                    style={{
-                      width: "78%",
-                      height: "auto",
-                      maxHeight: "400px",
-                      objectFit: "contain",
-                      filter:
-                        "drop-shadow(0 32px 64px rgba(62,47,28,0.26)) drop-shadow(0 10px 20px rgba(62,47,28,0.12))",
-                    }}
-                    initial={{ scale: 1.08, opacity: 0, y: 12 }}
-                    animate={{ scale: 1, opacity: 1, y: 0 }}
-                    transition={{ duration: 0.72, ease: [0.34, 1.1, 0.64, 1] }}
-                  />
-
-                  {/* Badge (top-left) */}
-                  {product.badge && (
+                  {badge && (
                     <motion.div
-                      initial={{ opacity: 0, x: -18 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.32 }}
-                      className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide"
-                      style={badgeStyleMap[product.badge] ?? {}}
+                      initial={{ opacity: 0, x: -16, scale: 0.8 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      transition={{ delay: 0.25, type: "spring", stiffness: 300 }}
+                      className="absolute top-5 left-5 z-20 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold"
+                      style={{
+                        background: badge.bg,
+                        color: badge.color,
+                        boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
+                      }}
                     >
-                      {product.badge === "Best Seller" && "⭐ "}
-                      {product.badge === "Trending" && "🔥 "}
-                      {product.badge === "Limited" && "⚡ "}
-                      {product.badge}
+                      <span>{badge.emoji}</span>
+                      <span>{product.badge}</span>
                     </motion.div>
                   )}
 
-                  {/* Limited pill (top-right) */}
                   {product.limited && (
                     <motion.div
-                      initial={{ opacity: 0, x: 18 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.36 }}
-                      className="absolute top-4 right-10 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
-                      style={{ background: "rgba(192,57,43,0.88)", color: "white" }}
+                      initial={{ opacity: 0, x: 16, scale: 0.8 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      transition={{ delay: 0.3, type: "spring", stiffness: 300 }}
+                      className="absolute top-5 right-20 z-20 flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold"
+                      style={{
+                        background: "rgba(192,57,43,0.92)",
+                        color: "white",
+                        backdropFilter: "blur(8px)",
+                      }}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-300 animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-red-300 animate-pulse" />
                       Limited Stock
                     </motion.div>
                   )}
 
-                  {/* Weight + category pill (bottom-center) */}
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.42 }}
-                    className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap"
+                    transition={{ delay: 0.4 }}
+                    className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5 px-5 py-2.5 rounded-full text-xs font-semibold whitespace-nowrap"
                     style={{
-                      background: "rgba(62,47,28,0.08)",
+                      background: "rgba(255,255,255,0.92)",
                       color: "#5a4532",
-                      border: "1px solid rgba(62,47,28,0.12)",
+                      border: "1px solid rgba(62,47,28,0.1)",
                       backdropFilter: "blur(8px)",
+                      boxShadow: "0 4px 16px rgba(62,47,28,0.1)",
                     }}
                   >
-                    <FiPackage size={11} />
-                    {product.weight} · {categoryLabels[product.category]}
+                    <FiPackage size={12} />
+                    {product.weight}
+                    <span style={{ color: "rgba(62,47,28,0.3)" }}>·</span>
+                    {categoryLabels[product.category]}
                   </motion.div>
+
+                  <button
+                    onClick={() => setLiked(!liked)}
+                    className="absolute bottom-5 right-5 z-20 w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+                    style={{
+                      background: liked ? "rgba(192,57,43,0.1)" : "rgba(255,255,255,0.92)",
+                      color: liked ? "#c0392b" : "rgba(62,47,28,0.5)",
+                      boxShadow: "0 4px 12px rgba(62,47,28,0.1)",
+                      border: liked ? "1px solid rgba(192,57,43,0.2)" : "1px solid rgba(62,47,28,0.08)",
+                    }}
+                  >
+                    <FiHeart
+                      size={16}
+                      fill={liked ? "#c0392b" : "transparent"}
+                      strokeWidth={liked ? 0 : 2}
+                    />
+                  </button>
                 </div>
 
-                {/* ════════════════════
-                    RIGHT — DETAILS
-                ════════════════════ */}
                 <div
                   className="flex-1 overflow-y-auto"
-                  style={{ maxHeight: "min(90vh, 560px)" }}
+                  style={{ maxHeight: "min(92vh, 580px)" }}
                 >
-                  <div className="p-6 md:p-8 flex flex-col gap-4">
-
-                    {/* Category label */}
-                    <motion.p
-                      initial={{ opacity: 0, y: 8 }}
+                  <div className="p-7 md:p-9 flex flex-col gap-5">
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 }}
-                      className="text-xs font-semibold uppercase tracking-widest"
-                      style={{ color: "#6B8E23", letterSpacing: "0.16em" }}
                     >
-                      {categoryLabels[product.category]}
-                    </motion.p>
-
-                    {/* Product name */}
-                    <motion.h2
-                      initial={{ opacity: 0, y: 14 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="font-serif font-bold leading-tight"
-                      style={{ fontSize: "clamp(1.4rem, 2.5vw, 1.75rem)", color: "#3E2F1C" }}
-                    >
-                      {product.name}
-                    </motion.h2>
-
-                    {/* Stars */}
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}>
-                      <StarRating rating={product.rating} reviews={product.reviews} />
+                      <p
+                        className="text-xs font-bold uppercase tracking-widest mb-2"
+                        style={{ color: "#6B8E23", letterSpacing: "0.18em" }}
+                      >
+                        {product.category}
+                      </p>
+                      <h2
+                        className="font-serif font-bold leading-tight"
+                        style={{ fontSize: "clamp(1.5rem, 2.8vw, 2rem)", color: "#3E2F1C" }}
+                      >
+                        {product.name}
+                      </h2>
                     </motion.div>
 
-                    {/* Price block */}
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="flex items-center gap-3 px-4 py-3.5 rounded-2xl flex-wrap"
-                      style={{
-                        background: "rgba(212,175,55,0.08)",
-                        border: "1px solid rgba(212,175,55,0.18)",
-                      }}
+                      transition={{ delay: 0.22 }}
+                      className="flex items-center gap-3"
+                    >
+                      <StarRating rating={product.rating} />
+                      <span className="font-bold text-sm" style={{ color: "#3E2F1C" }}>{product.rating}</span>
+                      <span className="text-xs" style={{ color: "rgba(62,47,28,0.45)" }}>
+                        ({product.reviews.toLocaleString()} reviews)
+                      </span>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.28 }}
+                      className="flex items-center gap-4 flex-wrap"
                     >
                       <span
                         className="font-serif font-bold"
-                        style={{ fontSize: "2.1rem", color: "#3E2F1C", lineHeight: 1 }}
+                        style={{ fontSize: "2.2rem", color: "#3E2F1C", lineHeight: 1 }}
                       >
                         {product.price}
                       </span>
                       {product.originalPrice && (
                         <>
-                          <span
-                            className="text-sm line-through"
-                            style={{ color: "rgba(62,47,28,0.38)" }}
-                          >
+                          <span className="text-base line-through" style={{ color: "rgba(62,47,28,0.35)" }}>
                             {product.originalPrice}
                           </span>
                           <span
-                            className="ml-auto text-xs font-bold px-2.5 py-1 rounded-full"
+                            className="text-xs font-bold px-3 py-1.5 rounded-full"
                             style={{
-                              background: "rgba(107,142,35,0.14)",
+                              background: "rgba(107,142,35,0.12)",
                               color: "#506a1a",
                             }}
                           >
-                            {Math.round(
-                              (1 -
-                                parseFloat(product.price.replace("₹", "")) /
-                                  parseFloat(product.originalPrice.replace("₹", ""))) *
-                                100
-                            )}% off
+                            Save {discount}%
                           </span>
                         </>
                       )}
                     </motion.div>
 
-                    {/* Divider */}
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.34 }}
                       style={{
                         height: "1px",
-                        background: "linear-gradient(to right, rgba(62,47,28,0.14), transparent)",
+                        background: "linear-gradient(to right, rgba(62,47,28,0.12), transparent)",
                       }}
                     />
 
-                    {/* Description */}
                     <motion.p
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.36 }}
+                      transition={{ delay: 0.38 }}
                       className="text-sm leading-relaxed"
-                      style={{ color: "rgba(62,47,28,0.72)" }}
+                      style={{ color: "rgba(62,47,28,0.68)" }}
                     >
                       {product.description}
                     </motion.p>
 
-                    {/* Benefits grid */}
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.42 }}
+                      transition={{ delay: 0.44 }}
                     >
                       <p
-                        className="text-xs font-semibold uppercase tracking-wider mb-2.5"
+                        className="text-xs font-bold uppercase tracking-wider mb-3"
                         style={{ color: "#3E2F1C", letterSpacing: "0.14em" }}
                       >
                         Key Benefits
                       </p>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-2 gap-2.5">
                         {product.benefits.map((benefit, i) => (
                           <motion.div
                             key={benefit}
-                            initial={{ opacity: 0, x: -8 }}
+                            initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.46 + i * 0.05 }}
-                            className="flex items-center gap-2 px-3 py-2 rounded-xl"
+                            transition={{ delay: 0.48 + i * 0.06 }}
+                            className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl"
                             style={{
-                              background: "rgba(107,142,35,0.08)",
-                              border: "1px solid rgba(107,142,35,0.16)",
+                              background: "rgba(107,142,35,0.07)",
+                              border: "1px solid rgba(107,142,35,0.14)",
                             }}
                           >
                             <div
-                              className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
-                              style={{ background: "rgba(107,142,35,0.2)" }}
+                              className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                              style={{ background: "rgba(107,142,35,0.15)" }}
                             >
-                              <FiCheck size={10} style={{ color: "#506a1a" }} strokeWidth={3} />
+                              <FiCheck size={11} style={{ color: "#506a1a" }} strokeWidth={3} />
                             </div>
                             <span className="text-xs font-medium" style={{ color: "#3E2F1C" }}>
                               {benefit}
@@ -390,11 +362,10 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                       </div>
                     </motion.div>
 
-                    {/* Trust pills */}
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: 0.56 }}
+                      transition={{ delay: 0.6 }}
                       className="flex flex-wrap gap-2"
                     >
                       {[
@@ -407,9 +378,9 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                           key={label}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
                           style={{
-                            background: "rgba(62,47,28,0.06)",
-                            color: "rgba(62,47,28,0.62)",
-                            border: "1px solid rgba(62,47,28,0.08)",
+                            background: "rgba(62,47,28,0.04)",
+                            color: "rgba(62,47,28,0.55)",
+                            border: "1px solid rgba(62,47,28,0.06)",
                           }}
                         >
                           <span>{icon}</span>
@@ -418,53 +389,47 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                       ))}
                     </motion.div>
 
-                    {/* CTA row */}
                     <motion.div
-                      initial={{ opacity: 0, y: 14 }}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.62, type: "spring", stiffness: 200 }}
-                      className="flex gap-3 pt-1"
+                      transition={{ delay: 0.65, type: "spring", stiffness: 200 }}
+                      className="flex gap-3 pt-2 mt-auto"
                     >
-                      {/* Coming soon — disabled */}
-                      <div
-                        className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm"
+                      <motion.button
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-sm"
                         style={{
-                          background: "rgba(62,47,28,0.07)",
-                          color: "rgba(62,47,28,0.42)",
-                          cursor: "not-allowed",
-                          userSelect: "none",
-                          border: "1.5px solid rgba(62,47,28,0.08)",
+                          background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                          color: "#3E2F1C",
+                          boxShadow: "0 8px 24px rgba(212,175,55,0.35)",
                         }}
                       >
                         🛒&nbsp; Coming Soon
-                      </div>
+                      </motion.button>
 
-                      {/* Close / More */}
                       <motion.button
-                        whileHover={{ scale: 1.04, y: -2 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={onClose}
-                        className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl font-semibold text-sm focus:outline-none"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="w-14 h-14 flex items-center justify-center rounded-2xl"
                         style={{
-                          background: "rgba(62,47,28,0.07)",
-                          color: "#3E2F1C",
-                          border: "1.5px solid rgba(62,47,28,0.13)",
+                          background: "rgba(62,47,28,0.06)",
+                          color: "rgba(62,47,28,0.6)",
+                          border: "1.5px solid rgba(62,47,28,0.1)",
                         }}
                       >
-                        <FiShoppingBag size={15} strokeWidth={2} />
-                        <span>More</span>
+                        <FiShare2 size={18} strokeWidth={2} />
                       </motion.button>
                     </motion.div>
 
-                    {/* Amazon note */}
                     <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.72 }}
-                      className="text-xs text-center pb-2"
-                      style={{ color: "rgba(62,47,28,0.32)" }}
+                      className="text-xs text-center"
+                      style={{ color: "rgba(62,47,28,0.3)" }}
                     >
-                      🚀 Coming soon on Amazon India
+                      🚀 Coming soon on Amazon India · Free shipping on orders above ₹499
                     </motion.p>
                   </div>
                 </div>
