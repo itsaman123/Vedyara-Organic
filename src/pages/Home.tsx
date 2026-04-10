@@ -433,12 +433,12 @@ export default function Home() {
   };
 
   return (
-    <main ref={containerRef} className="relative overflow-x-hidden bg-[#faf9f7]">
+    <main ref={containerRef} className="relative overflow-x-hidden bg-[#faf9f7] pt-12 md:pt-0">
       {/* ════════════════════════════════════════════════════
           1. MODERN HERO SECTION
       ════════════════════════════════════════════════════ */}
       <section
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        className="relative min-h-screen pt-12 md:pt-0 flex items-center justify-center overflow-hidden"
         style={{ background: "linear-gradient(135deg, #fef9f3 0%, #f5f0e8 50%, #ebe6d9 100%)" }}
       >
         {/* Animated Background Blobs */}
