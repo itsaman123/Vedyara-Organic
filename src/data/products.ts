@@ -1,13 +1,15 @@
-import Honey from '../../public/honey-bottle.webp'
-import Jaggery from '../../public/Jaggery-Benefits.webp'
+import Honey from '../assets/image-1.jpg'
+import Haldi from '../assets/haldi.jpeg'
+import Dhaniya from '../assets/dhaniya.jpeg'
+import Gud from '../assets/gud.jpeg'
 
 export interface Product {
   id: number;
   name: string;
-  category: "honey" | "millets" | "jaggery" | "pulses" | "grains";
+  category: "honey" | "millets" | "jaggery" | "pulses" | "grains" | "spices";
   price: string;
   originalPrice?: string;
-  badge?: "Best Seller" | "Trending" | "New" | "Limited";
+  badge?: "Best Seller" | "Trending" | "New" | "Limited" | "Natural" | "Fresh" | "Bestseller";
   image: string;
   description: string;
   shortDesc: string;
@@ -27,56 +29,6 @@ export interface Category {
 }
 
 export const products: Product[] = [
-  {
-    id: 1,
-    name: "Pure Organic Honey",
-    category: "honey",
-    price: "₹449",
-    originalPrice: "₹899",
-    badge: "Best Seller",
-    image:
-      Honey,
-    shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
-    description:
-      "Our Pure Organic Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
-    benefits: [
-      "Boosts Immunity",
-      "Rich in Antioxidants",
-      "Natural Energy",
-      "Aids Digestion",
-    ],
-    weight: "500g",
-    amazonLink: "https://www.amazon.in",
-    rating: 0,
-    reviews: 0,
-    limited: false,
-    featured: true,
-  },
-  {
-    id: 2,
-    name: "Organic Jaggery Powder",
-    category: "jaggery",
-    price: "₹199",
-    originalPrice: "₹249",
-    badge: "Trending",
-    image:
-      Jaggery,
-    shortDesc: "Traditional sugarcane jaggery, stone-ground to fine powder",
-    description:
-      "Made from organically grown sugarcane using the ancient Kolhu (cold press) method, our jaggery powder is chemical-free, unrefined, and packed with natural minerals. Unlike refined sugar, it retains its natural molasses content, giving it a rich, complex flavour with genuine nutritional benefits.",
-    benefits: [
-      "Iron Rich",
-      "Detoxifies Liver",
-      "Boosts Hemoglobin",
-      "Healthier Sugar Alt.",
-    ],
-    weight: "500g",
-    amazonLink: "https://www.amazon.in",
-    rating: 0,
-    reviews: 0,
-    limited: false,
-    featured: true,
-  },
   {
     id: 3,
     name: "Pure Organic Honey",
@@ -102,26 +54,90 @@ export const products: Product[] = [
     limited: false,
     featured: true,
   },
-  // {
-  //   id: 3,
-  //   name: "Organic Brown Rice",
-  //   category: "grains",
-  //   price: "₹219",
-  //   originalPrice: "₹269",
-  //   badge: "Trending",
-  //   image:
-  //     Rice,
-  //   shortDesc: "Whole grain brown rice with bran intact for maximum nutrition",
-  //   description:
-  //     "Unlike polished white rice, our Organic Brown Rice retains its natural bran layer, making it a powerhouse of nutrients. Packed with magnesium, phosphorus, and B vitamins, it supports healthy metabolism, provides sustained energy, and keeps you feeling full longer.",
-  //   benefits: ["Whole Grain", "Magnesium Rich", "Low GI", "Fiber Dense"],
-  //   weight: "1kg",
-  //   amazonLink: "https://www.amazon.in",
-  //   rating: 4.6,
-  //   reviews: 145,
-  //   limited: false,
-  //   featured: true,
-  // },
+
+
+  {
+    id: 4,
+    name: "Organic Jaggery Powder (Gud)",
+    category: "jaggery",
+    price: "₹149",
+    originalPrice: "₹179",
+    badge: "Natural",
+    image: Gud,
+    shortDesc: "Chemical-free jaggery powder made from pure sugarcane juice",
+    description:
+      "Our Organic Jaggery Powder (Gud) is made using traditional methods without any chemicals or bleaching. Rich in iron and minerals, it helps improve digestion, boosts energy naturally, and is a healthier alternative to refined sugar.",
+    benefits: ["Iron Rich", "Natural Sweetener", "Chemical Free", "Energy Boost"],
+    weight: "1kg",
+    amazonLink: "https://www.amazon.in",
+    rating: 4.7,
+    reviews: 120,
+    limited: false,
+    featured: true,
+  },
+  {
+    id: 5,
+    name: "Organic Coriander Powder (Dhaniya)",
+    category: "spices",
+    price: "₹99",
+    originalPrice: "₹129",
+    badge: "Fresh",
+    image: Dhaniya,
+    shortDesc: "Aromatic coriander powder made from premium quality seeds",
+    description:
+      "Our Organic Coriander Powder (Dhaniya) is made from carefully selected seeds and ground to preserve its natural aroma and flavor. It aids digestion, supports metabolism, and enhances the taste of every dish.",
+    benefits: ["Aromatic", "Digestive Aid", "Rich Flavor", "Pure & Fresh"],
+    weight: "200g",
+    amazonLink: "https://www.amazon.in",
+    rating: 4.5,
+    reviews: 98,
+    limited: false,
+    featured: true,
+  },
+  {
+    id: 6,
+    name: "Organic Turmeric Powder (Haldi)",
+    category: "spices",
+    price: "₹129",
+    originalPrice: "₹159",
+    badge: "Bestseller",
+    image: Haldi,
+    shortDesc: "High curcumin turmeric powder for immunity and wellness",
+    description:
+      "Our Organic Turmeric Powder (Haldi) is sourced from trusted farms and processed to retain high curcumin content. Known for its anti-inflammatory and immunity-boosting properties, it is a staple for both cooking and health.",
+    benefits: ["High Curcumin", "Immunity Boost", "Anti-inflammatory", "Pure & Natural"],
+    weight: "200g",
+    amazonLink: "https://www.amazon.in",
+    rating: 4.8,
+    reviews: 210,
+    limited: false,
+    featured: true,
+  },
+  {
+    id: 1,
+    name: "Pure Organic Honey",
+    category: "honey",
+    price: "₹449",
+    originalPrice: "₹899",
+    badge: "Best Seller",
+    image:
+      Honey,
+    shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
+    description:
+      "Our Pure Organic Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
+    benefits: [
+      "Boosts Immunity",
+      "Rich in Antioxidants",
+      "Natural Energy",
+      "Aids Digestion",
+    ],
+    weight: "500g",
+    amazonLink: "https://www.amazon.in",
+    rating: 0,
+    reviews: 0,
+    limited: false,
+    featured: true,
+  },
 ];
 
 export const featuredProducts: Product[] = products.filter(
