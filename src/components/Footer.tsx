@@ -20,7 +20,7 @@ const footerLinks = {
   ],
   products: [
     { label: "Himalayan Wild Honey", to: "/products" },
-    { label: "Organic Jaggery Powder", to: "/products" },
+    { label: "Natural Jaggery Powder", to: "/products" },
     { label: "Foxtail Millet", to: "/products" },
     { label: "Pearl Millet (Bajra)", to: "/products" },
     { label: "Red Lentils (Masoor)", to: "/products" },
@@ -28,7 +28,6 @@ const footerLinks = {
   ],
   certifications: [
     "FSSAI Certified",
-    "Organic India Certified",
     "Lab Tested & Verified",
     "No Artificial Additives",
   ],
@@ -122,7 +121,7 @@ export default function Footer() {
             className="font-serif font-bold mb-5"
             style={{ color: "#F8F5F0", fontSize: "1.65rem" }}
           >
-            Vedyara Organic on Amazon
+            Vedyara on Amazon
           </h3>
           <div
             className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-bold transition-all duration-300 group"
@@ -259,7 +258,7 @@ export default function Footer() {
                 We Promise
               </p>
               {[
-                "100% Organic",
+                "100% Natural",
                 "No Chemicals",
                 "Farm Direct",
                 "Lab Tested",
@@ -438,7 +437,7 @@ export default function Footer() {
 
             {/* WhatsApp CTA */}
             {/* <a
-              href="https://wa.me/919509628400?text=Hi%20Vedyara%20Organic!%20I%20want%20to%20know%20more%20about%20your%20products."
+              href="https://wa.me/919509628400?text=Hi%20Vedyara%20I%20want%20to%20know%20more%20about%20your%20products."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 px-5 py-3.5 rounded-2xl font-semibold text-sm transition-all duration-300 hover:-translate-y-1"
@@ -467,7 +466,7 @@ export default function Footer() {
             <p style={{ color: "rgba(248,245,240,0.35)" }}>
               © {currentYear}{" "}
               <span style={{ color: "rgba(248,245,240,0.5)" }}>
-                Vedyara Organic
+                Vedyara
               </span>
               . All rights reserved. Made with 🌿 for a healthier India.
             </p>

@@ -197,7 +197,7 @@ const socialLinks = [
   {
     icon: FaWhatsapp,
     label: "WhatsApp",
-    href: "https://wa.me/919509628400?text=Hi%20Vedyara%20Organic!",
+    href: "https://wa.me/919509628400?text=Hi%20Vedyara",
     color: "#25D366",
     bg: "rgba(37,211,102,0.12)",
   },
@@ -216,7 +216,7 @@ const faqs = [
     a: "All our products are sourced directly from certified organic farms across India — including Uttar Pradesh, Uttarakhand, and Bihar.",
   },
   {
-    q: "Where can I buy Vedyara Organic products?",
+    q: "Where can I buy Vedyara products?",
     a: "Our products will soon be available exclusively on Amazon India.",
   },
   {
@@ -348,7 +348,7 @@ export default function Contact() {
               className="text-sm font-semibold uppercase tracking-widest"
               style={{ color: "rgba(212,175,55,0.8)" }}
             >
-              Vedyara Organic / Contact Us
+              Vedyara / Contact Us
             </motion.p>
 
             <motion.div variants={fadeUp} custom={0.1} className="inline-flex items-center gap-3">

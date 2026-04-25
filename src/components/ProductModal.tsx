@@ -369,7 +369,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                       className="flex flex-wrap gap-2"
                     >
                       {[
-                        { icon: "🌿", label: "100% Organic" },
+                        { icon: "🌿", label: "100% Natural" },
                         { icon: "🔬", label: "Lab Tested" },
                         { icon: "🚫", label: "No Additives" },
                         { icon: "🏆", label: "FSSAI Certified" },

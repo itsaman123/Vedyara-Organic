@@ -32,7 +32,6 @@
             sans-serif;
         background-color: #f8f5f0;
         color: #3e2f1c;
-        cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cellipse cx='16' cy='16' rx='10' ry='7' fill='%23F5D033'/%3E%3Crect x='8' y='13' width='3' height='6' fill='%231A1A1A'/%3E%3Crect x='14' y='12' width='3' height='8' fill='%231A1A1A'/%3E%3Crect x='20' y='13' width='2' height='6' fill='%231A1A1A'/%3E%3Ccircle cx='24' cy='14' r='1.5' fill='%231A1A1A'/%3E%3Cellipse cx='7' cy='11' rx='5' ry='3' fill='white' opacity='0.7'/%3E%3Cellipse cx='7' cy='21' rx='5' ry='3' fill='white' opacity='0.8'/%3E%3C/svg%3E") 16 16, url(/bee-cursor.png) 16 16, auto;
         overflow-x: hidden;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;

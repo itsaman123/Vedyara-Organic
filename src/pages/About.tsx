@@ -192,7 +192,7 @@ const values = [
   {
     icon: "💛",
     title: "Trusted by Families",
-    description: "Over 10,000 families across India choose Vedyara Organic for their daily nutrition.",
+    description: "Over 1000 families across India choose Vedyara for their daily nutrition.",
     color: "rgba(62,47,28,0.06)",
   },
 ];
@@ -248,7 +248,7 @@ export default function About() {
                 className="text-sm font-semibold uppercase tracking-widest"
                 style={{ color: "rgba(212,175,55,0.8)" }}
               >
-                Vedyara Organic / About Us
+                Vedyara / About Us
               </motion.p>
 
               <SectionTag label="Our Story" />
@@ -339,7 +339,7 @@ export default function About() {
               >
                 <img
                   src={FarmImage}
-                  alt="Organic Farm"
+                  alt="Natural Farm"
                   className="w-full rounded-3xl shadow-2xl"
                   style={{ filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.15))" }}
                 />
@@ -360,7 +360,7 @@ export default function About() {
                 <div className="flex items-center gap-2 mt-2">
                   <FaLeaf size={14} style={{ color: "#6B8E23" }} />
                   <span className="text-sm" style={{ color: "rgba(62,47,28,0.6)" }}>
-                    100% Organic Always
+                    100% Natural Always
                   </span>
                 </div>
               </motion.div>
@@ -460,7 +460,7 @@ export default function About() {
               <div className="relative rounded-3xl overflow-hidden">
                 <img
                   src={HoneyBottle}
-                  alt="Organic Products"
+                  alt="Natural Products"
                   className="w-full transition-transform duration-700 hover:scale-105"
                 />
               </div>
@@ -598,7 +598,7 @@ export default function About() {
               </motion.h2>
 
               <motion.p variants={fadeUp} custom={0.2} className="text-base text-gray-300 mb-5">
-                Vedyara Organic has always been more than a food brand. Our mission is intertwined
+                Vedyara has always been more than a food brand. Our mission is intertwined
                 with the people who grow our food — India's small-scale, organic farmers.
               </motion.p>
 
@@ -630,7 +630,7 @@ export default function About() {
               {[
                 { src: FarmImage, alt: "Farm landscape", span: "col-span-2" },
                 { src: BeeFarm, alt: "Pure honey", span: "" },
-                { src: HoneyBottle, alt: "Organic products", span: "" },
+                { src: HoneyBottle, alt: "Natural products", span: "" },
               ].map((img) => (
                 <div key={img.alt} className={`rounded-2xl overflow-hidden ${img.span}`} style={{ height: img.span ? "220px" : "180px" }}>
                   <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" />
@@ -661,7 +661,6 @@ export default function About() {
             <div className="flex flex-wrap justify-center gap-4">
               {[
                 { icon: "🏆", label: "FSSAI Certified" },
-                { icon: "🌿", label: "Organic Certified" },
                 { icon: "🔬", label: "Lab Verified" },
                 { icon: "🚜", label: "Farm Traced" },
                 { icon: "♻️", label: "Eco Packaging" },

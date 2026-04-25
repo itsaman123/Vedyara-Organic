@@ -31,7 +31,7 @@ export interface Category {
 export const products: Product[] = [
   {
     id: 3,
-    name: "Pure Organic Honey",
+    name: "Pure Natural Honey",
     category: "honey",
     price: "₹699",
     originalPrice: "₹1799",
@@ -40,7 +40,7 @@ export const products: Product[] = [
       Honey,
     shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
     description:
-      "Our Pure Organic Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
+      "Our Pure Natural Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
     benefits: [
       "Boosts Immunity",
       "Rich in Antioxidants",
@@ -58,7 +58,7 @@ export const products: Product[] = [
 
   {
     id: 4,
-    name: "Organic Jaggery Powder (Gud)",
+    name: "Natural Jaggery Powder (Gud)",
     category: "jaggery",
     price: "₹149",
     originalPrice: "₹179",
@@ -66,7 +66,7 @@ export const products: Product[] = [
     image: Gud,
     shortDesc: "Chemical-free jaggery powder made from pure sugarcane juice",
     description:
-      "Our Organic Jaggery Powder (Gud) is made using traditional methods without any chemicals or bleaching. Rich in iron and minerals, it helps improve digestion, boosts energy naturally, and is a healthier alternative to refined sugar.",
+      "Our Natural Jaggery Powder (Gud) is made using traditional methods without any chemicals or bleaching. Rich in iron and minerals, it helps improve digestion, boosts energy naturally, and is a healthier alternative to refined sugar.",
     benefits: ["Iron Rich", "Natural Sweetener", "Chemical Free", "Energy Boost"],
     weight: "1kg",
     amazonLink: "https://www.amazon.in",
@@ -77,7 +77,7 @@ export const products: Product[] = [
   },
   {
     id: 5,
-    name: "Organic Coriander Powder (Dhaniya)",
+    name: "Natural Coriander Powder (Dhaniya)",
     category: "spices",
     price: "₹99",
     originalPrice: "₹129",
@@ -85,7 +85,7 @@ export const products: Product[] = [
     image: Dhaniya,
     shortDesc: "Aromatic coriander powder made from premium quality seeds",
     description:
-      "Our Organic Coriander Powder (Dhaniya) is made from carefully selected seeds and ground to preserve its natural aroma and flavor. It aids digestion, supports metabolism, and enhances the taste of every dish.",
+      "Our Natural Coriander Powder (Dhaniya) is made from carefully selected seeds and ground to preserve its natural aroma and flavor. It aids digestion, supports metabolism, and enhances the taste of every dish.",
     benefits: ["Aromatic", "Digestive Aid", "Rich Flavor", "Pure & Fresh"],
     weight: "200g",
     amazonLink: "https://www.amazon.in",
@@ -96,7 +96,7 @@ export const products: Product[] = [
   },
   {
     id: 6,
-    name: "Organic Turmeric Powder (Haldi)",
+    name: "Natural Turmeric Powder (Haldi)",
     category: "spices",
     price: "₹129",
     originalPrice: "₹159",
@@ -104,7 +104,7 @@ export const products: Product[] = [
     image: Haldi,
     shortDesc: "High curcumin turmeric powder for immunity and wellness",
     description:
-      "Our Organic Turmeric Powder (Haldi) is sourced from trusted farms and processed to retain high curcumin content. Known for its anti-inflammatory and immunity-boosting properties, it is a staple for both cooking and health.",
+      "Our Natural Turmeric Powder (Haldi) is sourced from trusted farms and processed to retain high curcumin content. Known for its anti-inflammatory and immunity-boosting properties, it is a staple for both cooking and health.",
     benefits: ["High Curcumin", "Immunity Boost", "Anti-inflammatory", "Pure & Natural"],
     weight: "200g",
     amazonLink: "https://www.amazon.in",
@@ -115,7 +115,7 @@ export const products: Product[] = [
   },
   {
     id: 1,
-    name: "Pure Organic Honey",
+    name: "Pure Natural Honey",
     category: "honey",
     price: "₹449",
     originalPrice: "₹899",
@@ -124,7 +124,7 @@ export const products: Product[] = [
       Honey,
     shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
     description:
-      "Our Pure Organic Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
+      "Our Pure Natural Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
     benefits: [
       "Boosts Immunity",
       "Rich in Antioxidants",
@@ -172,7 +172,7 @@ export const testimonials = [
     rating: 5,
     review:
       "Switched to Vedyara's Jaggery Powder instead of sugar. Amazing taste in chai, and I feel genuinely healthier. Will keep ordering!",
-    product: "Organic Jaggery Powder",
+    product: "Natural Jaggery Powder",
     date: "1 month ago",
   },
   {
@@ -193,7 +193,7 @@ export const testimonials = [
     avatar: "DN",
     rating: 4,
     review:
-      "Really happy with the Ragi flour quality. My kids love the ragi dosas I make. Vedyara Organic has earned a permanent spot in my kitchen.",
+      "Really happy with the Ragi flour quality. My kids love the ragi dosas I make. Vedyara has earned a permanent spot in my kitchen.",
     product: "Finger Millet (Ragi)",
     date: "1 week ago",
   },
@@ -203,7 +203,7 @@ export const whyChooseUs = [
   {
     id: 1,
     icon: "🌿",
-    title: "100% Organic",
+    title: "100% Natural",
     description:
       "Certified organic produce grown without synthetic pesticides or fertilizers. Pure from seed to shelf.",
   },
@@ -231,8 +231,8 @@ export const whyChooseUs = [
 ];
 
 export const stats = [
-  { id: 1, value: "10,000+", label: "Happy Customers" },
-  { id: 2, value: "100%", label: "Organic Certified" },
-  { id: 3, value: "50+", label: "Product Variants" },
-  { id: 4, value: "5★", label: "Avg. Amazon Rating" },
+  { id: 1, value: "1000+", label: "Happy Customers" },
+  { id: 2, value: "100%", label: "Natural" },
+  { id: 3, value: "5+", label: "Product Variants" },
+  { id: 4, value: "4+", label: "Service Years" },
 ];

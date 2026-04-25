@@ -34,7 +34,7 @@ function LogoSVGFallback({
       viewBox={`0 0 ${vbW} ${vbH}`}
       width={width}
       height={height}
-      aria-label="Vedyara Organic"
+      aria-label="Vedyara"
       role="img"
     >
       {/* ── Gradients (only used in "dark" variant) ── */}
@@ -120,7 +120,7 @@ function LogoSVGFallback({
       </text>
 
       {/* ── Decorative gold lines ── */}
-      <line x1="62"  y1="181" x2="128" y2="181" stroke={goldColor} strokeWidth="1.8" strokeLinecap="round" />
+      <line x1="62" y1="181" x2="128" y2="181" stroke={goldColor} strokeWidth="1.8" strokeLinecap="round" />
       <line x1="292" y1="181" x2="358" y2="181" stroke={goldColor} strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
@@ -157,7 +157,7 @@ export default function LogoBrand({
   return (
     <img
       src="/vedyara-logo.webp"
-      alt="Vedyara Organic"
+      alt="Vedyara"
       width={pngWidth}
       height={height}
       className={className}

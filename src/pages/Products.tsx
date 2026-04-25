@@ -421,7 +421,7 @@ export default function Products() {
               >
                 <FaLeaf size={16} style={{ color: "#6B8E23" }} />
                 <span className="text-sm font-semibold" style={{ color: "#3E2F1C" }}>
-                  Premium Organic Products
+                  Premium Natural Products
                 </span>
               </motion.div>
 
@@ -442,7 +442,7 @@ export default function Products() {
                     backgroundClip: "text",
                   }}
                 >
-                  Organic Range
+                  Natural Products Range
                 </span>
               </motion.h1>
 

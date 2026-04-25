@@ -504,7 +504,7 @@ export default function Home() {
                   🌿
                 </motion.span>
                 <span className="text-sm font-semibold text-brand-brown">
-                  100% Organic · Farm to Home
+                  100% Natural · Farm to Home
                 </span>
               </motion.div>
 
@@ -530,7 +530,7 @@ export default function Home() {
                       backgroundClip: "text",
                     }}
                   >
-                    Organic Products
+                    Natural Products
                   </span>
                 </motion.h1>
 
@@ -670,10 +670,9 @@ export default function Home() {
                 className="absolute -right-4 top-1/3 px-4 py-3 rounded-2xl bg-white shadow-xl"
               >
                 <div className="flex items-center gap-2">
-                  <FaStar size={18} color="#D4AF37" />
-                  <span className="font-bold text-brand-brown">4.8</span>
+                  <span className="font-bold text-brand-brown">4 year+</span>
                 </div>
-                <p className="text-xs text-gray-400">10K+ Reviews</p>
+                <p className="text-xs text-gray-400"> Serving</p>
               </motion.div>
             </motion.div>
           </div>
@@ -894,7 +893,7 @@ export default function Home() {
               style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
             >
               Why Choose{" "}
-              <span style={{ color: "#D4AF37" }}>Vedyara Organic</span>
+              <span style={{ color: "#D4AF37" }}>Vedyara</span>
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -975,7 +974,6 @@ export default function Home() {
           >
             {[
               { icon: "🏆", label: "FSSAI Certified" },
-              { icon: "🌿", label: "Organic Certified" },
               { icon: "🔬", label: "Lab Verified" },
               { icon: "🚜", label: "Farm Direct" },
               { icon: "♻️", label: "Eco Packaging" },
@@ -1106,7 +1104,7 @@ export default function Home() {
               className="font-serif font-bold text-brand-brown mb-6 leading-tight"
               style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
             >
-              Switch to Organic.
+              Switch to Natural.
               <br />
               <span
                 style={{
@@ -1125,7 +1123,7 @@ export default function Home() {
               custom={0.2}
               className="text-lg text-gray-600 mb-10 max-w-xl mx-auto"
             >
-              Join 10,000+ families who have made the switch to purer, healthier
+              Join 1000+ families who have made the switch to purer, healthier
               organic living with Vedyara.
             </motion.p>
 
@@ -1169,8 +1167,8 @@ export default function Home() {
               className="mt-12 flex flex-wrap justify-center gap-8"
             >
               {[
-                { icon: <FaStar size={16} />, text: "4.8★ Rating" },
-                { icon: <FaLeaf size={16} />, text: "100% Organic" },
+                { icon: '🛡️', text: "FSSAI Certified" },
+                { icon: <FaLeaf size={16} />, text: "100% Natural" },
                 { icon: <FiShield size={16} />, text: "Secure Checkout" },
                 { icon: <FiPackage size={16} />, text: "Pan-India Delivery" },
               ].map((item, i) => (
