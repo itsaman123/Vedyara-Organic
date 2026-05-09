@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiUploadCloud, FiPlus, FiX, FiInfo,FiBox } from "react-icons/fi";
+import { FiUploadCloud, FiPlus, FiX, FiInfo, FiBox } from "react-icons/fi";
 
 export default function AdminAddProduct() {
   const [tags, setTags] = useState(["ORGANIC", "VEGAN"]);
@@ -105,14 +105,18 @@ export default function AdminAddProduct() {
                 border: '2px dashed #e0e0e0',
                 background: '#fafafa',
                 borderRadius: '16px',
-                padding: '40px',
-                textAlign: 'center',
-                cursor: 'pointer'
+                padding: '48px 24px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
               }}
             >
-              <FiUploadCloud size={40} style={{ color: '#d4af37', marginBottom: '16px' }} />
-              <p className="admin-upload-text" style={{ fontSize: '1rem', fontWeight: 600, color: '#333' }}>Click to upload or drag and drop</p>
-              <p className="admin-upload-hint" style={{ color: '#888', marginTop: '4px' }}>PNG, JPG or WebP (max. 5MB)</p>
+              <FiUploadCloud size={48} style={{ color: '#d4af37', marginBottom: '16px' }} />
+              <p className="admin-upload-text" style={{ fontSize: '1rem', fontWeight: 600, color: '#333', margin: 0 }}>Click to upload or drag and drop</p>
+              <p className="admin-upload-hint" style={{ color: '#888', marginTop: '8px', margin: '8px 0 0' }}>PNG, JPG or WebP (max. 5MB)</p>
             </div>
 
             <div className="admin-image-thumbs" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '24px' }}>
@@ -185,14 +189,14 @@ export default function AdminAddProduct() {
               <div className="admin-form-group">
                 <label className="admin-label">Base Price</label>
                 <div className="admin-input-prefix">
-                  <span className="admin-prefix">$</span>
+                  <span className="admin-prefix">₹</span>
                   <input type="number" className="admin-input admin-input-with-prefix" placeholder="0.00" />
                 </div>
               </div>
               <div className="admin-form-group">
                 <label className="admin-label">Discount</label>
                 <div className="admin-input-prefix">
-                  <span className="admin-prefix">$</span>
+                  <span className="admin-prefix">₹</span>
                   <input type="number" className="admin-input admin-input-with-prefix" placeholder="0.00" />
                 </div>
               </div>
