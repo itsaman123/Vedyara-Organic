@@ -1,63 +1,72 @@
 import { motion } from "framer-motion";
-import { FiSearch, FiFilter, FiAlertTriangle, FiCheckCircle, FiPackage } from "react-icons/fi";
+import { FiSearch, FiFilter, FiAlertTriangle, FiCheckCircle, FiPackage, FiDownload } from "react-icons/fi";
 import { useState } from "react";
 import { products } from "../../data/products";
 
-const inventoryData = products.map((p, i) => ({
-  id: p.id,
-  name: p.name,
-  image: p.image,
-  sku: `VED-${String(p.id).padStart(4, "0")}`,
-  category: p.category,
-  stock: [120, 45, 200, 85, 12][i % 5],
-  reorderLevel: 50,
-  status: [120, 45, 200, 85, 12][i % 5] < 50 ? "Low Stock" : "In Stock",
-  lastUpdated: "May 8, 2026",
-}));
+const inventoryData = products.map((p, i) => {
+  const stock = [120, 45, 200, 85, 0, 12, 5, 88][i % 8];
+  return {
+    id: p.id,
+    name: p.name,
+    image: p.image,
+    sku: `VDY-${String(p.id).padStart(3, "0")}`,
+    category: p.category,
+    stock: stock,
+    reorderLevel: 20,
+    status: stock > 20 ? "In Stock" : stock > 0 ? "Low Stock" : "Out of Stock",
+    lastUpdated: "May 9, 2026",
+  };
+});
 
 export default function AdminInventory() {
   const [search, setSearch] = useState("");
   const filtered = inventoryData.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    p.sku.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className="admin-page">
       <div className="admin-page-header">
         <div>
-          <h1 className="admin-page-title">Inventory</h1>
+          <h1 className="admin-page-title">Inventory Tracking</h1>
           <p className="admin-page-subtitle">
-            Track stock levels and manage inventory across all products.
+            Manage your stock levels and monitor product availability.
           </p>
+        </div>
+        <div className="admin-header-actions">
+          <button className="admin-btn admin-btn-outline">
+            <FiDownload size={14} /> Export Report
+          </button>
         </div>
       </div>
 
-      {/* Stats row */}
-      <div className="admin-inv-stats">
-        <div className="admin-inv-stat">
-          <FiPackage size={20} style={{ color: "#6B8E23" }} />
-          <div>
-            <span className="admin-inv-stat-value">{inventoryData.length}</span>
-            <span className="admin-inv-stat-label">Total Products</span>
+      {/* Stats summary */}
+      <div className="admin-overview-stats" style={{ marginBottom: 32 }}>
+        <div className="admin-overview-stat">
+          <div className="admin-overview-stat-icon" style={{ background: "rgba(0,0,0,0.05)" }}>
+            <FiPackage size={20} />
           </div>
+          <span className="admin-overview-stat-label">TOTAL SKU'S</span>
+          <span className="admin-overview-stat-value">{inventoryData.length}</span>
         </div>
-        <div className="admin-inv-stat">
-          <FiCheckCircle size={20} style={{ color: "#D4AF37" }} />
-          <div>
-            <span className="admin-inv-stat-value">
-              {inventoryData.filter((p) => p.status === "In Stock").length}
-            </span>
-            <span className="admin-inv-stat-label">In Stock</span>
+        <div className="admin-overview-stat">
+          <div className="admin-overview-stat-icon" style={{ background: "rgba(30,126,52,0.1)" }}>
+            <FiCheckCircle size={20} style={{ color: "#1e7e34" }} />
           </div>
+          <span className="admin-overview-stat-label">HEALTHY STOCK</span>
+          <span className="admin-overview-stat-value" style={{ color: "#1e7e34" }}>
+            {inventoryData.filter(p => p.status === "In Stock").length}
+          </span>
         </div>
-        <div className="admin-inv-stat">
-          <FiAlertTriangle size={20} style={{ color: "#c0392b" }} />
-          <div>
-            <span className="admin-inv-stat-value">
-              {inventoryData.filter((p) => p.status === "Low Stock").length}
-            </span>
-            <span className="admin-inv-stat-label">Low Stock</span>
+        <div className="admin-overview-stat">
+          <div className="admin-overview-stat-icon" style={{ background: "rgba(217,48,37,0.1)" }}>
+            <FiAlertTriangle size={20} style={{ color: "#d93025" }} />
           </div>
+          <span className="admin-overview-stat-label">LOW/OUT STOCK</span>
+          <span className="admin-overview-stat-value" style={{ color: "#d93025" }}>
+            {inventoryData.filter(p => p.status !== "In Stock").length}
+          </span>
         </div>
       </div>
 
@@ -66,14 +75,13 @@ export default function AdminInventory() {
           <FiSearch size={16} />
           <input
             type="text"
-            placeholder="Search inventory..."
+            placeholder="Search by name or SKU..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <button className="admin-btn admin-btn-outline">
-          <FiFilter size={14} />
-          Filter
+          <FiFilter size={14} /> Filter
         </button>
       </div>
 
@@ -87,12 +95,11 @@ export default function AdminInventory() {
             <thead>
               <tr>
                 <th>Product</th>
-                <th>SKU</th>
                 <th>Category</th>
-                <th>Stock</th>
-                <th>Reorder Level</th>
+                <th>Stock Level</th>
+                <th>Reorder Point</th>
                 <th>Status</th>
-                <th>Last Updated</th>
+                <th>Last Synced</th>
               </tr>
             </thead>
             <tbody>
@@ -100,29 +107,24 @@ export default function AdminInventory() {
                 <tr key={item.id}>
                   <td>
                     <div className="admin-product-cell">
-                      <div className="admin-product-thumb">
+                      <div className="admin-product-thumb-lg">
                         <img src={item.image} alt={item.name} />
                       </div>
-                      <span>{item.name}</span>
+                      <div>
+                        <p className="admin-product-cell-name">{item.name}</p>
+                        <p className="admin-product-cell-sku">SKU: {item.sku}</p>
+                      </div>
                     </div>
                   </td>
-                  <td className="admin-table-id">{item.sku}</td>
-                  <td><span className="admin-cat-badge">{item.category}</span></td>
+                  <td className="admin-table-cat">{item.category}</td>
                   <td className="admin-table-amount">{item.stock}</td>
                   <td>{item.reorderLevel}</td>
                   <td>
-                    <span
-                      className="admin-status-badge"
-                      style={{
-                        background:
-                          item.status === "In Stock"
-                            ? "rgba(107,142,35,0.12)"
-                            : "rgba(192,57,43,0.10)",
-                        color:
-                          item.status === "In Stock" ? "#6B8E23" : "#c0392b",
-                      }}
-                    >
-                      {item.status}
+                    <span className={`admin-stock-badge ${
+                      item.status === "In Stock" ? "in-stock" : "out-of-stock"
+                    }`}>
+                      <span className="admin-stock-dot" />
+                      {item.status.toUpperCase()}
                     </span>
                   </td>
                   <td className="admin-table-date">{item.lastUpdated}</td>

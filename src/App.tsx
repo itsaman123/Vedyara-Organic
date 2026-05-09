@@ -25,12 +25,6 @@ import AdminProducts from "./admin/pages/AdminProducts";
 import AdminAddProduct from "./admin/pages/AdminAddProduct";
 import AdminInventory from "./admin/pages/AdminInventory";
 import AdminOrders from "./admin/pages/AdminOrders";
-import AdminCustomers from "./admin/pages/AdminCustomers";
-import AdminCategories from "./admin/pages/AdminCategories";
-import AdminCoupons from "./admin/pages/AdminCoupons";
-import AdminAnalytics from "./admin/pages/AdminAnalytics";
-import AdminReviews from "./admin/pages/AdminReviews";
-import AdminSettings from "./admin/pages/AdminSettings";
 
 /* ─────────────────────────────────────────────────────────────
    Page transition wrapper — fades + slides each page in/out
@@ -226,12 +220,6 @@ function AppShell() {
           <Route path="add-product" element={<AdminAddProduct />} />
           <Route path="inventory" element={<AdminInventory />} />
           <Route path="orders" element={<AdminOrders />} />
-          <Route path="customers" element={<AdminCustomers />} />
-          <Route path="categories" element={<AdminCategories />} />
-          <Route path="coupons" element={<AdminCoupons />} />
-          <Route path="analytics" element={<AdminAnalytics />} />
-          <Route path="reviews" element={<AdminReviews />} />
-          <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>
     );
