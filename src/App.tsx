@@ -15,6 +15,23 @@ import Products from "./pages/Products";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 
+/* ── Admin imports ── */
+import "./admin/admin.css";
+import "./admin/admin-components.css";
+import "./admin/admin-pages.css";
+import AdminLayout from "./admin/AdminLayout";
+import AdminDashboard from "./admin/pages/AdminDashboard";
+import AdminProducts from "./admin/pages/AdminProducts";
+import AdminAddProduct from "./admin/pages/AdminAddProduct";
+import AdminInventory from "./admin/pages/AdminInventory";
+import AdminOrders from "./admin/pages/AdminOrders";
+import AdminCustomers from "./admin/pages/AdminCustomers";
+import AdminCategories from "./admin/pages/AdminCategories";
+import AdminCoupons from "./admin/pages/AdminCoupons";
+import AdminAnalytics from "./admin/pages/AdminAnalytics";
+import AdminReviews from "./admin/pages/AdminReviews";
+import AdminSettings from "./admin/pages/AdminSettings";
+
 /* ─────────────────────────────────────────────────────────────
    Page transition wrapper — fades + slides each page in/out
 ───────────────────────────────────────────────────────────── */
@@ -194,46 +211,65 @@ function RouteScrollToTop() {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   LAYOUT WRAPPER — hides public chrome on /admin routes
+═══════════════════════════════════════════════════════════ */
+function AppShell() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
+
+  if (isAdmin) {
+    return (
+      <Routes>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="add-product" element={<AdminAddProduct />} />
+          <Route path="inventory" element={<AdminInventory />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="customers" element={<AdminCustomers />} />
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="coupons" element={<AdminCoupons />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="reviews" element={<AdminReviews />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
+      </Routes>
+    );
+  }
+
+  return (
+    <>
+      <FloatingLeaves />
+      <div
+        className="relative flex flex-col min-h-screen"
+        style={{ position: "relative", zIndex: 1 }}
+      >
+        <Navbar />
+        <main className="flex-1">
+          <AnimatedRoutes />
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    ROOT APP
 ═══════════════════════════════════════════════════════════ */
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Show loader for 2.8 seconds on first load
     const timer = setTimeout(() => setIsLoading(false), 2800);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <Router>
-      {/* Scroll restoration on page change */}
       <RouteScrollToTop />
-
-      {/* ── Fullscreen loader (first load only) ── */}
       <Loader isLoading={isLoading} />
-
-      {/* ── Floating leaves background layer ── */}
-      <FloatingLeaves />
-
-      {/* ── Main layout ── */}
-      <div
-        className="relative flex flex-col min-h-screen"
-        style={{ position: "relative", zIndex: 1 }}
-      >
-        {/* Sticky top navbar */}
-        <Navbar />
-
-        {/* Page content with transitions */}
-        <main className="flex-1">
-          <AnimatedRoutes />
-        </main>
-
-        {/* Footer */}
-        <Footer />
-      </div>
-
-      {/* ── (removed) Scroll to top button replaced by page restore only ── */}
+      <AppShell />
     </Router>
   );
 }

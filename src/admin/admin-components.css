@@ -1,0 +1,253 @@
+/* ============================================================
+   VEDYARA ADMIN — COMPONENTS (buttons, cards, tables, forms)
+   ============================================================ */
+
+/* ── BUTTONS ── */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  white-space: nowrap;
+}
+
+.admin-btn-primary {
+  background: #3e2f1c;
+  color: #f8f5f0;
+}
+
+.admin-btn-primary:hover {
+  background: #2a1f12;
+  box-shadow: 0 4px 12px rgba(62, 47, 28, 0.3);
+  transform: translateY(-1px);
+}
+
+.admin-btn-outline {
+  background: #fff;
+  color: #3e2f1c;
+  border: 1px solid rgba(62, 47, 28, 0.15);
+}
+
+.admin-btn-outline:hover {
+  border-color: rgba(62, 47, 28, 0.3);
+  background: #faf8f5;
+}
+
+/* ── CARDS ── */
+.admin-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(62, 47, 28, 0.07);
+  padding: 22px;
+}
+
+.admin-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.admin-card-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #3e2f1c;
+  margin: 0;
+}
+
+.admin-card-section-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #3e2f1c;
+  margin: 0 0 18px 0;
+}
+
+.admin-card-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #d4af37;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.admin-card-action:hover { color: #b8961f; }
+
+.admin-card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.admin-card-hint {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(62, 47, 28, 0.35);
+}
+
+/* ── TABLES ── */
+.admin-table-wrap { overflow-x: auto; }
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(62, 47, 28, 0.45);
+  border-bottom: 1px solid rgba(62, 47, 28, 0.08);
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 12px 14px;
+  color: #3e2f1c;
+  border-bottom: 1px solid rgba(62, 47, 28, 0.05);
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:hover { background: rgba(62, 47, 28, 0.02); }
+
+.admin-table-id { font-weight: 600; color: #3e2f1c; font-size: 0.8rem; }
+.admin-table-amount { font-weight: 700; color: #3e2f1c; }
+.admin-table-original { font-size: 0.72rem; color: rgba(62,47,28,0.4); text-decoration: line-through; margin-left: 6px; }
+.admin-table-date { color: rgba(62, 47, 28, 0.5); font-size: 0.78rem; }
+
+.admin-status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-product-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #faf8f5;
+  flex-shrink: 0;
+}
+
+.admin-product-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-product-cell-name { font-weight: 600; color: #3e2f1c; }
+.admin-product-cell-desc { font-size: 0.72rem; color: rgba(62,47,28,0.45); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.admin-cat-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: rgba(212, 175, 55, 0.1);
+  color: #b8961f;
+}
+
+.admin-badge-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(107,142,35,0.1));
+  color: #6B8E23;
+}
+
+.admin-rating { color: #d4af37; font-weight: 600; }
+
+.admin-actions { display: flex; gap: 6px; }
+
+.admin-action-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  color: rgba(62, 47, 28, 0.5);
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.admin-action-btn:hover { background: rgba(62,47,28,0.06); color: #3e2f1c; }
+.admin-action-delete:hover { background: rgba(192,57,43,0.08); color: #c0392b; }
+
+.admin-coupon-code {
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(62, 47, 28, 0.06);
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #3e2f1c;
+  letter-spacing: 0.04em;
+}
+
+/* ── TOOLBAR ── */
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.admin-toolbar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #fff;
+  border: 1px solid rgba(62, 47, 28, 0.12);
+  border-radius: 10px;
+  flex: 1;
+  max-width: 360px;
+  color: rgba(62, 47, 28, 0.4);
+}
+
+.admin-toolbar-search input {
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 0.82rem;
+  color: #3e2f1c;
+  flex: 1;
+}
+
+.admin-toolbar-search input::placeholder { color: rgba(62,47,28,0.35); }

@@ -1,0 +1,292 @@
+/* ============================================================
+   VEDYARA ADMIN — FORMS, STATS, PAGE-SPECIFIC
+   ============================================================ */
+
+/* ── FORMS ── */
+.admin-form-group { margin-bottom: 16px; }
+
+.admin-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #3e2f1c;
+  margin-bottom: 6px;
+}
+
+.admin-input,
+.admin-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(62, 47, 28, 0.12);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  background: #faf8f5;
+  color: #3e2f1c;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.admin-input:focus,
+.admin-select:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  background: #fff;
+}
+
+.admin-input::placeholder { color: rgba(62, 47, 28, 0.35); }
+
+.admin-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(62, 47, 28, 0.12);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  background: #faf8f5;
+  color: #3e2f1c;
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.admin-textarea:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  background: #fff;
+}
+
+.admin-textarea::placeholder { color: rgba(62, 47, 28, 0.35); }
+
+.admin-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.admin-input-prefix { position: relative; }
+.admin-prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(62, 47, 28, 0.4);
+}
+.admin-input-with-prefix { padding-left: 30px; }
+
+/* ── TOGGLE ── */
+.admin-toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: rgba(62, 47, 28, 0.15);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.25s;
+  border: none;
+  padding: 0;
+}
+
+.admin-toggle.active { background: #6B8E23; }
+
+.admin-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.25s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.admin-toggle.active .admin-toggle-knob { transform: translateX(20px); }
+
+.admin-toggle-row { display: flex; align-items: center; gap: 12px; }
+.admin-toggle-label { font-size: 0.82rem; color: rgba(62, 47, 28, 0.6); }
+
+/* ── TAGS ── */
+.admin-tags-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.admin-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: #6B8E23;
+  color: #fff;
+}
+.admin-tag-remove { background: none; border: none; color: inherit; cursor: pointer; padding: 0; display: flex; }
+
+/* ── UPLOAD ZONE ── */
+.admin-upload-zone {
+  border: 2px dashed rgba(62, 47, 28, 0.18);
+  border-radius: 12px;
+  padding: 36px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(62, 47, 28, 0.02);
+}
+
+.admin-upload-zone:hover {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.04);
+}
+
+.admin-upload-icon { color: rgba(62, 47, 28, 0.3); margin: 0 auto 8px; }
+.admin-upload-text { font-size: 0.85rem; color: rgba(62, 47, 28, 0.6); margin-bottom: 4px; }
+.admin-upload-hint { font-size: 0.72rem; color: rgba(62, 47, 28, 0.35); }
+
+.admin-image-thumbs { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.admin-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(62, 47, 28, 0.1);
+}
+.admin-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.admin-thumb-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+.admin-thumb-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(62, 47, 28, 0.04);
+  color: rgba(62, 47, 28, 0.3);
+  cursor: pointer;
+  border-style: dashed;
+}
+
+/* ── ADD PRODUCT GRID ── */
+.admin-add-product-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 22px;
+  align-items: start;
+}
+
+.admin-add-left { display: flex; flex-direction: column; gap: 22px; }
+.admin-add-right { display: flex; flex-direction: column; gap: 22px; }
+
+/* ── LISTING TIP ── */
+.admin-listing-tip {
+  background: #3e2f1c;
+  border-radius: 14px;
+  padding: 22px;
+  color: #f8f5f0;
+}
+.admin-tip-icon { font-size: 1.25rem; margin-bottom: 8px; }
+.admin-tip-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; color: rgba(248,245,240,0.6); margin-bottom: 8px; }
+.admin-tip-text { font-size: 0.8rem; line-height: 1.6; color: rgba(248,245,240,0.75); }
+
+/* ── STATS GRID ── */
+.admin-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 22px; }
+.admin-stat-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid rgba(62, 47, 28, 0.07);
+}
+.admin-stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.admin-stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.admin-stat-more { color: rgba(62,47,28,0.3); background: none; border: none; cursor: pointer; }
+.admin-stat-value { font-size: 1.5rem; font-weight: 800; color: #3e2f1c; margin-bottom: 4px; }
+.admin-stat-footer { display: flex; justify-content: space-between; align-items: center; }
+.admin-stat-label { font-size: 0.75rem; color: rgba(62, 47, 28, 0.5); }
+.admin-stat-change { display: flex; align-items: center; gap: 3px; font-size: 0.72rem; font-weight: 600; }
+.admin-stat-change.up { color: #6B8E23; }
+.admin-stat-change.down { color: #c0392b; }
+
+/* ── DASHBOARD GRID ── */
+.admin-dashboard-grid { display: grid; grid-template-columns: 1fr 360px; gap: 22px; }
+.admin-orders-card { overflow: hidden; }
+
+/* ── TOP PRODUCTS ── */
+.admin-top-products { display: flex; flex-direction: column; gap: 16px; }
+.admin-top-product-row { display: flex; flex-direction: column; gap: 8px; }
+.admin-top-product-info { display: flex; align-items: center; gap: 10px; }
+.admin-top-product-rank { font-size: 0.72rem; font-weight: 700; color: #d4af37; width: 22px; }
+.admin-top-product-name { font-size: 0.82rem; font-weight: 600; color: #3e2f1c; }
+.admin-top-product-meta { font-size: 0.7rem; color: rgba(62,47,28,0.45); }
+.admin-progress-bar-wrap { height: 6px; background: rgba(62,47,28,0.06); border-radius: 3px; overflow: hidden; }
+.admin-progress-bar { height: 100%; background: linear-gradient(90deg, #d4af37, #6B8E23); border-radius: 3px; }
+
+/* ── CHARTS ── */
+.admin-chart-bars { display: flex; align-items: flex-end; gap: 24px; height: 220px; padding: 0 20px; }
+.admin-chart-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+.admin-chart-bar { width: 100%; max-width: 48px; background: linear-gradient(180deg, #d4af37, #6B8E23); border-radius: 6px 6px 0 0; min-height: 4px; }
+.admin-chart-label { font-size: 0.72rem; font-weight: 600; color: rgba(62,47,28,0.5); }
+.admin-chart-value { font-size: 0.68rem; font-weight: 700; color: #3e2f1c; }
+
+/* ── INVENTORY ── */
+.admin-inv-stats { display: flex; gap: 18px; margin-bottom: 22px; flex-wrap: wrap; }
+.admin-inv-stat { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid rgba(62,47,28,0.07); border-radius: 12px; padding: 14px 20px; }
+.admin-inv-stat-value { font-size: 1.2rem; font-weight: 800; color: #3e2f1c; display: block; }
+.admin-inv-stat-label { font-size: 0.72rem; color: rgba(62,47,28,0.5); }
+
+/* ── CUSTOMERS ── */
+.admin-customers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+.admin-customer-card { display: flex; flex-direction: column; gap: 14px; }
+.admin-customer-top { display: flex; align-items: center; gap: 12px; }
+.admin-customer-avatar { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #d4af37, #6B8E23); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+.admin-customer-name { font-size: 0.88rem; font-weight: 600; color: #3e2f1c; }
+.admin-customer-email { font-size: 0.72rem; color: rgba(62,47,28,0.45); }
+.admin-customer-stats { display: flex; justify-content: space-between; align-items: center; }
+.admin-customer-stat { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: rgba(62,47,28,0.55); }
+.admin-customer-spent { font-weight: 700; color: #3e2f1c; }
+.admin-customer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid rgba(62,47,28,0.06); }
+.admin-customer-since { font-size: 0.72rem; color: rgba(62,47,28,0.4); }
+
+/* ── CATEGORIES ── */
+.admin-categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+.admin-category-card { display: flex; flex-direction: column; gap: 8px; }
+.admin-cat-header { display: flex; justify-content: space-between; align-items: center; }
+.admin-cat-emoji { font-size: 1.75rem; }
+.admin-cat-actions-row { display: flex; gap: 4px; }
+.admin-cat-name { font-family: "Playfair Display", Georgia, serif; font-size: 1rem; font-weight: 700; color: #3e2f1c; }
+.admin-cat-desc { font-size: 0.78rem; color: rgba(62,47,28,0.5); line-height: 1.5; }
+.admin-cat-count { font-size: 0.72rem; font-weight: 600; color: rgba(62,47,28,0.4); margin-top: 4px; }
+
+/* ── REVIEWS ── */
+.admin-reviews-list { display: flex; flex-direction: column; gap: 14px; }
+.admin-review-card { display: flex; flex-direction: column; gap: 10px; }
+.admin-review-top { display: flex; gap: 12px; }
+.admin-review-product { font-size: 0.72rem; color: #d4af37; font-weight: 600; margin-top: 2px; }
+.admin-review-stars { display: flex; gap: 2px; margin-top: 4px; }
+.admin-review-comment { font-size: 0.85rem; color: rgba(62,47,28,0.65); font-style: italic; line-height: 1.5; padding-left: 52px; }
+
+/* ── SETTINGS ── */
+.admin-settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+.admin-setting-toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(62,47,28,0.06); font-size: 0.85rem; color: #3e2f1c; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .admin-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-dashboard-grid { grid-template-columns: 1fr; }
+  .admin-add-product-grid { grid-template-columns: 1fr; }
+  .admin-settings-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .admin-stats-grid { grid-template-columns: 1fr; }
+  .admin-form-row { grid-template-columns: 1fr; }
+  .admin-chart-bars { gap: 12px; padding: 0 8px; }
+}
