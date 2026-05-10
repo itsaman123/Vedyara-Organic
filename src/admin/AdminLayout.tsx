@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import VdLogo from '../../public/vedyara-logo.png'
 import {
@@ -14,6 +15,12 @@ import {
   FiHelpCircle,
   FiExternalLink,
 } from "react-icons/fi";
+import {
+  clearAdminToken,
+  getAdminToken,
+  useAdminLogin,
+  useAdminProfile,
+} from "./pages/apiCalls";
 
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR NAV ITEMS
@@ -34,7 +41,32 @@ const inventoryNav = [
 ═══════════════════════════════════════════════════════════ */
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const hasToken = Boolean(getAdminToken());
+  const profileQuery = useAdminProfile();
+  const loginMutation = useAdminLogin();
+  const admin = profileQuery.data?.admin;
+  const adminInitials =
+    admin?.name
+      ?.split(" ")
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "AD";
+
+  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    loginMutation.mutate({ email, password });
+  };
+
+  const handleLogout = () => {
+    clearAdminToken();
+    queryClient.clear();
+    navigate("/admin");
+  };
 
   const renderLinks = (items: typeof mainNav) =>
     items.map((item) => (
@@ -51,6 +83,73 @@ export default function AdminLayout() {
         <span>{item.label}</span>
       </NavLink>
     ));
+
+  if (!hasToken || profileQuery.isError) {
+    return (
+      <div className="admin-layout" style={{ display: "grid", placeItems: "center", padding: 24 }}>
+        <form
+          className="admin-card"
+          onSubmit={handleLogin}
+          style={{ width: "min(420px, 100%)", padding: 32 }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
+            <img src={VdLogo} alt="Vedyara" style={{ width: 46, height: 46, objectFit: "contain" }} />
+            <div>
+              <h1 className="admin-card-section-title" style={{ margin: 0 }}>Admin Login</h1>
+              <p className="admin-card-hint" style={{ marginTop: 4 }}>Sign in to manage Vedyara</p>
+            </div>
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-label">Email</label>
+            <input
+              className="admin-input"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+              required
+            />
+          </div>
+
+          <div className="admin-form-group" style={{ marginTop: 18 }}>
+            <label className="admin-label">Password</label>
+            <input
+              className="admin-input"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+              required
+            />
+          </div>
+
+          {loginMutation.isError && (
+            <p style={{ color: "#c0392b", margin: "16px 0 0", fontSize: 14 }}>
+              {loginMutation.error.message}
+            </p>
+          )}
+
+          <button
+            className="admin-btn admin-btn-primary"
+            type="submit"
+            disabled={loginMutation.isPending}
+            style={{ width: "100%", marginTop: 24 }}
+          >
+            {loginMutation.isPending ? "Signing in..." : "Login"}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  if (profileQuery.isPending) {
+    return (
+      <div className="admin-layout" style={{ display: "grid", placeItems: "center" }}>
+        Loading admin panel...
+      </div>
+    );
+  }
 
   return (
     <div className="admin-layout">
@@ -113,7 +212,7 @@ export default function AdminLayout() {
 
             <button
               className="admin-nav-link admin-logout-btn"
-              onClick={() => navigate("/")}
+              onClick={handleLogout}
             >
               <FiLogOut size={18} />
               <span>Logout</span>
@@ -154,11 +253,11 @@ export default function AdminLayout() {
             <div className="admin-header-divider" />
             <div className="admin-header-profile">
               <div className="admin-profile-info">
-                <span className="admin-profile-name">Admin User</span>
-                <span className="admin-profile-role">ADMINISTRATOR</span>
+                <span className="admin-profile-name">{admin?.name || "Admin"}</span>
+                <span className="admin-profile-role">{admin?.role?.toUpperCase() || "ADMINISTRATOR"}</span>
               </div>
               <div className="admin-avatar">
-                <img src="https://i.pravatar.cc/100?u=admin" alt="avatar" />
+                <span>{adminInitials}</span>
               </div>
             </div>
           </div>

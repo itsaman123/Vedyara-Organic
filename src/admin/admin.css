@@ -255,6 +255,12 @@
   object-fit: cover;
 }
 
+.admin-avatar span {
+  color: #3e2f1c;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
 /* ── MAIN CONTENT ── */
 .admin-main {
   flex: 1;

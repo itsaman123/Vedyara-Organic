@@ -7,7 +7,7 @@ import {
   FiAlertCircle,
   FiBox,
 } from "react-icons/fi";
-import { products } from "../../data/products";
+import { useAdminProductSummary } from "./apiCalls";
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -16,9 +16,11 @@ const fadeUp = {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const totalProducts = products.length;
-  const inStock = products.filter((p) => !p.limited).length;
-  const outOfStock = totalProducts - inStock;
+  const summaryQuery = useAdminProductSummary();
+  const summary = summaryQuery.data;
+  const totalProducts = summary?.totalProducts ?? 0;
+  const inStock = summary?.activeProducts ?? 0;
+  const outOfStock = summary?.outOfStockProducts ?? 0;
 
   return (
     <div className="admin-page">
@@ -39,7 +41,9 @@ export default function AdminDashboard() {
             <FiBox size={20} style={{ color: "#3e2f1c" }} />
           </div>
           <span className="admin-overview-stat-label">TOTAL PRODUCTS</span>
-          <span className="admin-overview-stat-value">{totalProducts}</span>
+          <span className="admin-overview-stat-value">
+            {summaryQuery.isLoading ? "..." : totalProducts}
+          </span>
         </motion.div>
 
         <motion.div className="admin-overview-stat" {...fadeUp} transition={{ delay: 0.08 }}>
@@ -47,7 +51,9 @@ export default function AdminDashboard() {
             <FiCheckCircle size={20} style={{ color: "#6B8E23" }} />
           </div>
           <span className="admin-overview-stat-label">IN STOCK PRODUCTS</span>
-          <span className="admin-overview-stat-value" style={{ color: "#6B8E23" }}>{inStock}</span>
+          <span className="admin-overview-stat-value" style={{ color: "#6B8E23" }}>
+            {summaryQuery.isLoading ? "..." : inStock}
+          </span>
         </motion.div>
 
         <motion.div className="admin-overview-stat" {...fadeUp} transition={{ delay: 0.16 }}>
@@ -55,7 +61,9 @@ export default function AdminDashboard() {
             <FiAlertCircle size={20} style={{ color: "#c0392b" }} />
           </div>
           <span className="admin-overview-stat-label">OUT OF STOCK</span>
-          <span className="admin-overview-stat-value" style={{ color: "#c0392b" }}>{outOfStock}</span>
+          <span className="admin-overview-stat-value" style={{ color: "#c0392b" }}>
+            {summaryQuery.isLoading ? "..." : outOfStock}
+          </span>
         </motion.div>
       </div>
 
@@ -107,7 +115,7 @@ export default function AdminDashboard() {
         <div className="admin-curation-content">
           <h3 className="admin-curation-title">Curation Excellence</h3>
           <p className="admin-curation-desc">
-            Your current inventory reflects a 92% customer satisfaction rate across all categories.
+            Your current catalog has {summary?.lowStockProducts ?? 0} product(s) at or below the reorder threshold.
           </p>
         </div>
       </motion.div>
