@@ -1,10 +1,12 @@
 import { useState, useMemo, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useInView } from "framer-motion";
-import { FiSearch, FiX, FiFilter, FiGrid, FiList, FiArrowRight } from "react-icons/fi";
+import { FiSearch, FiX, FiFilter, FiGrid, FiList, FiShoppingBag, FiHeart } from "react-icons/fi";
 import { FaStar, FaLeaf } from "react-icons/fa";
-import ProductModal from "../components/ProductModal";
-import { products, categories } from "../data/products";
-import type { Product } from "../data/products";
+import { useProducts, type Product as ApiProduct } from "../api/productApi";
+import { categories, type Product } from "../data/products";
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import { staggerContainer } from "../utils/animations";
 
 /* ═══════════════════════════════════════════════════════════
@@ -64,6 +66,8 @@ const AnimatedProductCard = ({
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   if (viewMode === "list") {
     return (
@@ -138,17 +142,32 @@ const AnimatedProductCard = ({
               </span>
               <span className="text-xs text-gray-400">({product.reviews || 0})</span>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
-              style={{
-                background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-                color: "#3E2F1C",
-              }}
-            >
-              Quick View <FiArrowRight size={14} />
-            </motion.button>
+            <div className="flex items-center gap-2">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id as string); }}
+                className="p-2 rounded-xl transition-all duration-300"
+                style={{ 
+                  background: isInWishlist(product.id as string) ? "#c0392b" : "rgba(62,47,28,0.05)",
+                  color: isInWishlist(product.id as string) ? "#fff" : "rgba(62,47,28,0.5)"
+                }}
+              >
+                <FiHeart size={16} fill={isInWishlist(product.id as string) ? "#fff" : "transparent"} />
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={(e) => { e.stopPropagation(); addToCart(product.id as string); }}
+                className="flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md"
+                style={{
+                  background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                  color: "#3E2F1C",
+                }}
+              >
+                <FiShoppingBag size={18} />
+              </motion.button>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -174,6 +193,7 @@ const AnimatedProductCard = ({
       <div
         className="relative bg-white rounded-3xl overflow-hidden shadow-lg shadow-black/5 transition-all duration-500 group-hover:shadow-xl group-hover:shadow-amber-900/10 flex flex-col h-full"
       >
+
         {/* Badge */}
         {product.badge && (
           <motion.div
@@ -235,26 +255,65 @@ const AnimatedProductCard = ({
             ))}
           </div>
 
-          {/* Price & CTA — pinned to bottom */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
-            <div>
-              <span className="text-2xl font-bold" style={{ color: "#3E2F1C" }}>
-                {product.price}
-              </span>
-              {product.originalPrice && (
-                <span className="ml-2 text-sm text-gray-400 line-through">
-                  {product.originalPrice}
+          {/* Price & CTA Row */}
+          <div className="pt-4 border-t border-gray-100 mt-auto flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-2xl font-bold" style={{ color: "#3E2F1C" }}>
+                  {product.price}
                 </span>
-              )}
+                {product.originalPrice && (
+                  <span className="ml-2 text-sm text-gray-400 line-through">
+                    {product.originalPrice}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <FaStar size={14} style={{ color: "#D4AF37" }} />
+                <span className="text-sm font-semibold" style={{ color: "#3E2F1C" }}>
+                  {product.rating || "4.8"}
+                </span>
+              </div>
             </div>
-            <motion.div
-              className="w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)" }}
-              whileHover={{ scale: 1.15, rotate: 90 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <FiArrowRight className="text-brand-brown" size={16} />
-            </motion.div>
+
+            <div className="flex gap-2">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart(product.id as string);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all duration-300"
+                style={{
+                  background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                  color: "#3E2F1C",
+                }}
+              >
+                <FiShoppingBag size={16} />
+                Add to Cart
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleWishlist(product.id as string);
+                }}
+                className="w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300"
+                style={{
+                  background: isInWishlist(product.id as string) ? "#c0392b" : "rgba(62,47,28,0.05)",
+                  color: isInWishlist(product.id as string) ? "#fff" : "rgba(62,47,28,0.5)",
+                  border: "1px solid rgba(62,47,28,0.05)"
+                }}
+              >
+                <FiHeart 
+                  size={18} 
+                  fill={isInWishlist(product.id as string) ? "#fff" : "transparent"} 
+                />
+              </motion.button>
+            </div>
           </div>
         </div>
 
@@ -321,51 +380,47 @@ const CategoryButton = ({
    PRODUCTS PAGE
 ═══════════════════════════════════════════════════════════ */
 export default function Products() {
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
 
+  const { data, isLoading, isError } = useProducts({
+    category: activeCategory === "all" ? undefined : activeCategory,
+    search: searchQuery || undefined,
+    sortBy: sortBy.startsWith("price") ? "price" : "createdAt",
+    sortOrder: sortBy === "price-asc" ? "asc" : "desc",
+  });
+
+  const mapProduct = (p: ApiProduct) => ({
+    id: p.slug, // Use slug for navigation
+    name: p.name,
+    category: p.category,
+    price: `₹${p.discountedPrice !== null ? p.discountedPrice : p.price}`,
+    originalPrice: p.discountedPrice !== null ? `₹${p.price}` : undefined,
+    badge: p.featured ? "Best Seller" : p.stock < 10 ? "Limited" : "Natural",
+    image: p.images[0] || "https://via.placeholder.com/400",
+    description: p.description,
+    shortDesc: p.shortDescription || p.description.slice(0, 100),
+    benefits: p.tags && p.tags.length > 0 ? p.tags : ["100% Natural", "Lab Tested", "Pure"],
+    weight: p.unit,
+    amazonLink: "#",
+    rating: 4.8,
+    reviews: 124,
+    limited: p.stock < 10,
+    featured: p.featured
+  });
+
   const filteredProducts = useMemo(() => {
-    let result = [...products];
+    if (!data?.items) return [];
+    return data.items.map(mapProduct);
+  }, [data]);
 
-    if (activeCategory !== "all") {
-      result = result.filter((p) => p.category === activeCategory);
-    }
-
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          p.benefits.some((b) => b.toLowerCase().includes(q))
-      );
-    }
-
-    if (sortBy === "price-asc") {
-      result.sort(
-        (a, b) =>
-          parseInt(a.price.replace(/[^\d]/g, "")) -
-          parseInt(b.price.replace(/[^\d]/g, ""))
-      );
-    } else if (sortBy === "price-desc") {
-      result.sort(
-        (a, b) =>
-          parseInt(b.price.replace(/[^\d]/g, "")) -
-          parseInt(a.price.replace(/[^\d]/g, ""))
-      );
-    }
-
-    return result;
-  }, [activeCategory, searchQuery, sortBy]);
-
-  const handleQuickView = (product: Product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
+  const handleQuickView = (product: any) => {
+    navigate(`/product/${product.id}`);
   };
 
   const clearSearch = () => setSearchQuery("");
@@ -508,7 +563,7 @@ export default function Products() {
                 className="relative"
               >
                 <img
-                  src={products[0]?.image}
+                  src={filteredProducts[0]?.image || "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg"}
                   alt="Featured Product"
                   className="w-full max-w-md mx-auto drop-shadow-2xl"
                   style={{ filter: "drop-shadow(0 25px 50px rgba(0,0,0,0.15))" }}
@@ -629,8 +684,8 @@ export default function Products() {
                 onClick={() => setActiveCategory(cat.id)}
                 count={
                   cat.id === "all"
-                    ? products.length
-                    : products.filter((p) => p.category === cat.id).length
+                    ? data?.pagination.total || 0
+                    : data?.items.filter((p) => p.category === cat.id).length || 0
                 }
               />
             ))}
@@ -643,7 +698,36 @@ export default function Products() {
       ════════════════════════════════════════════════════ */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <AnimatePresence mode="wait">
-          {filteredProducts.length > 0 ? (
+          {isLoading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center justify-center py-24"
+            >
+              <div className="w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin mb-4" />
+              <p className="text-amber-800 font-medium">Harvesting the best products for you...</p>
+            </motion.div>
+          ) : isError ? (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center justify-center py-24 text-center"
+            >
+              <div className="text-5xl mb-4">⚠️</div>
+              <h3 className="font-serif font-bold text-xl mb-2" style={{ color: "#3E2F1C" }}>Connection Issue</h3>
+              <p className="text-gray-500 mb-6">We're having trouble reaching the harvest fields. Please try again later.</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-2 rounded-full font-semibold text-sm bg-amber-600 text-white"
+              >
+                Retry
+              </button>
+            </motion.div>
+          ) : filteredProducts.length > 0 ? (
             <motion.div
               key={`${activeCategory}-${searchQuery}-${sortBy}-${viewMode}`}
               variants={staggerContainer}
@@ -720,7 +804,7 @@ export default function Products() {
                 color: "rgba(62,47,28,0.5)",
               }}
             >
-              Coming Soon to Amazon India 🛒
+              Secure Shopping & Fast Delivery 🛒
             </div>
           </motion.div>
         )}
@@ -737,27 +821,19 @@ export default function Products() {
           borderTop: "1px solid rgba(62,47,28,0.08)",
         }}
       >
-        <div
-          className="flex items-center justify-center gap-2.5 w-full py-4 rounded-2xl font-bold text-sm"
+        <Link 
+          to="/products"
+          className="flex items-center justify-center gap-2.5 w-full py-4 rounded-2xl font-bold text-sm shadow-lg shadow-amber-900/20"
           style={{
-            background: "rgba(62,47,28,0.1)",
-            color: "rgba(62,47,28,0.5)",
+            background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+            color: "#3E2F1C",
           }}
         >
-          Coming Soon to Amazon India
-        </div>
+          <FiShoppingBag size={18} />
+          Shop All Products
+        </Link>
       </div>
       <div className="h-20 md:hidden" />
-
-      {/* Product Modal */}
-      <ProductModal
-        product={selectedProduct}
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setTimeout(() => setSelectedProduct(null), 350);
-        }}
-      />
     </main>
   );
 }

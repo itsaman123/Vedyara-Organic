@@ -3,14 +3,15 @@ import Haldi from '../assets/haldi.jpeg'
 import Dhaniya from '../assets/dhaniya.jpeg'
 import Gud from '../assets/gud.jpeg'
 
-export interface Product {
-  id: number;
+export type Product = {
+  id: string | number;
   name: string;
-  category: "honey" | "millets" | "jaggery" | "pulses" | "grains" | "spices";
+  category: string;
   price: string;
   originalPrice?: string;
-  badge?: "Best Seller" | "Trending" | "New" | "Limited" | "Natural" | "Fresh" | "Bestseller";
+  badge?: string;
   image: string;
+  images?: string[];
   description: string;
   shortDesc: string;
   benefits: string[];
@@ -20,7 +21,7 @@ export interface Product {
   reviews: number;
   limited?: boolean;
   featured?: boolean;
-}
+};
 
 export interface Category {
   id: string;
@@ -36,8 +37,8 @@ export const products: Product[] = [
     price: "₹699",
     originalPrice: "₹1799",
     badge: "Best Seller",
-    image:
-      Honey,
+    image: Honey,
+    images: [Honey, Haldi, Dhaniya], // Mock images
     shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
     description:
       "Our Pure Natural Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
@@ -55,7 +56,6 @@ export const products: Product[] = [
     featured: true,
   },
 
-
   {
     id: 4,
     name: "Natural Jaggery Powder (Gud)",
@@ -64,6 +64,7 @@ export const products: Product[] = [
     originalPrice: "₹179",
     badge: "Natural",
     image: Gud,
+    images: [Gud, Haldi, Honey], // Mock images
     shortDesc: "Chemical-free jaggery powder made from pure sugarcane juice",
     description:
       "Our Natural Jaggery Powder (Gud) is made using traditional methods without any chemicals or bleaching. Rich in iron and minerals, it helps improve digestion, boosts energy naturally, and is a healthier alternative to refined sugar.",
@@ -83,6 +84,7 @@ export const products: Product[] = [
     originalPrice: "₹129",
     badge: "Fresh",
     image: Dhaniya,
+    images: [Dhaniya, Haldi, Gud], // Mock images
     shortDesc: "Aromatic coriander powder made from premium quality seeds",
     description:
       "Our Natural Coriander Powder (Dhaniya) is made from carefully selected seeds and ground to preserve its natural aroma and flavor. It aids digestion, supports metabolism, and enhances the taste of every dish.",
@@ -102,6 +104,7 @@ export const products: Product[] = [
     originalPrice: "₹159",
     badge: "Bestseller",
     image: Haldi,
+    images: [Haldi, Dhaniya, Honey], // Mock images
     shortDesc: "High curcumin turmeric powder for immunity and wellness",
     description:
       "Our Natural Turmeric Powder (Haldi) is sourced from trusted farms and processed to retain high curcumin content. Known for its anti-inflammatory and immunity-boosting properties, it is a staple for both cooking and health.",
@@ -120,8 +123,8 @@ export const products: Product[] = [
     price: "₹449",
     originalPrice: "₹899",
     badge: "Best Seller",
-    image:
-      Honey,
+    image: Honey,
+    images: [Honey, Haldi, Dhaniya], // Mock images
     shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
     description:
       "Our Pure Natural Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",

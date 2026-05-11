@@ -14,6 +14,9 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 
 /* ── Admin imports ── */
 import "./admin/admin.css";
@@ -107,6 +110,51 @@ function AnimatedRoutes() {
               exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
             >
               <Contact />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            <motion.div
+              initial={pageEnter.initial}
+              animate={{
+                ...pageEnter.animate,
+                transition: pageTransition.enter,
+              }}
+              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
+            >
+              <ProductDetail />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <motion.div
+              initial={pageEnter.initial}
+              animate={{
+                ...pageEnter.animate,
+                transition: pageTransition.enter,
+              }}
+              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
+            >
+              <Cart />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/wishlist"
+          element={
+            <motion.div
+              initial={pageEnter.initial}
+              animate={{
+                ...pageEnter.animate,
+                transition: pageTransition.enter,
+              }}
+              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
+            >
+              <Wishlist />
             </motion.div>
           }
         />

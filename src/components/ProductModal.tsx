@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiCheck, FiPackage, FiHeart, FiShare2 } from "react-icons/fi";
+import { FiX, FiCheck, FiPackage, FiHeart, FiShare2, FiShoppingBag } from "react-icons/fi";
 import type { Product } from "../data/products";
+import { useCart } from "../context/CartContext";
 
 interface ProductModalProps {
-  product: Product | null;
+  product: any | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -41,6 +42,7 @@ function StarRating({ rating }: { rating: number }) {
 export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [imgError, setImgError] = useState(false);
   const [liked, setLiked] = useState(false);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -398,6 +400,12 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                       <motion.button
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
+                        onClick={async () => {
+                          if (product) {
+                            await addToCart(product.id as string);
+                            onClose();
+                          }
+                        }}
                         className="flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-sm"
                         style={{
                           background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
@@ -405,7 +413,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                           boxShadow: "0 8px 24px rgba(212,175,55,0.35)",
                         }}
                       >
-                        🛒&nbsp; Coming Soon
+                        <FiShoppingBag size={18} /> Add to Cart
                       </motion.button>
 
                       <motion.button

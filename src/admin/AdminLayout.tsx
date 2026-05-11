@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import VdLogo from '../../public/vedyara-logo.png'
+const VdLogo = '/vedyara-logo.png'
 import {
   FiGrid,
   FiBox,

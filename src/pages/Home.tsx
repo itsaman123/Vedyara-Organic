@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
-import HoneyBottle from "../../public/honey-bottle.webp";
+import { useState, useRef, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
+const HoneyBottle = "/honey-bottle.webp";
 import {
   motion,
   AnimatePresence,
@@ -13,17 +13,19 @@ import {
   FiPackage,
   FiShield,
   FiTrendingUp,
+  FiHeart,
 } from "react-icons/fi";
 import { FaStar, FaQuoteLeft, FaLeaf, FaHandHoldingHeart } from "react-icons/fa";
-import ProductModal from "../components/ProductModal";
+import { useProducts, type Product as ApiProduct } from "../api/productApi";
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import {
-  featuredProducts,
   testimonials,
   whyChooseUs,
   stats,
   categories,
+  type Product,
 } from "../data/products";
-import type { Product } from "../data/products";
 import { fadeUp, staggerContainer } from "../utils/animations";
 
 /* ═══════════════════════════════════════════════════════════
@@ -91,6 +93,8 @@ const ProductShowcaseCard = ({
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   return (
     <motion.div
@@ -112,6 +116,8 @@ const ProductShowcaseCard = ({
       className="group relative cursor-pointer h-full flex flex-col"
       onClick={() => onView(product)}
     >
+
+
       <div
         className="relative bg-white rounded-3xl p-6 shadow-lg shadow-black/5 overflow-hidden transition-shadow duration-500 group-hover:shadow-xl group-hover:shadow-amber-900/10 flex flex-col h-full"
       >
@@ -173,26 +179,65 @@ const ProductShowcaseCard = ({
             ))}
           </div>
 
-          {/* Price & CTA — pinned to bottom */}
-          <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
-            <div>
-              <span className="text-2xl font-bold text-brand-brown">
-                {product.price}
-              </span>
-              {product.originalPrice && (
-                <span className="ml-2 text-sm text-gray-400 line-through">
-                  {product.originalPrice}
+          {/* Price & CTA Row */}
+          <div className="pt-4 border-t border-gray-100 mt-auto flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-2xl font-bold text-brand-brown">
+                  {product.price}
                 </span>
-              )}
+                {product.originalPrice && (
+                  <span className="ml-2 text-sm text-gray-400 line-through">
+                    {product.originalPrice}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <FaStar size={14} style={{ color: "#D4AF37" }} />
+                <span className="text-sm font-semibold text-brand-brown">
+                  {product.rating || "4.8"}
+                </span>
+              </div>
             </div>
-            <motion.div
-              className="w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)" }}
-              whileHover={{ scale: 1.1, rotate: 90 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <FiArrowRight className="text-brand-brown" />
-            </motion.div>
+
+            <div className="flex gap-2">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart(product.id);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm shadow-sm transition-all duration-300"
+                style={{
+                  background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                  color: "#3E2F1C",
+                }}
+              >
+                <FiShoppingBag size={18} />
+                Add to Cart
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleWishlist(product.id);
+                }}
+                className="w-12 h-12 flex items-center justify-center rounded-xl transition-all duration-300 shadow-sm"
+                style={{
+                  background: isInWishlist(product.id) ? "#c0392b" : "rgba(62,47,28,0.05)",
+                  color: isInWishlist(product.id) ? "#fff" : "rgba(62,47,28,0.5)",
+                  border: "1px solid rgba(62,47,28,0.05)"
+                }}
+              >
+                <FiHeart 
+                  size={20} 
+                  fill={isInWishlist(product.id) ? "#fff" : "transparent"} 
+                />
+              </motion.button>
+            </div>
           </div>
         </div>
 
@@ -423,13 +468,41 @@ const TestimonialCard = ({
    HOME PAGE
 ═══════════════════════════════════════════════════════════ */
 export default function Home() {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleQuickView = (product: Product) => {
-    setSelectedProduct(product);
-    setModalOpen(true);
+  const { data, isLoading } = useProducts({
+    featured: "true",
+    limit: 4,
+  });
+
+  const mapProduct = (p: ApiProduct) => ({
+    id: p.slug, // Use slug for navigation
+    name: p.name,
+    category: p.category,
+    price: `₹${p.discountedPrice !== null ? p.discountedPrice : p.price}`,
+    originalPrice: p.discountedPrice !== null ? `₹${p.price}` : undefined,
+    badge: p.featured ? "Best Seller" : "Natural",
+    image: p.images[0] || "https://via.placeholder.com/400",
+    description: p.description,
+    shortDesc: p.shortDescription || p.description.slice(0, 100),
+    benefits: p.tags && p.tags.length > 0 ? p.tags : ["100% Natural", "Pure"],
+    weight: p.unit,
+    rating: 4.8,
+    reviews: 124,
+    limited: p.stock < 10,
+    featured: p.featured
+  });
+
+  const featuredProducts = useMemo(() => {
+    if (!data?.items) return [];
+    return data.items.map(mapProduct);
+  }, [data]);
+
+  const handleQuickView = (product: any) => {
+    navigate(`/product/${product.id}`);
   };
 
   return (
@@ -552,16 +625,20 @@ export default function Home() {
                 transition={{ delay: 0.7 }}
                 className="flex flex-wrap gap-4"
               >
-                <motion.div
-                  className="flex items-center gap-2.5 px-8 py-4 rounded-full font-bold text-base"
-                  style={{
-                    background: "rgba(248,245,240,0.5)",
-                    color: "rgba(62,47,28,0.5)",
-                    cursor: "not-allowed",
-                  }}
-                >
-                  <span>Coming Soon</span>
-                </motion.div>
+                <Link to="/products">
+                  <motion.button
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex items-center gap-3 px-8 py-4 rounded-full font-bold text-base shadow-lg shadow-amber-900/20"
+                    style={{
+                      background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                      color: "#3E2F1C",
+                    }}
+                  >
+                    <span>Shop Now</span>
+                    <FiArrowRight size={18} />
+                  </motion.button>
+                </Link>
 
                 <Link to="/products">
                   <motion.button
@@ -816,15 +893,21 @@ export default function Home() {
             </motion.p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredProducts.map((product, i) => (
-              <ProductShowcaseCard
-                key={product.id}
-                product={product}
-                index={i}
-                onView={handleQuickView}
-              />
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {isLoading ? (
+              [...Array(4)].map((_, i) => (
+                <div key={i} className="h-80 bg-gray-50 rounded-3xl animate-pulse" />
+              ))
+            ) : (
+              featuredProducts.map((product, i) => (
+                <ProductShowcaseCard
+                  key={product.id}
+                  product={product}
+                  index={i}
+                  onView={handleQuickView}
+                />
+              ))
+            )}
           </div>
 
           <motion.div
@@ -1054,7 +1137,7 @@ export default function Home() {
                 color: "rgba(62,47,28,0.5)",
               }}
             >
-              Coming Soon to Amazon India
+              Secure Shopping & Fast Delivery 🛒
             </div>
           </motion.div>
         </div>
@@ -1140,7 +1223,7 @@ export default function Home() {
                   cursor: "not-allowed",
                 }}
               >
-                Coming Soon
+                <div className="text-xs font-bold text-amber-600">PREMIUM QUALITY</div>
               </motion.div>
 
               <Link to="/products">
@@ -1200,28 +1283,20 @@ export default function Home() {
           transition={{ delay: 2, type: "spring", stiffness: 200, damping: 24 }}
           className="fixed bottom-0 left-0 right-0 z-30 bg-white/90 backdrop-blur-lg px-4 py-3 md:hidden border-t border-gray-100"
         >
-          <div
-            className="flex items-center justify-center gap-2.5 w-full py-4 rounded-2xl font-bold text-sm"
+          <Link
+            to="/products"
+            className="flex items-center justify-center gap-2.5 w-full py-4 rounded-2xl font-bold text-sm shadow-lg shadow-amber-900/20"
             style={{
-              background: "rgba(62,47,28,0.1)",
-              color: "rgba(62,47,28,0.5)",
-              cursor: "not-allowed",
+              background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+              color: "#3E2F1C",
             }}
           >
-            Coming Soon
-          </div>
+            <FiShoppingBag size={18} />
+            Shop Now
+          </Link>
         </motion.div>
       </AnimatePresence>
 
-      {/* Product Modal */}
-      <ProductModal
-        product={selectedProduct}
-        isOpen={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setSelectedProduct(null);
-        }}
-      />
     </main>
   );
 }

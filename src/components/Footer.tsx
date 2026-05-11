@@ -99,9 +99,9 @@ export default function Footer() {
         }}
       />
 
-      {/* ── Amazon CTA Banner ── */}
+      {/* ── Newsletter CTA Banner ── */}
       <div
-        className="relative py-10 px-4 text-center border-b"
+        className="relative py-12 px-4 text-center border-b"
         style={{ borderColor: "rgba(212,175,55,0.12)" }}
       >
         <motion.div
@@ -115,30 +115,32 @@ export default function Footer() {
             className="text-xs font-semibold uppercase tracking-widest mb-2"
             style={{ color: "#D4AF37", letterSpacing: "0.22em" }}
           >
-            Coming Soon On
+            Join Our Community
           </p>
           <h3
-            className="font-serif font-bold mb-5"
-            style={{ color: "#F8F5F0", fontSize: "1.65rem" }}
+            className="font-serif font-bold mb-6"
+            style={{ color: "#F8F5F0", fontSize: "1.75rem" }}
           >
-            Vedyara on Amazon
+            Subscribe for Organic Wellness
           </h3>
-          <div
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-bold transition-all duration-300 group"
-            style={{
-              background: "rgba(248,245,240,0.15)",
-              color: "rgba(248,245,240,0.5)",
-              cursor: "not-allowed",
-              userSelect: "none",
-            }}
-          >
-            <span>Coming Soon</span>
+          <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              className="flex-1 px-6 py-3.5 rounded-full bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-amber-500 transition-colors"
+            />
+            <button 
+              className="px-8 py-3.5 rounded-full font-bold text-sm transition-all duration-300"
+              style={{ background: "#D4AF37", color: "#1a1208" }}
+            >
+              Subscribe
+            </button>
           </div>
           <p
-            className="mt-4 text-xs"
-            style={{ color: "rgba(248,245,240,0.4)" }}
+            className="mt-4 text-[10px]"
+            style={{ color: "rgba(248,245,240,0.3)" }}
           >
-            Fast delivery · Easy returns · Amazon-verified seller
+            By subscribing, you agree to receive our weekly newsletter. We respect your privacy.
           </p>
         </motion.div>
       </div>
@@ -330,7 +332,7 @@ export default function Footer() {
                 className="text-xs mb-2"
                 style={{ color: "rgba(248,245,240,0.4)" }}
               >
-                All products will be available on
+                Also available on
               </p>
               <div className="flex items-center gap-2">
                 <span
@@ -341,10 +343,10 @@ export default function Footer() {
                 </span>
               </div>
               <div
-                className="mt-3 text-xs inline-flex items-center gap-1 font-semibold"
-                style={{ color: "rgba(248,245,240,0.4)", cursor: "not-allowed" }}
+                className="mt-3 text-[10px] inline-flex items-center gap-1 font-semibold"
+                style={{ color: "rgba(212,175,55,0.6)" }}
               >
-                Coming soon
+                Verified Seller ✓
               </div>
             </div>
           </motion.div>

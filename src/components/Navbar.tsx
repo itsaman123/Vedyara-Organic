@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX, FiShoppingBag } from "react-icons/fi";
+import { FiMenu, FiX, FiShoppingBag, FiHeart } from "react-icons/fi";
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import LogoBrand from "./LogoBrand";
 
 const navLinks = [
@@ -15,6 +17,8 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const navigate = useNavigate();
+  const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -126,24 +130,44 @@ export default function Navbar() {
 
             {/* ── DESKTOP CTA ── */}
             <div className="hidden md:flex items-center gap-3">
-              {/* Amazon badge — slides in when scrolled */}
-              <motion.div
-                animate={{
-                  opacity: isScrolled ? 1 : 0,
-                  x: isScrolled ? 0 : 10,
-                  pointerEvents: isScrolled ? "auto" : "none",
-                }}
-                transition={{ duration: 0.3 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
-                style={{
-                  background: "rgba(212,175,55,0.12)",
-                  color: "#b8961f",
-                  border: "1px solid rgba(212,175,55,0.25)",
-                }}
-              >
-                <span>🛒</span>
-                <span>Coming Soon</span>
-              </motion.div>
+              {/* Wishlist and Cart icons */}
+              <div className="flex items-center gap-2 mr-2">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => navigate("/wishlist")}
+                  className="relative p-2 rounded-full transition-colors"
+                  style={{
+                    background: "rgba(62,47,28,0.05)",
+                    color: isScrolled ? "#3E2F1C" : "#ffffff",
+                  }}
+                >
+                  <FiHeart size={20} />
+                  {wishlistCount > 0 && (
+                    <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                      {wishlistCount}
+                    </span>
+                  )}
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => navigate("/cart")}
+                  className="relative p-2 rounded-full transition-colors"
+                  style={{
+                    background: "rgba(62,47,28,0.05)",
+                    color: isScrolled ? "#3E2F1C" : "#ffffff",
+                  }}
+                >
+                  <FiShoppingBag size={20} />
+                  {cartCount > 0 && (
+                    <span className="absolute top-0 right-0 w-4 h-4 bg-amber-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </motion.button>
+              </div>
 
               <motion.button
                 whileHover={{ scale: 1.04, y: -2 }}
@@ -322,16 +346,22 @@ export default function Navbar() {
                   className="divider-gold mb-1"
                   style={{ width: "100%", height: "1px" }}
                 />
-                <div
-                  className="w-full text-center text-sm font-semibold py-4 rounded-xl"
-                  style={{
-                    background: "rgba(62,47,28,0.08)",
-                    color: "rgba(62,47,28,0.5)",
-                    cursor: "not-allowed",
-                    userSelect: "none"
-                  }}
-                >
-                  🛒 &nbsp; Coming Soon
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => { navigate("/wishlist"); setIsMobileOpen(false); }}
+                    className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl font-semibold"
+                    style={{ background: "rgba(62,47,28,0.08)", color: "#3E2F1C" }}
+                  >
+                    <FiHeart size={18} />
+                    Wishlist ({wishlistCount})
+                  </button>
+                  <button
+                    onClick={() => { navigate("/cart"); setIsMobileOpen(false); }}
+                    className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl font-semibold bg-amber-600 text-white"
+                  >
+                    <FiShoppingBag size={18} />
+                    Cart ({cartCount})
+                  </button>
                 </div>
                 <p
                   className="text-center text-xs"
