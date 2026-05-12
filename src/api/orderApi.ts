@@ -58,3 +58,41 @@ export const verifyPayment = async (data: {
   }
   return payload.data;
 };
+
+export const sendOtp = async (data: { email: string }) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/orders/send-otp`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  const payload = (await response.json()) as ApiResponse<any>;
+  if (!response.ok || !payload.success) {
+    throw new Error(payload.message || "Failed to send OTP");
+  }
+  return payload.data;
+};
+
+export const verifyOtp = async (data: { email: string; otp: string }) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/orders/verify-otp`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  const payload = (await response.json()) as ApiResponse<any>;
+  if (!response.ok || !payload.success) {
+    throw new Error(payload.message || "Failed to verify OTP");
+  }
+  return payload.data;
+};
+
+export const getMyOrders = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/orders/myorders`, {
+    method: "GET",
+    headers: getHeaders(),
+  });
+  const payload = (await response.json()) as ApiResponse<any[]>;
+  if (!response.ok || !payload.success) {
+    throw new Error(payload.message || "Failed to fetch orders");
+  }
+  return payload.data;
+};

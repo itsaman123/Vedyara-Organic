@@ -17,6 +17,8 @@ import Contact from "./pages/Contact";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
+import Checkout from "./pages/Checkout";
+import Profile from "./pages/Profile";
 import { Toaster } from "react-hot-toast";
 
 /* ── Admin imports ── */
@@ -156,6 +158,51 @@ function AnimatedRoutes() {
               exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
             >
               <Wishlist />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <motion.div
+              initial={pageEnter.initial}
+              animate={{
+                ...pageEnter.animate,
+                transition: pageTransition.enter,
+              }}
+              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
+            >
+              <Checkout />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <motion.div
+              initial={pageEnter.initial}
+              animate={{
+                ...pageEnter.animate,
+                transition: pageTransition.enter,
+              }}
+              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
+            >
+              <Profile />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <motion.div
+              initial={pageEnter.initial}
+              animate={{
+                ...pageEnter.animate,
+                transition: pageTransition.enter,
+              }}
+              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
+            >
+              <Profile />
             </motion.div>
           }
         />

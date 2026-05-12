@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX, FiShoppingBag, FiHeart } from "react-icons/fi";
+import { FiMenu, FiX, FiShoppingBag, FiHeart, FiUser } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import LogoBrand from "./LogoBrand";
@@ -130,8 +130,22 @@ export default function Navbar() {
 
             {/* ── DESKTOP CTA ── */}
             <div className="hidden md:flex items-center gap-3">
-              {/* Wishlist and Cart icons */}
+              {/* Wishlist, Cart, and Profile icons */}
               <div className="flex items-center gap-2 mr-2">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => navigate("/profile")}
+                  className="relative p-2 rounded-full transition-colors"
+                  style={{
+                    background: "rgba(62,47,28,0.05)",
+                    color: isScrolled ? "#3E2F1C" : "#ffffff",
+                  }}
+                  title="Profile"
+                >
+                  <FiUser size={20} />
+                </motion.button>
+
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}

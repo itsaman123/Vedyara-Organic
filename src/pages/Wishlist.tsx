@@ -76,11 +76,17 @@ const Wishlist: React.FC = () => {
                   className="h-56 flex items-center justify-center p-6 bg-gradient-to-br from-amber-50/30 to-orange-50/30 cursor-pointer"
                   onClick={() => navigate(`/product/${product.slug}`)}
                 >
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
-                  />
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-amber-100/50 rounded-xl">
+                      <FiShoppingBag className="text-amber-300 w-12 h-12" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Info */}

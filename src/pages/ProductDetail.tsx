@@ -19,6 +19,9 @@ import { useProduct } from "../api/productApi";
 import { products as localProducts, type Product } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
+import { toast } from "react-hot-toast";
+import * as orderApi from "../api/orderApi";
+import { loadRazorpayScript } from "../utils/payment";
 
 const badgeConfig: Record<string, { bg: string; color: string; emoji: string }> = {
   "Best Seller": { bg: "linear-gradient(135deg,#D4AF37,#e8c84a)", color: "#3E2F1C", emoji: "🏆" },
@@ -97,6 +100,17 @@ export default function ProductDetail() {
   }, [localProduct, apiProduct]);
 
   const liked = product ? isInWishlist(product.id as string) : false;
+
+  const handleBuyNow = () => {
+    if (!product) return;
+    navigate("/checkout", { 
+      state: { 
+        isDirectBuy: true, 
+        product, 
+        quantity 
+      } 
+    });
+  };
 
   useEffect(() => {
     if (product) {
@@ -390,12 +404,7 @@ export default function ProductDetail() {
                 <motion.button
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={async () => {
-                    if (product) {
-                      await addToCart(product, quantity);
-                      navigate("/cart");
-                    }
-                  }}
+                  onClick={handleBuyNow}
                   className="flex-1 flex items-center justify-center gap-3 py-5 rounded-2xl font-bold text-lg transition-shadow hover:shadow-xl"
                   style={{
                     background: "linear-gradient(135deg, #D4AF37, #e8c84a)",

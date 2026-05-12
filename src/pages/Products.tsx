@@ -440,76 +440,14 @@ export default function Products() {
     return data.items.map(mapProduct);
   }, [data]);
 
-  const handleBuyNow = async (product: any) => {
-    const isScriptLoaded = await loadRazorpayScript();
-    if (!isScriptLoaded) {
-      toast.error("Razorpay SDK failed to load. Are you online?");
-      return;
-    }
-
-    try {
-      // Find the actual product object from API data to get the _id
-      const apiProduct = data?.items.find(p => p.slug === product.id);
-      if (!apiProduct) {
-        toast.error("Product details not found. Please try again.");
-        return;
-      }
-
-      // For Buy Now, we'll ask for name/email if not logged in
-      let customerName = "Guest User";
-      let customerEmail = "guest@example.com";
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        const name = prompt("Please enter your name for the order:");
-        const email = prompt("Please enter your email for the order:");
-        if (!name || !email) return;
-        customerName = name;
-        customerEmail = email;
-      }
-
-      const orderData = await orderApi.createRazorpayOrder({
-        items: [{ productId: apiProduct._id, quantity: 1 }],
-        customerName,
-        customerEmail
-      });
-
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_placeholder",
-        amount: orderData.razorpayOrder.amount,
-        currency: orderData.razorpayOrder.currency,
-        name: "Vedyara",
-        description: `Purchase of ${product.name}`,
-        order_id: orderData.razorpayOrder.id,
-        handler: async (response: any) => {
-          try {
-            await orderApi.verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              orderId: orderData.orderId
-            });
-            toast.success("Payment successful!");
-            navigate("/orders"); // Or a success page
-          } catch (err: any) {
-            toast.error("Payment verification failed: " + err.message);
-          }
-        },
-        prefill: {
-          name: customerName,
-          email: customerEmail,
-        },
-        theme: {
-          color: "#D4AF37",
-        },
-      };
-
-      const rzp = new (window as any).Razorpay(options);
-      rzp.open();
-    } catch (error: any) {
-      console.error("Buy now error:", error);
-      toast.error("Could not initiate purchase: " + error.message);
-    }
+  const handleBuyNow = (product: any) => {
+    navigate("/checkout", { 
+      state: { 
+        isDirectBuy: true, 
+        product, 
+        quantity: 1 
+      } 
+    });
   };
 
   const handleQuickView = (product: any) => {

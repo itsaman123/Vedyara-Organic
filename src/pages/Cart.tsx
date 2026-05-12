@@ -46,75 +46,8 @@ const Cart: React.FC = () => {
     );
   }
 
-  const handleCheckout = async () => {
-    const { loadRazorpayScript } = await import("../utils/payment");
-    const orderApi = await import("../api/orderApi");
-
-    const isScriptLoaded = await loadRazorpayScript();
-    if (!isScriptLoaded) {
-      toast.error("Razorpay SDK failed to load. Are you online?");
-      return;
-    }
-
-    try {
-      let customerName = "Guest User";
-      let customerEmail = "guest@example.com";
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        const name = prompt("Please enter your name for the order:");
-        const email = prompt("Please enter your email for the order:");
-        if (!name || !email) return;
-        customerName = name;
-        customerEmail = email;
-      }
-
-      const orderData = await orderApi.createRazorpayOrder({
-        items: cart.items.map(item => ({ productId: item.productId, quantity: item.quantity })),
-        customerName,
-        customerEmail
-      });
-
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_placeholder",
-        amount: orderData.razorpayOrder.amount,
-        currency: orderData.razorpayOrder.currency,
-        name: "Vedyara",
-        description: `Purchase of ${cart.items.length} items`,
-        order_id: orderData.razorpayOrder.id,
-        handler: async (response: any) => {
-          try {
-            await orderApi.verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              orderId: orderData.orderId
-            });
-            toast.success("Payment successful!");
-            // clear cart items
-            for (const item of cart.items) {
-              await removeFromCart(item.productId);
-            }
-            navigate("/orders");
-          } catch (err: any) {
-            toast.error("Payment verification failed: " + err.message);
-          }
-        },
-        prefill: {
-          name: customerName,
-          email: customerEmail,
-        },
-        theme: {
-          color: "#D4AF37",
-        },
-      };
-
-      const rzp = new (window as any).Razorpay(options);
-      rzp.open();
-    } catch (error: any) {
-      console.error("Checkout error:", error);
-      toast.error("Could not initiate checkout: " + error.message);
-    }
+  const handleCheckout = () => {
+    navigate("/checkout");
   };
 
   return (
