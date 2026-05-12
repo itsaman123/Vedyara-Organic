@@ -5,7 +5,7 @@ import type { Product } from "../api/productApi";
 interface WishlistContextType {
   wishlist: Product[];
   isLoading: boolean;
-  toggleWishlist: (productId: string) => Promise<void>;
+  toggleWishlist: (product: Product) => Promise<void>;
   isInWishlist: (productId: string) => boolean;
   refreshWishlist: () => Promise<void>;
   wishlistCount: number;
@@ -17,10 +17,27 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [wishlist, setWishlist] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const getLocalWishlist = (): Product[] => {
+    const saved = localStorage.getItem("guest_wishlist");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  };
+
+  const saveLocalWishlist = (newWishlist: Product[]) => {
+    localStorage.setItem("guest_wishlist", JSON.stringify(newWishlist));
+    setWishlist(newWishlist);
+  };
+
   const refreshWishlist = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      setWishlist([]);
+      setWishlist(getLocalWishlist());
       setIsLoading(false);
       return;
     }
@@ -30,11 +47,12 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setWishlist(items);
     } catch (error: any) {
       console.error("Wishlist fetch error:", error);
-      // If unauthorized or invalid token, clear it
       if (error.message?.includes("token") || error.message?.includes("authorized")) {
         localStorage.removeItem("token");
+        setWishlist(getLocalWishlist());
+      } else {
+        setWishlist([]);
       }
-      setWishlist([]);
     } finally {
       setIsLoading(false);
     }
@@ -44,10 +62,26 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     refreshWishlist();
   }, [refreshWishlist]);
 
-  const toggleWishlist = async (productId: string) => {
+  const toggleWishlist = async (product: Product) => {
+    const productId = product._id || (product as any).id;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      const localWishlist = getLocalWishlist();
+      const exists = localWishlist.some(item => (item._id === productId || (item as any).id === productId));
+      
+      if (exists) {
+        const updated = localWishlist.filter(item => (item._id !== productId && (item as any).id !== productId));
+        saveLocalWishlist(updated);
+      } else {
+        localWishlist.push(product);
+        saveLocalWishlist(localWishlist);
+      }
+      return;
+    }
+
     try {
       await wishlistApi.toggleWishlist(productId);
-      await refreshWishlist(); // Refresh to get updated list
+      await refreshWishlist();
     } catch (error) {
       console.error("Toggle wishlist error:", error);
       throw error;
@@ -55,7 +89,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const isInWishlist = (productId: string) => {
-    return wishlist.some(item => item._id === productId);
+    return wishlist.some(item => item._id === productId || (item as any).id === productId);
   };
 
   const wishlistCount = wishlist.length;

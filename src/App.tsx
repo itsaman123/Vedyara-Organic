@@ -17,6 +17,7 @@ import Contact from "./pages/Contact";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
+import { Toaster } from "react-hot-toast";
 
 /* ── Admin imports ── */
 import "./admin/admin.css";
@@ -285,6 +286,7 @@ function AppShell() {
           <AnimatedRoutes />
         </main>
         <Footer />
+        <Toaster position="top-center" />
       </div>
     </>
   );

@@ -10,7 +10,6 @@ import {
   FiPackage,
   FiShoppingCart,
   FiLogOut,
-  FiSearch,
   FiBell,
   FiHelpCircle,
   FiExternalLink,
@@ -232,14 +231,14 @@ export default function AdminLayout() {
             >
               <FiMenu size={22} />
             </button> */}
-            <div className="admin-search-bar">
+            {/* <div className="admin-search-bar">
               <FiSearch size={16} className="admin-search-icon" />
               <input
                 type="text"
                 placeholder="Search product data..."
                 className="admin-search-input"
               />
-            </div>
+            </div> */}
           </div>
 
           <div className="admin-header-right">

@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useRef, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 const HoneyBottle = "/honey-bottle.webp";
 import {
@@ -206,7 +206,7 @@ const ProductShowcaseCard = ({
                 whileTap={{ scale: 0.98 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  addToCart(product.id);
+                  addToCart(product);
                 }}
                 className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm shadow-sm transition-all duration-300"
                 style={{
@@ -223,18 +223,18 @@ const ProductShowcaseCard = ({
                 whileTap={{ scale: 0.95 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  toggleWishlist(product.id);
+                  toggleWishlist(product as any);
                 }}
                 className="w-12 h-12 flex items-center justify-center rounded-xl transition-all duration-300 shadow-sm"
                 style={{
-                  background: isInWishlist(product.id) ? "#c0392b" : "rgba(62,47,28,0.05)",
-                  color: isInWishlist(product.id) ? "#fff" : "rgba(62,47,28,0.5)",
+                  background: isInWishlist(product.id as string) ? "#c0392b" : "rgba(62,47,28,0.05)",
+                  color: isInWishlist(product.id as string) ? "#fff" : "rgba(62,47,28,0.5)",
                   border: "1px solid rgba(62,47,28,0.05)"
                 }}
               >
                 <FiHeart 
                   size={20} 
-                  fill={isInWishlist(product.id) ? "#fff" : "transparent"} 
+                  fill={isInWishlist(product.id as string) ? "#fff" : "transparent"} 
                 />
               </motion.button>
             </div>
@@ -469,8 +469,6 @@ const TestimonialCard = ({
 ═══════════════════════════════════════════════════════════ */
 export default function Home() {
   const navigate = useNavigate();
-  const { addToCart } = useCart();
-  const { toggleWishlist, isInWishlist } = useWishlist();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading } = useProducts({
@@ -478,7 +476,7 @@ export default function Home() {
     limit: 4,
   });
 
-  const mapProduct = (p: ApiProduct) => ({
+  const mapProduct = (p: ApiProduct): any => ({
     id: p.slug, // Use slug for navigation
     name: p.name,
     category: p.category,

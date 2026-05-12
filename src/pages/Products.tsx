@@ -4,10 +4,13 @@ import { motion, AnimatePresence, useInView } from "framer-motion";
 import { FiSearch, FiX, FiFilter, FiGrid, FiList, FiShoppingBag, FiHeart } from "react-icons/fi";
 import { FaStar, FaLeaf } from "react-icons/fa";
 import { useProducts, type Product as ApiProduct } from "../api/productApi";
-import { categories, type Product } from "../data/products";
+import { categories } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { staggerContainer } from "../utils/animations";
+import * as orderApi from "../api/orderApi";
+import { loadRazorpayScript } from "../utils/payment";
+import { toast } from "react-hot-toast";
 
 /* ═══════════════════════════════════════════════════════════
    MORPHING BLOB
@@ -57,11 +60,13 @@ const AnimatedProductCard = ({
   product,
   index,
   onView,
+  onBuyNow,
   viewMode,
 }: {
-  product: Product;
+  product: any;
   index: number;
-  onView: (p: Product) => void;
+  onView: (p: any) => void;
+  onBuyNow: (p: any) => void;
   viewMode: "grid" | "list";
 }) => {
   const ref = useRef(null);
@@ -82,12 +87,12 @@ const AnimatedProductCard = ({
       >
         <div className="relative w-full sm:w-48 h-48 flex-shrink-0 overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50">
           <motion.img
-            src={product.image}
+            src={product.images[0]}
             alt={product.name}
             className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
             whileHover={{ scale: 1.1 }}
           />
-          {product.badge && (
+          {product.featured && (
             <div
               className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold"
               style={{
@@ -95,7 +100,7 @@ const AnimatedProductCard = ({
                 color: "#3E2F1C",
               }}
             >
-              {product.badge}
+              Best Seller
             </div>
           )}
         </div>
@@ -114,18 +119,18 @@ const AnimatedProductCard = ({
             </div>
             <div className="text-right flex-shrink-0">
               <p className="font-bold text-xl" style={{ color: "#3E2F1C" }}>
-                {product.price}
+                ₹{product.discountedPrice || product.price}
               </p>
-              {product.originalPrice && (
+              {product.discountedPrice && (
                 <p className="text-xs line-through" style={{ color: "rgba(62,47,28,0.4)" }}>
-                  {product.originalPrice}
+                  ₹{product.price}
                 </p>
               )}
             </div>
           </div>
-          <p className="text-sm text-gray-500 mb-4 line-clamp-2">{product.shortDesc}</p>
+          <p className="text-sm text-gray-500 mb-4 line-clamp-2">{product.shortDescription || product.description}</p>
           <div className="flex flex-wrap gap-2 mb-4">
-            {product.benefits.slice(0, 3).map((b) => (
+            {(product.tags || ["100% Natural", "Pure"]).slice(0, 3).map((b: string) => (
               <span
                 key={b}
                 className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100"
@@ -138,27 +143,27 @@ const AnimatedProductCard = ({
             <div className="flex items-center gap-1.5">
               <FaStar size={14} style={{ color: "#D4AF37" }} />
               <span className="text-sm font-medium" style={{ color: "#3E2F1C" }}>
-                {product.rating || "New"}
+                4.8
               </span>
-              <span className="text-xs text-gray-400">({product.reviews || 0})</span>
+              <span className="text-xs text-gray-400">(124)</span>
             </div>
             <div className="flex items-center gap-2">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id as string); }}
+                onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
                 className="p-2 rounded-xl transition-all duration-300"
                 style={{ 
-                  background: isInWishlist(product.id as string) ? "#c0392b" : "rgba(62,47,28,0.05)",
-                  color: isInWishlist(product.id as string) ? "#fff" : "rgba(62,47,28,0.5)"
+                  background: isInWishlist(product._id) ? "#c0392b" : "rgba(62,47,28,0.05)",
+                  color: isInWishlist(product._id) ? "#fff" : "rgba(62,47,28,0.5)"
                 }}
               >
-                <FiHeart size={16} fill={isInWishlist(product.id as string) ? "#fff" : "transparent"} />
+                <FiHeart size={16} fill={isInWishlist(product._id) ? "#fff" : "transparent"} />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={(e) => { e.stopPropagation(); addToCart(product.id as string); }}
+                onClick={(e) => { e.stopPropagation(); addToCart(product); }}
                 className="flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md"
                 style={{
                   background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
@@ -194,140 +199,158 @@ const AnimatedProductCard = ({
         className="relative bg-white rounded-3xl overflow-hidden shadow-lg shadow-black/5 transition-all duration-500 group-hover:shadow-xl group-hover:shadow-amber-900/10 flex flex-col h-full"
       >
 
-        {/* Badge */}
-        {product.badge && (
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 + 0.3 }}
-            className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full text-xs font-bold"
-            style={{
-              background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-              color: "#3E2F1C",
-            }}
-          >
-            {product.badge}
-          </motion.div>
-        )}
-
-        {/* Product Image */}
-        <motion.div
-          className="relative flex-shrink-0 h-56 flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-amber-50"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.4 }}
-        >
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{
-              background: "radial-gradient(circle at center, rgba(212,175,55,0.4) 0%, transparent 70%)",
-            }}
-          />
-          <img
-            src={product.image}
-            alt={product.name}
-            className="relative z-10 w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-110"
-            style={{ filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.1))" }}
-          />
-        </motion.div>
-
-        {/* Product Info */}
-        <div className="p-6 flex flex-col flex-1">
-          <p
-            className="text-xs font-semibold uppercase tracking-widest mb-1"
-            style={{ color: "#6B8E23" }}
-          >
-            {product.category}
-          </p>
-          <h3 className="font-serif font-bold text-lg mb-2" style={{ color: "#3E2F1C" }}>
-            {product.name}
-          </h3>
-          <p className="text-sm text-gray-500 line-clamp-2 mb-3">{product.shortDesc}</p>
-
-          {/* Benefits */}
-          <div className="flex flex-wrap gap-2 mb-3">
-            {product.benefits.slice(0, 2).map((benefit) => (
-              <span
-                key={benefit}
-                className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-100"
-              >
-                {benefit}
-              </span>
-            ))}
-          </div>
-
-          {/* Price & CTA Row */}
-          <div className="pt-4 border-t border-gray-100 mt-auto flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-2xl font-bold" style={{ color: "#3E2F1C" }}>
-                  {product.price}
-                </span>
-                {product.originalPrice && (
-                  <span className="ml-2 text-sm text-gray-400 line-through">
-                    {product.originalPrice}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-1.5">
-                <FaStar size={14} style={{ color: "#D4AF37" }} />
-                <span className="text-sm font-semibold" style={{ color: "#3E2F1C" }}>
-                  {product.rating || "4.8"}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  addToCart(product.id as string);
-                }}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all duration-300"
-                style={{
-                  background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-                  color: "#3E2F1C",
-                }}
-              >
-                <FiShoppingBag size={16} />
-                Add to Cart
-              </motion.button>
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleWishlist(product.id as string);
-                }}
-                className="w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300"
-                style={{
-                  background: isInWishlist(product.id as string) ? "#c0392b" : "rgba(62,47,28,0.05)",
-                  color: isInWishlist(product.id as string) ? "#fff" : "rgba(62,47,28,0.5)",
-                  border: "1px solid rgba(62,47,28,0.05)"
-                }}
-              >
-                <FiHeart 
-                  size={18} 
-                  fill={isInWishlist(product.id as string) ? "#fff" : "transparent"} 
-                />
-              </motion.button>
-            </div>
-          </div>
-        </div>
-
-        {/* Hover Glow */}
-        <motion.div
-          className="absolute inset-0 rounded-3xl pointer-events-none"
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
-          style={{
-            background: "linear-gradient(to top, rgba(212,175,55,0.08) 0%, transparent 50%)",
-          }}
-        />
-      </div>
+{
+  product.badge && (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.1 + 0.3 }}
+      className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full text-xs font-bold"
+      style={{
+        background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+        color: "#3E2F1C",
+      }}
+    >
+      {product.badge}
     </motion.div>
+  )
+}
+
+
+<motion.div
+  className="relative flex-shrink-0 h-56 flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-amber-50"
+  whileHover={{ scale: 1.05 }}
+  transition={{ duration: 0.4 }}
+>
+  <div
+    className="absolute inset-0 opacity-20"
+    style={{
+      background: "radial-gradient(circle at center, rgba(212,175,55,0.4) 0%, transparent 70%)",
+    }}
+  />
+  <img
+    src={product.image}
+    alt={product.name}
+    className="relative z-10 w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-110"
+    style={{ filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.1))" }}
+  />
+</motion.div>
+
+<div className="p-6 flex flex-col flex-1">
+  <p
+    className="text-xs font-semibold uppercase tracking-widest mb-1"
+    style={{ color: "#6B8E23" }}
+  >
+    {product.category}
+  </p>
+  <h3 className="font-serif font-bold text-lg mb-2" style={{ color: "#3E2F1C" }}>
+    {product.name}
+  </h3>
+  <p className="text-sm text-gray-500 line-clamp-2 mb-3">{product.shortDesc}</p>
+
+
+  <div className="flex flex-wrap gap-2 mb-3">
+    {product.benefits.slice(0, 2).map((benefit: string) => (
+      <span
+        key={benefit}
+        className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-100"
+      >
+        {benefit}
+      </span>
+    ))}
+  </div>
+
+
+  <div className="pt-4 border-t border-gray-100 mt-auto flex flex-col gap-3">
+    <div className="flex items-center justify-between">
+      <div>
+        <span className="text-2xl font-bold" style={{ color: "#3E2F1C" }}>
+          {product.price}
+        </span>
+        {product.originalPrice && (
+          <span className="ml-2 text-sm text-gray-400 line-through">
+            {product.originalPrice}
+          </span>
+        )}
+      </div>
+      <div className="flex items-center gap-1.5">
+        <FaStar size={14} style={{ color: "#D4AF37" }} />
+        <span className="text-sm font-semibold" style={{ color: "#3E2F1C" }}>
+          {product.rating || "4.8"}
+        </span>
+      </div>
+    </div>
+
+    <div className="flex flex-col gap-2">
+      <div className="flex gap-2">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            addToCart(product);
+          }}
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all duration-300"
+          style={{
+            background: "rgba(62,47,28,0.05)",
+            color: "#3E2F1C",
+            border: "1px solid rgba(62,47,28,0.1)"
+          }}
+        >
+          <FiShoppingBag size={16} />
+          Add to Cart
+        </motion.button>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleWishlist(product);
+          }}
+          className="w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300"
+          style={{
+            background: isInWishlist(product.id as string) ? "#c0392b" : "rgba(62,47,28,0.05)",
+            color: isInWishlist(product.id as string) ? "#fff" : "rgba(62,47,28,0.5)",
+            border: "1px solid rgba(62,47,28,0.05)"
+          }}
+        >
+          <FiHeart
+            size={18}
+            fill={isInWishlist(product.id as string) ? "#fff" : "transparent"}
+          />
+        </motion.button>
+      </div>
+
+      <motion.button
+        whileHover={{ scale: 1.02, y: -2 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onBuyNow(product);
+        }}
+        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm shadow-lg shadow-amber-200 transition-all duration-300"
+        style={{
+          background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+          color: "#3E2F1C",
+        }}
+      >
+        Buy Now
+      </motion.button>
+    </div>
+  </div>
+</div>
+
+<motion.div
+  className="absolute inset-0 rounded-3xl pointer-events-none"
+  initial={{ opacity: 0 }}
+  whileHover={{ opacity: 1 }}
+  style={{
+    background: "linear-gradient(to top, rgba(212,175,55,0.08) 0%, transparent 50%)",
+  }}
+/>
+      </div >
+    </motion.div >
   );
 };
 
@@ -349,9 +372,8 @@ const CategoryButton = ({
     onClick={onClick}
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
-    className={`relative flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-full font-medium text-sm transition-all duration-300 ${
-      isActive ? "text-white" : "text-gray-600"
-    }`}
+    className={`relative flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-full font-medium text-sm transition-all duration-300 ${isActive ? "text-white" : "text-gray-600"
+      }`}
     style={{
       background: isActive
         ? "linear-gradient(135deg, #D4AF37, #e8c84a)"
@@ -381,8 +403,6 @@ const CategoryButton = ({
 ═══════════════════════════════════════════════════════════ */
 export default function Products() {
   const navigate = useNavigate();
-  const { addToCart } = useCart();
-  const { toggleWishlist, isInWishlist } = useWishlist();
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -396,6 +416,7 @@ export default function Products() {
   });
 
   const mapProduct = (p: ApiProduct) => ({
+    _id: p._id,
     id: p.slug, // Use slug for navigation
     name: p.name,
     category: p.category,
@@ -418,6 +439,78 @@ export default function Products() {
     if (!data?.items) return [];
     return data.items.map(mapProduct);
   }, [data]);
+
+  const handleBuyNow = async (product: any) => {
+    const isScriptLoaded = await loadRazorpayScript();
+    if (!isScriptLoaded) {
+      toast.error("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+
+    try {
+      // Find the actual product object from API data to get the _id
+      const apiProduct = data?.items.find(p => p.slug === product.id);
+      if (!apiProduct) {
+        toast.error("Product details not found. Please try again.");
+        return;
+      }
+
+      // For Buy Now, we'll ask for name/email if not logged in
+      let customerName = "Guest User";
+      let customerEmail = "guest@example.com";
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        const name = prompt("Please enter your name for the order:");
+        const email = prompt("Please enter your email for the order:");
+        if (!name || !email) return;
+        customerName = name;
+        customerEmail = email;
+      }
+
+      const orderData = await orderApi.createRazorpayOrder({
+        items: [{ productId: apiProduct._id, quantity: 1 }],
+        customerName,
+        customerEmail
+      });
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_placeholder",
+        amount: orderData.razorpayOrder.amount,
+        currency: orderData.razorpayOrder.currency,
+        name: "Vedyara",
+        description: `Purchase of ${product.name}`,
+        order_id: orderData.razorpayOrder.id,
+        handler: async (response: any) => {
+          try {
+            await orderApi.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              orderId: orderData.orderId
+            });
+            toast.success("Payment successful!");
+            navigate("/orders"); // Or a success page
+          } catch (err: any) {
+            toast.error("Payment verification failed: " + err.message);
+          }
+        },
+        prefill: {
+          name: customerName,
+          email: customerEmail,
+        },
+        theme: {
+          color: "#D4AF37",
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (error: any) {
+      console.error("Buy now error:", error);
+      toast.error("Could not initiate purchase: " + error.message);
+    }
+  };
 
   const handleQuickView = (product: any) => {
     navigate(`/product/${product.id}`);
@@ -740,12 +833,13 @@ export default function Products() {
                   : "flex flex-col gap-6"
               }
             >
-              {filteredProducts.map((product, i) => (
+              {filteredProducts.map((item, i) => (
                 <AnimatedProductCard
-                  key={product.id}
-                  product={product}
+                  key={item._id}
+                  product={item}
                   index={i}
                   onView={handleQuickView}
+                  onBuyNow={handleBuyNow}
                   viewMode={viewMode}
                 />
               ))}
@@ -821,7 +915,7 @@ export default function Products() {
           borderTop: "1px solid rgba(62,47,28,0.08)",
         }}
       >
-        <Link 
+        <Link
           to="/products"
           className="flex items-center justify-center gap-2.5 w-full py-4 rounded-2xl font-bold text-sm shadow-lg shadow-amber-900/20"
           style={{

@@ -45,6 +45,7 @@ export const getProducts = async (params: {
   search?: string;
   sortBy?: string;
   sortOrder?: string;
+  featured?: boolean | string;
 } = {}) => {
   const url = new URL(`${API_BASE_URL}/api/v1/products`);
   

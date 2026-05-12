@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX, FiCheck, FiPackage, FiHeart, FiShare2, FiShoppingBag } from "react-icons/fi";
-import type { Product } from "../data/products";
+
 import { useCart } from "../context/CartContext";
 
 interface ProductModalProps {
@@ -338,7 +338,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                         Key Benefits
                       </p>
                       <div className="grid grid-cols-2 gap-2.5">
-                        {product.benefits.map((benefit, i) => (
+                        {product.benefits.map((benefit: string, i: number) => (
                           <motion.div
                             key={benefit}
                             initial={{ opacity: 0, x: -10 }}
@@ -402,7 +402,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                         whileTap={{ scale: 0.98 }}
                         onClick={async () => {
                           if (product) {
-                            await addToCart(product.id as string);
+                            await addToCart(product);
                             onClose();
                           }
                         }}

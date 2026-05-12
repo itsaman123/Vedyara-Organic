@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiHeart, FiShoppingBag, FiTrash2, FiArrowRight } from "react-icons/fi";
+import { FiHeart, FiShoppingBag, FiTrash2 } from "react-icons/fi";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
 
@@ -65,7 +65,7 @@ const Wishlist: React.FC = () => {
               >
                 {/* Remove button */}
                 <button
-                  onClick={() => toggleWishlist(product._id as string)}
+                  onClick={() => toggleWishlist(product)}
                   className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 transition-colors shadow-sm"
                 >
                   <FiTrash2 size={18} />
@@ -89,9 +89,9 @@ const Wishlist: React.FC = () => {
                     {product.name}
                   </h3>
                   <div className="flex items-center justify-between mb-6">
-                    <p className="font-bold text-xl text-brand-brown">₹{product.price}</p>
-                    {product.originalPrice && (
-                      <p className="text-sm text-gray-400 line-through">₹{product.originalPrice}</p>
+                    <p className="font-bold text-xl text-brand-brown">₹{product.discountedPrice !== null ? product.discountedPrice : product.price}</p>
+                    {product.discountedPrice !== null && (
+                      <p className="text-sm text-gray-400 line-through">₹{product.price}</p>
                     )}
                   </div>
 
@@ -99,7 +99,7 @@ const Wishlist: React.FC = () => {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => addToCart(product._id as string)}
+                      onClick={() => addToCart(product)}
                       className="w-full py-3 rounded-xl bg-amber-600 text-white font-bold text-sm shadow-md flex items-center justify-center gap-2"
                     >
                       <FiShoppingBag size={16} />

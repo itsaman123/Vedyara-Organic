@@ -11,7 +11,9 @@ import {
   FiShield,
   FiZap,
   FiTruck,
-  FiRotateCcw
+  FiRotateCcw,
+  FiMinus,
+  FiPlus
 } from "react-icons/fi";
 import { useProduct } from "../api/productApi";
 import { products as localProducts, type Product } from "../data/products";
@@ -60,7 +62,6 @@ export default function ProductDetail() {
   const [isAdding, setIsAdding] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  const liked = product ? isInWishlist(product.id as string) : false;
 
   // Try to find in local products first (for static data)
   const localProduct = useMemo(() => 
@@ -95,6 +96,8 @@ export default function ProductDetail() {
     } as Product;
   }, [localProduct, apiProduct]);
 
+  const liked = product ? isInWishlist(product.id as string) : false;
+
   useEffect(() => {
     if (product) {
       setSelectedImage(product.images?.[0] || product.image);
@@ -115,6 +118,8 @@ export default function ProductDetail() {
       </div>
     );
   }
+
+  if (!product) return null;
 
   const discount = product.originalPrice
     ? Math.round(
@@ -206,7 +211,7 @@ export default function ProductDetail() {
 
               {/* Like Button */}
               <button
-                onClick={() => product && toggleWishlist(product.id as string)}
+                onClick={() => product && toggleWishlist(product as any)}
                 className="absolute top-6 right-6 z-20 w-12 h-12 flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
                 style={{
                   background: liked ? "#c0392b" : "rgba(255,255,255,0.9)",
@@ -308,7 +313,7 @@ export default function ProductDetail() {
               </p>
 
               <div className="grid grid-cols-2 gap-4 py-4">
-                {product.benefits.map((benefit, i) => (
+                {product.benefits.map((benefit) => (
                   <div
                     key={benefit}
                     className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-stone-100 shadow-sm"
@@ -366,7 +371,7 @@ export default function ProductDetail() {
                   onClick={async () => {
                     if (product) {
                       setIsAdding(true);
-                      await addToCart(product.id as string, quantity);
+                      await addToCart(product, quantity);
                       setIsAdding(false);
                     }
                   }}
@@ -387,7 +392,7 @@ export default function ProductDetail() {
                   whileTap={{ scale: 0.98 }}
                   onClick={async () => {
                     if (product) {
-                      await addToCart(product.id as string, quantity);
+                      await addToCart(product, quantity);
                       navigate("/cart");
                     }
                   }}
