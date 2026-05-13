@@ -323,7 +323,7 @@ function AppShell() {
 
   return (
     <>
-      <FloatingLeaves />
+      {/* <FloatingLeaves /> */}
       <div
         className="relative flex flex-col min-h-screen"
         style={{ position: "relative", zIndex: 1 }}

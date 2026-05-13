@@ -5,6 +5,7 @@ import { FiCheck, FiArrowRight, FiShield, FiLock } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { useCart } from "../context/CartContext";
 import * as orderApi from "../api/orderApi";
+import * as userApi from "../api/userApi";
 import { loadRazorpayScript } from "../utils/payment";
 
 interface CheckoutFormData {
@@ -31,6 +32,10 @@ export default function Checkout() {
   });
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [selectedAddressIndex, setSelectedAddressIndex] = useState<number>(-1);
+  const [showAddressForm, setShowAddressForm] = useState(false);
 
   // Parse direct buy parameters from location state
   const isDirectBuy = location.state?.isDirectBuy;
@@ -59,12 +64,29 @@ export default function Checkout() {
       } catch (err) {}
     }
 
-    // If authenticated, we could pre-fill data or skip OTP
+    // If authenticated, fetch profile and addresses
     const token = localStorage.getItem("token");
     if (token) {
-      // In a real app we would fetch the user profile here
-      // For now we'll just require them to enter details but maybe skip OTP
-      // We will assume they still need to fill the address form
+      userApi.getProfile().then((data) => {
+        setUserProfile(data.user);
+        setFormData(prev => ({
+          ...prev,
+          name: data.user.name,
+          email: data.user.email,
+        }));
+        if (data.user.addresses && data.user.addresses.length > 0) {
+          setAddresses(data.user.addresses);
+          setSelectedAddressIndex(0);
+          setShowAddressForm(false);
+        } else {
+          setShowAddressForm(true);
+        }
+      }).catch(err => {
+        console.error("Failed to load profile", err);
+        setShowAddressForm(true);
+      });
+    } else {
+      setShowAddressForm(true);
     }
     
     if (!orderItems || orderItems.length === 0) {
@@ -86,6 +108,28 @@ export default function Checkout() {
     
     // If user is already authenticated, they don't need OTP verification
     if (token) {
+      if (showAddressForm) {
+        try {
+          setIsLoading(true);
+          const data = await userApi.addAddress({
+            name: formData.name,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            pincode: formData.pincode,
+            isDefault: addresses.length === 0
+          });
+          setAddresses(data.user.addresses);
+          setSelectedAddressIndex(data.user.addresses.length - 1);
+          setShowAddressForm(false);
+        } catch (error: any) {
+          toast.error(error.message || "Failed to add address");
+          setIsLoading(false);
+          return;
+        } finally {
+          setIsLoading(false);
+        }
+      }
       initiatePayment();
       return;
     }
@@ -107,7 +151,14 @@ export default function Checkout() {
     e.preventDefault();
     try {
       setIsLoading(true);
-      await orderApi.verifyOtp({ email: formData.email, otp });
+      const data = await orderApi.verifyOtp({ email: formData.email, otp, name: formData.name });
+      
+      // Auto-login the user
+      if (data && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
       toast.success("Email verified successfully!");
       initiatePayment();
     } catch (error: any) {
@@ -175,7 +226,9 @@ export default function Checkout() {
         prefill: {
           name: formData.name,
           email: formData.email,
-          contact: formData.phone,
+          contact: (!showAddressForm && selectedAddressIndex >= 0 && addresses[selectedAddressIndex]) 
+            ? addresses[selectedAddressIndex].phone 
+            : formData.phone,
         },
         theme: {
           color: "#D4AF37",
@@ -210,32 +263,107 @@ export default function Checkout() {
                   onSubmit={handleDetailsSubmit} 
                   className="space-y-6"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-bold text-stone-600 mb-2">Full Name</label>
-                      <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="John Doe" />
+                  {userProfile && (
+                    <div className="bg-stone-50 p-6 rounded-2xl border border-stone-100 mb-6">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-12 h-12 bg-[#3E2F1C] text-[#D4AF37] rounded-full flex items-center justify-center font-bold text-xl">
+                          {userProfile.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-stone-800 text-lg">{userProfile.name}</h3>
+                          <p className="text-stone-500 text-sm">{userProfile.email}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-bold text-stone-600 mb-2">Email Address</label>
-                      <input required type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="john@example.com" />
+                  )}
+
+                  {!userProfile && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-bold text-stone-600 mb-2">Full Name</label>
+                        <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="John Doe" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-stone-600 mb-2">Email Address</label>
+                        <input required type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="john@example.com" />
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-bold text-stone-600 mb-2">Phone Number</label>
-                      <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="+91 9876543210" />
+                  )}
+
+                  {addresses.length > 0 && !showAddressForm && (
+                    <div className="space-y-4 mb-6">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-bold text-stone-800">Select Delivery Address</h3>
+                        <button type="button" onClick={() => setShowAddressForm(true)} className="text-sm text-[#D4AF37] font-bold hover:underline">
+                          + Add New Address
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 gap-4">
+                        {addresses.map((addr, idx) => (
+                          <div 
+                            key={idx} 
+                            onClick={() => setSelectedAddressIndex(idx)}
+                            className={`p-4 rounded-xl border-2 cursor-pointer transition-colors ${selectedAddressIndex === idx ? 'border-[#D4AF37] bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <p className="font-bold text-stone-800">{addr.name} - {addr.phone}</p>
+                                <p className="text-stone-600 text-sm mt-1">{addr.address}, {addr.city}, {addr.pincode}</p>
+                              </div>
+                              <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${selectedAddressIndex === idx ? 'border-[#D4AF37]' : 'border-stone-300'}`}>
+                                {selectedAddressIndex === idx && <div className="w-3 h-3 bg-[#D4AF37] rounded-full" />}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-bold text-stone-600 mb-2">Pincode</label>
-                      <input required type="text" name="pincode" value={formData.pincode} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="400001" />
+                  )}
+
+                  {showAddressForm && (
+                    <div className="bg-white rounded-xl">
+                      {addresses.length > 0 && (
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="font-bold text-stone-800">Add New Address</h3>
+                          <button type="button" onClick={() => setShowAddressForm(false)} className="text-sm text-stone-500 hover:text-stone-800">
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {userProfile && (
+                          <>
+                            <div>
+                              <label className="block text-sm font-bold text-stone-600 mb-2">Name</label>
+                              <input required type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="John Doe" />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-bold text-stone-600 mb-2">Phone Number</label>
+                              <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="+91 9876543210" />
+                            </div>
+                          </>
+                        )}
+                        {!userProfile && (
+                          <div>
+                            <label className="block text-sm font-bold text-stone-600 mb-2">Phone Number</label>
+                            <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="+91 9876543210" />
+                          </div>
+                        )}
+                        <div>
+                          <label className="block text-sm font-bold text-stone-600 mb-2">Pincode</label>
+                          <input required type="text" name="pincode" value={formData.pincode} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="400001" />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-bold text-stone-600 mb-2">Delivery Address</label>
+                          <input required type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="123 Main St, Apt 4B" />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-bold text-stone-600 mb-2">City / State</label>
+                          <input required type="text" name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="Mumbai, Maharashtra" />
+                        </div>
+                      </div>
                     </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-bold text-stone-600 mb-2">Delivery Address</label>
-                      <input required type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="123 Main St, Apt 4B" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-bold text-stone-600 mb-2">City / State</label>
-                      <input required type="text" name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-none transition-colors" placeholder="Mumbai, Maharashtra" />
-                    </div>
-                  </div>
+                  )}
                   
                   <button type="submit" disabled={isLoading} className="w-full py-4 rounded-xl bg-[#3E2F1C] text-white font-bold flex items-center justify-center gap-2 mt-8 hover:bg-[#2A1F13] transition-colors shadow-lg disabled:opacity-70">
                     {isLoading ? "Processing..." : localStorage.getItem("token") ? "Proceed to Payment" : "Continue to Verification"} <FiArrowRight />

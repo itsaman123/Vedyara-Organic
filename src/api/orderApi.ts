@@ -72,7 +72,7 @@ export const sendOtp = async (data: { email: string }) => {
   return payload.data;
 };
 
-export const verifyOtp = async (data: { email: string; otp: string }) => {
+export const verifyOtp = async (data: { email: string; otp: string; name?: string }) => {
   const response = await fetch(`${API_BASE_URL}/api/v1/orders/verify-otp`, {
     method: "POST",
     headers: getHeaders(),
