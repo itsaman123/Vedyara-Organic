@@ -79,6 +79,7 @@ export default function ProductDetail() {
     if (!apiProduct) return null;
 
     return {
+      _id: apiProduct._id,
       id: apiProduct._id,
       name: apiProduct.name,
       category: apiProduct.category,

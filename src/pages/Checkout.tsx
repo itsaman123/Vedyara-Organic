@@ -38,11 +38,15 @@ export default function Checkout() {
   const directQuantity = location.state?.quantity || 1;
 
   const orderItems = isDirectBuy
-    ? [{ productId: directProduct.id, quantity: directQuantity, price: parseInt(directProduct.price.replace(/\D/g, "")) }]
+    ? [{ 
+        productId: directProduct._id || directProduct.id, 
+        quantity: directQuantity, 
+        price: parseInt(directProduct.price.toString().replace(/\D/g, "")) 
+      }]
     : cart.items;
 
   const totalAmount = isDirectBuy
-    ? parseInt(directProduct.price.replace(/\D/g, "")) * directQuantity
+    ? parseInt(directProduct.price.toString().replace(/\D/g, "")) * directQuantity
     : cart.totalAmount;
 
   useEffect(() => {
