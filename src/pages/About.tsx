@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
-import FarmImage from "../../public/farm-image.webp";
-import BeeFarm from "../../public/bee-farm.webp";
-import HoneyBottle from "../../public/honey-bottle.webp";
+const FarmImage = "/farm-image.webp";
+const BeeFarm = "/bee-farm.webp";
+const HoneyBottle = "/honey-bottle.webp";
 import {
   FiArrowRight,
   FiCheck,
@@ -16,43 +16,12 @@ import { FaLeaf, FaQuoteLeft } from "react-icons/fa";
 import { fadeUp, staggerContainer } from "../utils/animations";
 
 /* ═══════════════════════════════════════════════════════════
-   MORPHING BLOB
+   DECORATIVE BLOB — static, no animation
 ═══════════════════════════════════════════════════════════ */
-const MorphingBlob = ({ color, className }: { color: string; className?: string }) => (
-  <motion.div
-    className={`absolute rounded-full blur-3xl ${className}`}
+const Blob = ({ color, className }: { color: string; className?: string }) => (
+  <div
+    className={`absolute rounded-full blur-2xl pointer-events-none ${className}`}
     style={{ background: color }}
-    animate={{
-      borderRadius: [
-        "60% 40% 30% 70% / 60% 30% 70% 40%",
-        "30% 60% 70% 40% / 50% 60% 30% 60%",
-        "60% 40% 30% 70% / 60% 30% 70% 40%",
-      ],
-      scale: [1, 1.08, 0.95, 1],
-    }}
-    transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-  />
-);
-
-/* ═══════════════════════════════════════════════════════════
-   FLOATING PARTICLES
-═══════════════════════════════════════════════════════════ */
-const FloatingParticle = ({ delay, x, size }: { delay: number; x: number; size: number }) => (
-  <motion.div
-    className="absolute rounded-full pointer-events-none"
-    style={{
-      left: `${x}%`,
-      top: "100%",
-      width: size,
-      height: size,
-      background: "linear-gradient(135deg, #D4AF37, #6B8E23)",
-    }}
-    animate={{
-      y: [-200, -500, -200],
-      opacity: [0, 0.5, 0],
-      scale: [0.5, 1, 0.5],
-    }}
-    transition={{ duration: 8, delay, repeat: Infinity, ease: "easeInOut" }}
   />
 );
 
@@ -162,7 +131,7 @@ const values = [
   {
     icon: "🌿",
     title: "Purity First",
-    description: "Every product is certified organic, free from synthetic pesticides, chemicals, or artificial additives.",
+    description: "Every product is 100% natural, free from synthetic pesticides, chemicals, or artificial additives.",
     color: "rgba(107,142,35,0.12)",
   },
   {
@@ -186,21 +155,21 @@ const values = [
   {
     icon: "🏡",
     title: "Community Driven",
-    description: "Every purchase supports small-scale organic farmers, women's cooperatives, and rural livelihoods.",
+    description: "Every purchase supports small-scale farmers, women's cooperatives, and rural livelihoods.",
     color: "rgba(212,175,55,0.08)",
   },
   {
     icon: "💛",
     title: "Trusted by Families",
-    description: "Over 1000 families across India choose Vedyara for their daily nutrition.",
+    description: "Over 1000 families across India trust Vedyara for pure honey, turmeric, and coriander every day.",
     color: "rgba(62,47,28,0.06)",
   },
 ];
 
 const milestones = [
-  { year: "2022", event: "First products launched - Pure Honey & Jaggery" },
+  { year: "2022", event: "First products launched — Pure Honey & Turmeric Powder" },
   { year: "2024", event: "Expanded to 50+ farmer partnerships across India" },
-  { year: "2026", event: "Moving online with Amazon India launch" },
+  { year: "2026", event: "Going national — online & Amazon India launch" },
 ];
 
 /* ═══════════════════════════════════════════════════════════
@@ -216,12 +185,9 @@ export default function About() {
         className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-24 pb-16"
         style={{ background: "linear-gradient(135deg, #fef9f3 0%, #f5f0e8 50%, #ebe6d9 100%)" }}
       >
-        <MorphingBlob color="rgba(212,175,55,0.2)" className="w-[600px] h-[600px] -top-48 -left-48" />
-        <MorphingBlob color="rgba(107,142,35,0.15)" className="w-[500px] h-[500px] -bottom-32 -right-32" />
+        <Blob color="rgba(212,175,55,0.2)" className="w-[600px] h-[600px] -top-48 -left-48" />
+        <Blob color="rgba(107,142,35,0.15)" className="w-[500px] h-[500px] -bottom-32 -right-32" />
 
-        {[...Array(8)].map((_, i) => (
-          <FloatingParticle key={i} delay={i * 0.6} x={8 + i * 12} size={5 + (i % 3) * 2} />
-        ))}
 
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -278,7 +244,7 @@ export default function About() {
                 className="text-lg text-gray-600 max-w-lg"
               >
                 Born from a deep belief that every Indian family deserves food that is truly pure —
-                grown without chemicals, processed without shortcuts.
+                grown without chemicals, processed without shortcuts, and delivered with integrity.
               </motion.p>
 
               <motion.div
@@ -333,17 +299,11 @@ export default function About() {
                   transform: "scale(1.3)",
                 }}
               />
-              <motion.div
-                animate={{ y: [0, -15, 0], rotate: [-2, 2, -2] }}
-                transition={{ duration: 6, repeat: Infinity }}
-              >
-                <img
-                  src={FarmImage}
-                  alt="Natural Farm"
-                  className="w-full rounded-3xl shadow-2xl"
-                  style={{ filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.15))" }}
-                />
-              </motion.div>
+              <img
+                src={FarmImage}
+                alt="Natural Farm"
+                className="w-full rounded-3xl shadow-2xl"
+              />
 
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
@@ -368,13 +328,9 @@ export default function About() {
           </div>
         </div>
 
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
           <span className="text-xs text-gray-400 uppercase tracking-widest">Scroll</span>
-        </motion.div>
+        </div>
       </section>
 
       {/* ════════════════════════════════════════════════════
@@ -412,7 +368,7 @@ export default function About() {
               custom={0.2}
               className="text-lg text-gray-600 max-w-2xl mx-auto"
             >
-              We believe organic food shouldn't be a luxury. With direct farm partnerships and
+              We believe pure food shouldn't be a luxury. With direct farm partnerships and
               a no-middleman model, we keep prices fair while quality stays uncompromisingly high.
             </motion.p>
 
@@ -446,7 +402,7 @@ export default function About() {
           BRAND STORY
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 bg-[#faf9f7] overflow-hidden">
-        <MorphingBlob color="rgba(212,175,55,0.1)" className="w-[400px] h-[400px] top-0 right-0" />
+        <Blob color="rgba(212,175,55,0.1)" className="w-[400px] h-[400px] top-0 right-0" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -505,13 +461,13 @@ export default function About() {
 
               <motion.p variants={fadeUp} custom={0.2} className="text-base text-gray-600 mb-5">
                 It began with a simple question: why is it so hard to find food that's genuinely pure?
-                In 2022, we launched with just two products — Himalayan wild honey and stone-ground
-                jaggery powder. Both sold out in weeks.
+                In 2022, we launched with just two products — Himalayan wild honey and premium turmeric powder.
+                Both sold out in weeks.
               </motion.p>
 
               <motion.p variants={fadeUp} custom={0.3} className="text-base text-gray-600 mb-8">
                 The response confirmed what we believed: people were hungry for something real.
-                Today, we work with 200+ organic farms across India.
+                Today, we offer honey, turmeric, and coriander — each sourced directly from trusted farms across India.
               </motion.p>
 
               <motion.div variants={staggerContainer} className="space-y-4">
@@ -574,8 +530,8 @@ export default function About() {
           NGO VISION
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 overflow-hidden" style={{ background: "#3E2F1C" }}>
-        <MorphingBlob color="rgba(212,175,55,0.08)" className="w-[500px] h-[500px] top-0 right-0" />
-        <MorphingBlob color="rgba(107,142,35,0.06)" className="w-[400px] h-[400px] bottom-0 left-0" />
+        <Blob color="rgba(212,175,55,0.08)" className="w-[500px] h-[500px] top-0 right-0" />
+        <Blob color="rgba(107,142,35,0.06)" className="w-[400px] h-[400px] bottom-0 left-0" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -599,12 +555,13 @@ export default function About() {
 
               <motion.p variants={fadeUp} custom={0.2} className="text-base text-gray-300 mb-5">
                 Vedyara has always been more than a food brand. Our mission is intertwined
-                with the people who grow our food — India's small-scale, organic farmers.
+                with the people who grow our food — India's small-scale farmers who farm
+                with care, tradition, and integrity.
               </motion.p>
 
               <motion.div variants={staggerContainer} className="space-y-3 mb-8">
                 {[
-                  "Free organic farming workshops in 10 states",
+                  "Free natural farming workshops in 10 states",
                   "Soil health testing & regenerative farming support",
                   "Scholarships for children of farmer partners",
                   "Women-led farming cooperative empowerment",
@@ -686,7 +643,7 @@ export default function About() {
           CTA SECTION
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 overflow-hidden" style={{ background: "linear-gradient(135deg, #fef9f3 0%, #f5f0e8 100%)" }}>
-        <MorphingBlob color="rgba(212,175,55,0.15)" className="w-[500px] h-[500px] -top-32 -left-32" />
+        <Blob color="rgba(212,175,55,0.15)" className="w-[500px] h-[500px] -top-32 -left-32" />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div
@@ -708,8 +665,8 @@ export default function About() {
               </span>
             </motion.h2>
             <motion.p variants={fadeUp} custom={0.2} className="text-lg text-gray-600 mb-10 max-w-xl mx-auto">
-              Every purchase supports organic farmers, funds rural education, and brings us closer to a
-              healthier, more honest food ecosystem.
+              Every purchase supports our partner farmers, funds rural education, and brings us closer to a
+              healthier, more honest food ecosystem for every Indian family.
             </motion.p>
             <motion.div variants={fadeUp} custom={0.3} className="flex flex-wrap justify-center gap-4">
               <Link

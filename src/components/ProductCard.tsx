@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FiEye } from "react-icons/fi";
+import { FiEye, FiShoppingBag } from "react-icons/fi";
 import type { Product } from "../data/products";
+import { useCart } from "../context/CartContext";
 
 /* ─────────────────────────────────────────────────────────────
    Badge config
@@ -34,9 +35,7 @@ const badgeConfig: Record<
 
 const categoryEmoji: Record<string, string> = {
   honey: "🍯",
-  // millets: "🌾",
-  jaggery: "🟫",
-  // grains: "🌿",
+  spices: "✨",
 };
 
 /* ─────────────────────────────────────────────────────────────
@@ -73,6 +72,8 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [imgError, setImgError] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const { addToCart } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
 
   const discount = product.originalPrice
     ? Math.round(
@@ -481,9 +482,16 @@ export default function ProductCard({
             )}
           </div>
 
-          {/* Coming Soon CTA */}
-          <div
-            onClick={(e) => e.stopPropagation()}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            disabled={isAdding}
+            onClick={async (e) => {
+              e.stopPropagation();
+              setIsAdding(true);
+              await addToCart(product.id as string);
+              setIsAdding(false);
+            }}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -493,14 +501,16 @@ export default function ProductCard({
               fontSize: "0.72rem",
               fontWeight: 700,
               letterSpacing: "0.03em",
-              background: "rgba(62,47,28,0.08)",
-              color: "rgba(62,47,28,0.5)",
-              cursor: "not-allowed",
-              userSelect: "none",
+              background: isAdding ? "rgba(62,47,28,0.1)" : "linear-gradient(135deg, #D4AF37, #e8c84a)",
+              color: "#3E2F1C",
+              border: "none",
+              cursor: isAdding ? "wait" : "pointer",
+              boxShadow: "0 4px 12px rgba(212,175,55,0.2)",
             }}
           >
-            Coming Soon
-          </div>
+            <FiShoppingBag size={14} />
+            {isAdding ? "..." : "Add"}
+          </motion.button>
         </div>
       </div>
 

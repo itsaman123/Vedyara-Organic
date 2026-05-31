@@ -1,16 +1,16 @@
 import Honey from '../assets/image-1.jpg'
 import Haldi from '../assets/haldi.jpeg'
 import Dhaniya from '../assets/dhaniya.jpeg'
-import Gud from '../assets/gud.jpeg'
 
-export interface Product {
-  id: number;
+export type Product = {
+  id: string | number;
   name: string;
-  category: "honey" | "millets" | "jaggery" | "pulses" | "grains" | "spices";
+  category: string;
   price: string;
   originalPrice?: string;
-  badge?: "Best Seller" | "Trending" | "New" | "Limited" | "Natural" | "Fresh" | "Bestseller";
+  badge?: string;
   image: string;
+  images?: string[];
   description: string;
   shortDesc: string;
   benefits: string[];
@@ -20,7 +20,7 @@ export interface Product {
   reviews: number;
   limited?: boolean;
   featured?: boolean;
-}
+};
 
 export interface Category {
   id: string;
@@ -36,8 +36,8 @@ export const products: Product[] = [
     price: "₹699",
     originalPrice: "₹1799",
     badge: "Best Seller",
-    image:
-      Honey,
+    image: Honey,
+    images: [Honey, Haldi, Dhaniya],
     shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
     description:
       "Our Pure Natural Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
@@ -49,67 +49,8 @@ export const products: Product[] = [
     ],
     weight: "1Kg",
     amazonLink: "https://www.amazon.in",
-    rating: 0,
-    reviews: 0,
-    limited: false,
-    featured: true,
-  },
-
-
-  {
-    id: 4,
-    name: "Natural Jaggery Powder (Gud)",
-    category: "jaggery",
-    price: "₹149",
-    originalPrice: "₹179",
-    badge: "Natural",
-    image: Gud,
-    shortDesc: "Chemical-free jaggery powder made from pure sugarcane juice",
-    description:
-      "Our Natural Jaggery Powder (Gud) is made using traditional methods without any chemicals or bleaching. Rich in iron and minerals, it helps improve digestion, boosts energy naturally, and is a healthier alternative to refined sugar.",
-    benefits: ["Iron Rich", "Natural Sweetener", "Chemical Free", "Energy Boost"],
-    weight: "1kg",
-    amazonLink: "https://www.amazon.in",
-    rating: 4.7,
-    reviews: 120,
-    limited: false,
-    featured: true,
-  },
-  {
-    id: 5,
-    name: "Natural Coriander Powder (Dhaniya)",
-    category: "spices",
-    price: "₹99",
-    originalPrice: "₹129",
-    badge: "Fresh",
-    image: Dhaniya,
-    shortDesc: "Aromatic coriander powder made from premium quality seeds",
-    description:
-      "Our Natural Coriander Powder (Dhaniya) is made from carefully selected seeds and ground to preserve its natural aroma and flavor. It aids digestion, supports metabolism, and enhances the taste of every dish.",
-    benefits: ["Aromatic", "Digestive Aid", "Rich Flavor", "Pure & Fresh"],
-    weight: "200g",
-    amazonLink: "https://www.amazon.in",
-    rating: 4.5,
-    reviews: 98,
-    limited: false,
-    featured: true,
-  },
-  {
-    id: 6,
-    name: "Natural Turmeric Powder (Haldi)",
-    category: "spices",
-    price: "₹129",
-    originalPrice: "₹159",
-    badge: "Bestseller",
-    image: Haldi,
-    shortDesc: "High curcumin turmeric powder for immunity and wellness",
-    description:
-      "Our Natural Turmeric Powder (Haldi) is sourced from trusted farms and processed to retain high curcumin content. Known for its anti-inflammatory and immunity-boosting properties, it is a staple for both cooking and health.",
-    benefits: ["High Curcumin", "Immunity Boost", "Anti-inflammatory", "Pure & Natural"],
-    weight: "200g",
-    amazonLink: "https://www.amazon.in",
-    rating: 4.8,
-    reviews: 210,
+    rating: 4.9,
+    reviews: 248,
     limited: false,
     featured: true,
   },
@@ -120,8 +61,8 @@ export const products: Product[] = [
     price: "₹449",
     originalPrice: "₹899",
     badge: "Best Seller",
-    image:
-      Honey,
+    image: Honey,
+    images: [Honey, Haldi, Dhaniya],
     shortDesc: "Raw, unprocessed honey from pristine Himalayan forests",
     description:
       "Our Pure Natural Honey is sourced directly from the Farm, where bees feed on flowers blooming at high altitudes. Completely raw and unprocessed, it retains all its natural enzymes, antioxidants, and healing properties. Cold-extracted without any heat treatment to preserve full nutritional value.",
@@ -133,8 +74,48 @@ export const products: Product[] = [
     ],
     weight: "500g",
     amazonLink: "https://www.amazon.in",
-    rating: 0,
-    reviews: 0,
+    rating: 4.9,
+    reviews: 312,
+    limited: false,
+    featured: true,
+  },
+  {
+    id: 5,
+    name: "Natural Coriander Powder",
+    category: "spices",
+    price: "₹99",
+    originalPrice: "₹129",
+    badge: "Fresh",
+    image: Dhaniya,
+    images: [Dhaniya, Haldi],
+    shortDesc: "Aromatic coriander powder made from premium quality seeds",
+    description:
+      "Our Natural Coriander Powder is made from carefully selected seeds and ground to preserve its natural aroma and flavor. It aids digestion, supports metabolism, and enhances the taste of every dish.",
+    benefits: ["Aromatic", "Digestive Aid", "Rich Flavor", "Pure & Fresh"],
+    weight: "200g",
+    amazonLink: "https://www.amazon.in",
+    rating: 4.5,
+    reviews: 98,
+    limited: false,
+    featured: true,
+  },
+  {
+    id: 6,
+    name: "Natural Turmeric Powder",
+    category: "spices",
+    price: "₹129",
+    originalPrice: "₹159",
+    badge: "Bestseller",
+    image: Haldi,
+    images: [Haldi, Dhaniya, Honey],
+    shortDesc: "High curcumin turmeric powder for immunity and wellness",
+    description:
+      "Our Natural Turmeric Powder is sourced from trusted farms and processed to retain high curcumin content. Known for its anti-inflammatory and immunity-boosting properties, it is a staple for both cooking and health.",
+    benefits: ["High Curcumin", "Immunity Boost", "Anti-inflammatory", "Pure & Natural"],
+    weight: "200g",
+    amazonLink: "https://www.amazon.in",
+    rating: 4.8,
+    reviews: 210,
     limited: false,
     featured: true,
   },
@@ -147,9 +128,7 @@ export const featuredProducts: Product[] = products.filter(
 export const categories: Category[] = [
   { id: "all", label: "All Products", emoji: "🌿" },
   { id: "honey", label: "Honey", emoji: "🍯" },
-  { id: "millets", label: "Millets", emoji: "🌾" },
-  { id: "jaggery", label: "Jaggery", emoji: "🟫" },
-  { id: "grains", label: "Grains", emoji: "🌾" },
+  { id: "spices", label: "Spices & Powders", emoji: "✨" },
 ];
 
 export const testimonials = [
@@ -161,7 +140,7 @@ export const testimonials = [
     rating: 5,
     review:
       "The Himalayan Honey is absolutely pure and delicious. You can taste the difference from store-bought honey immediately. My whole family loves it!",
-    product: "Himalayan Wild Honey",
+    product: "Pure Natural Honey",
     date: "2 weeks ago",
   },
   {
@@ -171,8 +150,8 @@ export const testimonials = [
     avatar: "RV",
     rating: 5,
     review:
-      "Switched to Vedyara's Jaggery Powder instead of sugar. Amazing taste in chai, and I feel genuinely healthier. Will keep ordering!",
-    product: "Natural Jaggery Powder",
+      "The Turmeric Powder has incredible colour and aroma — nothing like the commercial brands. I use it daily and I can feel the difference in my energy levels.",
+    product: "Natural Turmeric Powder",
     date: "1 month ago",
   },
   {
@@ -182,8 +161,8 @@ export const testimonials = [
     avatar: "AP",
     rating: 5,
     review:
-      "The millet range is incredible. Foxtail millet has become our family's staple grain. Packaging is premium and the quality is consistently excellent.",
-    product: "Foxtail Millet",
+      "The Coriander Powder has an incredible fragrance. My curries taste completely different now. Packaging is premium and quality is consistently excellent.",
+    product: "Natural Coriander Powder",
     date: "3 weeks ago",
   },
   {
@@ -191,10 +170,10 @@ export const testimonials = [
     name: "Deepak Nair",
     location: "Bangalore",
     avatar: "DN",
-    rating: 4,
+    rating: 5,
     review:
-      "Really happy with the Ragi flour quality. My kids love the ragi dosas I make. Vedyara has earned a permanent spot in my kitchen.",
-    product: "Finger Millet (Ragi)",
+      "Really happy with the honey quality. My kids love having it with warm milk every night. Vedyara has earned a permanent spot in our kitchen.",
+    product: "Pure Natural Honey",
     date: "1 week ago",
   },
 ];
@@ -205,7 +184,7 @@ export const whyChooseUs = [
     icon: "🌿",
     title: "100% Natural",
     description:
-      "Certified organic produce grown without synthetic pesticides or fertilizers. Pure from seed to shelf.",
+      "Pure produce grown without synthetic pesticides or fertilizers. Pure from farm to shelf.",
   },
   {
     id: 2,
@@ -219,7 +198,7 @@ export const whyChooseUs = [
     icon: "🌾",
     title: "Farm Sourced",
     description:
-      "Direct partnerships with small-scale organic farmers across India. Fresh, traceable, transparent.",
+      "Direct partnerships with small-scale farmers across India. Fresh, traceable, transparent.",
   },
   {
     id: 4,
@@ -233,6 +212,6 @@ export const whyChooseUs = [
 export const stats = [
   { id: 1, value: "1000+", label: "Happy Customers" },
   { id: 2, value: "100%", label: "Natural" },
-  { id: 3, value: "5+", label: "Product Variants" },
+  { id: 3, value: "3", label: "Premium Products" },
   { id: 4, value: "4+", label: "Service Years" },
 ];
