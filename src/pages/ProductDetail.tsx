@@ -19,9 +19,6 @@ import { useProduct } from "../api/productApi";
 import { products as localProducts, type Product } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
-import { toast } from "react-hot-toast";
-import * as orderApi from "../api/orderApi";
-import { loadRazorpayScript } from "../utils/payment";
 
 const badgeConfig: Record<string, { bg: string; color: string; emoji: string }> = {
   "Best Seller": { bg: "linear-gradient(135deg,#D4AF37,#e8c84a)", color: "#3E2F1C", emoji: "🏆" },

@@ -59,20 +59,21 @@ export default function Navbar() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-        className="fixed top-0 left-0 right-0 z-40 transition-all duration-500"
+        className="fixed top-0 left-0 right-0 z-40 transition-all duration-400"
         style={
           isScrolled
             ? {
-              background: "rgba(248,245,240,0.96)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              boxShadow:
-                "0 4px 30px rgba(62,47,28,0.1), 0 1px 0 rgba(212,175,55,0.15)",
-            }
+                background: "rgba(248,245,240,0.97)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                boxShadow: "0 4px 30px rgba(62,47,28,0.1), 0 1px 0 rgba(212,175,55,0.18)",
+              }
             : {
-              background:
-                "linear-gradient(to bottom, rgba(20,12,4,0.55) 0%, transparent 100%)",
-            }
+                background: "rgba(248,245,240,0.88)",
+                backdropFilter: "blur(14px)",
+                WebkitBackdropFilter: "blur(14px)",
+                boxShadow: "0 1px 0 rgba(212,175,55,0.14)",
+              }
         }
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -95,7 +96,7 @@ export default function Navbar() {
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
                 <LogoBrand
-                  variant={isScrolled ? "dark" : "light"}
+                  variant="dark"
                   height={80}
                 />
               </motion.div>
@@ -114,14 +115,8 @@ export default function Navbar() {
                     }`
                   }
                   style={({ isActive }) => ({
-                    color: isScrolled
-                      ? isActive
-                        ? "#3E2F1C"
-                        : "rgba(62,47,28,0.55)"
-                      : isActive
-                        ? "#ffffff"
-                        : "rgba(248,245,240,0.75)",
-                    ...(isScrolled && isActive
+                    color: isActive ? "#3E2F1C" : "rgba(62,47,28,0.6)",
+                    ...(isActive
                       ? {
                           background: "rgba(212,175,55,0.14)",
                           padding: "4px 12px",
@@ -145,13 +140,13 @@ export default function Navbar() {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigate("/profile")}
                   className="relative p-2 rounded-full transition-colors"
+                  aria-label="My Profile"
                   style={{
-                    background: "rgba(62,47,28,0.05)",
-                    color: isScrolled ? "#3E2F1C" : "#ffffff",
+                    background: "rgba(62,47,28,0.06)",
+                    color: "#3E2F1C",
                   }}
-                  title="Profile"
                 >
-                  <FiUser size={20} />
+                  <FiUser size={20} aria-hidden="true" />
                 </motion.button>
 
                 <motion.button
@@ -159,14 +154,15 @@ export default function Navbar() {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigate("/wishlist")}
                   className="relative p-2 rounded-full transition-colors"
+                  aria-label={`Wishlist${wishlistCount > 0 ? `, ${wishlistCount} items` : ""}`}
                   style={{
-                    background: "rgba(62,47,28,0.05)",
-                    color: isScrolled ? "#3E2F1C" : "#ffffff",
+                    background: "rgba(62,47,28,0.06)",
+                    color: "#3E2F1C",
                   }}
                 >
-                  <FiHeart size={20} />
+                  <FiHeart size={20} aria-hidden="true" />
                   {wishlistCount > 0 && (
-                    <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    <span aria-hidden="true" className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                       {wishlistCount}
                     </span>
                   )}
@@ -177,14 +173,15 @@ export default function Navbar() {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigate("/cart")}
                   className="relative p-2 rounded-full transition-colors"
+                  aria-label={`Shopping cart${cartCount > 0 ? `, ${cartCount} items` : ""}`}
                   style={{
-                    background: "rgba(62,47,28,0.05)",
-                    color: isScrolled ? "#3E2F1C" : "#ffffff",
+                    background: "rgba(62,47,28,0.06)",
+                    color: "#3E2F1C",
                   }}
                 >
-                  <FiShoppingBag size={20} />
+                  <FiShoppingBag size={20} aria-hidden="true" />
                   {cartCount > 0 && (
-                    <span className="absolute top-0 right-0 w-4 h-4 bg-amber-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    <span aria-hidden="true" className="absolute top-0 right-0 w-4 h-4 bg-amber-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                       {cartCount}
                     </span>
                   )}
@@ -210,10 +207,8 @@ export default function Navbar() {
               aria-label={isMobileOpen ? "Close menu" : "Open menu"}
               className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl transition-colors duration-300 focus:outline-none"
               style={{
-                background: isScrolled
-                  ? "rgba(62,47,28,0.07)"
-                  : "rgba(255,255,255,0.12)",
-                color: isScrolled ? "#3E2F1C" : "#F8F5F0",
+                background: "rgba(62,47,28,0.07)",
+                color: "#3E2F1C",
               }}
             >
               <AnimatePresence mode="wait" initial={false}>

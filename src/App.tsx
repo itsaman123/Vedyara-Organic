@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,45 +8,66 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import Products from "./pages/Products";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import ProductDetail from "./pages/ProductDetail";
-import Cart from "./pages/Cart";
-import Wishlist from "./pages/Wishlist";
-import Checkout from "./pages/Checkout";
-import Profile from "./pages/Profile";
 import { Toaster } from "react-hot-toast";
 
-/* ── Admin imports ── */
+/* ── Home is eager — it's the LCP page ── */
+import Home from "./pages/Home";
+
+/* ── All other pages are lazy — they split into separate chunks ── */
+const Products    = lazy(() => import("./pages/Products"));
+const About       = lazy(() => import("./pages/About"));
+const Contact     = lazy(() => import("./pages/Contact"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const Cart        = lazy(() => import("./pages/Cart"));
+const Wishlist    = lazy(() => import("./pages/Wishlist"));
+const Checkout    = lazy(() => import("./pages/Checkout"));
+const Profile     = lazy(() => import("./pages/Profile"));
+
+/* ── Admin chunk (large, rarely visited) ── */
 import "./admin/admin.css";
 import "./admin/admin-components.css";
 import "./admin/admin-pages.css";
-import AdminLayout from "./admin/AdminLayout";
-import AdminDashboard from "./admin/pages/AdminDashboard";
-import AdminProducts from "./admin/pages/AdminProducts";
-import AdminAddProduct from "./admin/pages/AdminAddProduct";
-import AdminInventory from "./admin/pages/AdminInventory";
-import AdminOrders from "./admin/pages/AdminOrders";
+const AdminLayout     = lazy(() => import("./admin/AdminLayout"));
+const AdminDashboard  = lazy(() => import("./admin/pages/AdminDashboard"));
+const AdminProducts   = lazy(() => import("./admin/pages/AdminProducts"));
+const AdminAddProduct = lazy(() => import("./admin/pages/AdminAddProduct"));
+const AdminInventory  = lazy(() => import("./admin/pages/AdminInventory"));
+const AdminOrders     = lazy(() => import("./admin/pages/AdminOrders"));
+
+/* ── Minimal skeleton shown during lazy-load ── */
+function PageSkeleton() {
+  return (
+    <div
+      className="min-h-screen w-full animate-pulse"
+      style={{ background: "#F8F5F0" }}
+    />
+  );
+}
 
 /* ─────────────────────────────────────────────────────────────
-   Page transition wrapper — fades + slides each page in/out
+   Page transition — lightweight fade only (no y shift)
+   y-shift causes layout shift on route change
 ───────────────────────────────────────────────────────────── */
-const pageEnter = {
-  initial: { opacity: 0, y: 22 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -16 },
+const pageFade = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.3, ease: "easeOut" as const } },
+  exit:    { opacity: 0, transition: { duration: 0.2, ease: "easeIn" as const } },
 };
 
-const pageTransition = {
-  enter: { duration: 0.5, ease: "easeOut" as const },
-  exit: { duration: 0.3, ease: "easeIn" as const },
-};
+function PageWrap({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={pageFade.initial}
+      animate={pageFade.animate}
+      exit={pageFade.exit}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 /* ─────────────────────────────────────────────────────────────
-   Animated routes — must be a child of <Router> to use
-   useLocation
+   Animated routes
 ───────────────────────────────────────────────────────────── */
 function AnimatedRoutes() {
   const location = useLocation();
@@ -54,172 +75,17 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
-        <Route
-          path="/"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <Home />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/products"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <Products />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <About />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <Contact />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/product/:id"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <ProductDetail />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/cart"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <Cart />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/wishlist"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <Wishlist />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/checkout"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <Checkout />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/orders"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <Profile />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <Profile />
-            </motion.div>
-          }
-        />
-        {/* 404 fallback */}
-        <Route
-          path="*"
-          element={
-            <motion.div
-              initial={pageEnter.initial}
-              animate={{
-                ...pageEnter.animate,
-                transition: pageTransition.enter,
-              }}
-              exit={{ ...pageEnter.exit, transition: pageTransition.exit }}
-            >
-              <NotFound />
-            </motion.div>
-          }
-        />
+        <Route path="/" element={<PageWrap><Home /></PageWrap>} />
+        <Route path="/products"   element={<PageWrap><Suspense fallback={<PageSkeleton />}><Products /></Suspense></PageWrap>} />
+        <Route path="/about"      element={<PageWrap><Suspense fallback={<PageSkeleton />}><About /></Suspense></PageWrap>} />
+        <Route path="/contact"    element={<PageWrap><Suspense fallback={<PageSkeleton />}><Contact /></Suspense></PageWrap>} />
+        <Route path="/product/:id" element={<PageWrap><Suspense fallback={<PageSkeleton />}><ProductDetail /></Suspense></PageWrap>} />
+        <Route path="/cart"       element={<PageWrap><Suspense fallback={<PageSkeleton />}><Cart /></Suspense></PageWrap>} />
+        <Route path="/wishlist"   element={<PageWrap><Suspense fallback={<PageSkeleton />}><Wishlist /></Suspense></PageWrap>} />
+        <Route path="/checkout"   element={<PageWrap><Suspense fallback={<PageSkeleton />}><Checkout /></Suspense></PageWrap>} />
+        <Route path="/orders"     element={<PageWrap><Suspense fallback={<PageSkeleton />}><Profile /></Suspense></PageWrap>} />
+        <Route path="/profile"    element={<PageWrap><Suspense fallback={<PageSkeleton />}><Profile /></Suspense></PageWrap>} />
+        <Route path="*"           element={<PageWrap><NotFound /></PageWrap>} />
       </Routes>
     </AnimatePresence>
   );
@@ -238,11 +104,10 @@ function NotFound() {
         initial={{ scale: 0, rotate: -20 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 260, damping: 22 }}
-        className="text-8xl mb-6"
+        className="text-7xl mb-6"
       >
         🌿
       </motion.div>
-
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -252,7 +117,6 @@ function NotFound() {
       >
         Page Not Found
       </motion.h1>
-
       <motion.p
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -260,10 +124,8 @@ function NotFound() {
         className="text-base mb-8 max-w-sm"
         style={{ color: "rgba(62,47,28,0.6)" }}
       >
-        Looks like this page wandered off into the fields. Let's bring you back
-        home.
+        Looks like this page wandered off. Let's bring you back home.
       </motion.p>
-
       <motion.a
         href="/"
         initial={{ opacity: 0, y: 12 }}
@@ -286,20 +148,18 @@ function NotFound() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Scroll restoration — scrolls to top on every route change
+   Scroll restoration
 ───────────────────────────────────────────────────────────── */
 function RouteScrollToTop() {
   const location = useLocation();
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [location.pathname]);
-
   return null;
 }
 
 /* ═══════════════════════════════════════════════════════════
-   LAYOUT WRAPPER — hides public chrome on /admin routes
+   LAYOUT WRAPPER
 ═══════════════════════════════════════════════════════════ */
 function AppShell() {
   const location = useLocation();
@@ -307,33 +167,29 @@ function AppShell() {
 
   if (isAdmin) {
     return (
-      <Routes>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="add-product" element={<AdminAddProduct />} />
-          <Route path="inventory" element={<AdminInventory />} />
-          <Route path="orders" element={<AdminOrders />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={<PageSkeleton />}>
+        <Routes>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index            element={<AdminDashboard />} />
+            <Route path="products"  element={<AdminProducts />} />
+            <Route path="add-product" element={<AdminAddProduct />} />
+            <Route path="inventory" element={<AdminInventory />} />
+            <Route path="orders"    element={<AdminOrders />} />
+          </Route>
+        </Routes>
+      </Suspense>
     );
   }
 
   return (
-    <>
-      {/* <FloatingLeaves /> */}
-      <div
-        className="relative flex flex-col min-h-screen"
-        style={{ position: "relative", zIndex: 1 }}
-      >
-        <Navbar />
-        <main className="flex-1">
-          <AnimatedRoutes />
-        </main>
-        <Footer />
-        <Toaster position="top-center" />
-      </div>
-    </>
+    <div className="relative flex flex-col min-h-screen" style={{ zIndex: 1 }}>
+      <Navbar />
+      <main className="flex-1">
+        <AnimatedRoutes />
+      </main>
+      <Footer />
+      <Toaster position="top-center" />
+    </div>
   );
 }
 
