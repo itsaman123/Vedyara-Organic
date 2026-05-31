@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ||
-  "http://localhost:8000";
+  "https://vedyara-backend.onrender.com";
 
 export type Product = {
   _id: string;
@@ -48,7 +48,7 @@ export const getProducts = async (params: {
   featured?: boolean | string;
 } = {}) => {
   const url = new URL(`${API_BASE_URL}/api/v1/products`);
-  
+
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
       url.searchParams.append(key, String(value));

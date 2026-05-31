@@ -7,7 +7,7 @@ import {
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ||
-  "http://localhost:8000";
+  "https://vedyara-backend.onrender.com";
 
 const ADMIN_TOKEN_KEY = "vedyara_admin_token";
 
@@ -301,10 +301,10 @@ export const uploadAdminProductImages = async (files: File[]) => {
 
   // Option 2: Direct Cloudinary Upload (faster, saves backend resources)
   const config = await getCloudinarySignature();
-  
+
   const uploadPromises = files.map(file => uploadToCloudinary(file, config));
   const results = await Promise.all(uploadPromises);
-  
+
   return {
     images: results.map(res => ({
       filename: res.publicId,
