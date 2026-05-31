@@ -34,11 +34,8 @@ const badgeConfig: Record<string, { bg: string; color: string; emoji: string }> 
 };
 
 const categoryLabels: Record<string, string> = {
-  honey:   "🍯 Honey",
-  millets: "🌾 Millets",
-  jaggery: "🟫 Jaggery",
-  grains:  "🌿 Grains",
-  spices:  "🌶️ Spices",
+  honey:  "🍯 Honey",
+  spices: "✨ Spices & Powders",
 };
 
 function StarRating({ rating }: { rating: number }) {
@@ -430,7 +427,7 @@ export default function ProductDetail() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-10">
                 {[
                   { icon: <FiTruck />, label: "Fast Shipping" },
-                  { icon: <FiZap />, label: "100% Organic" },
+                  { icon: <FiZap />, label: "100% Natural" },
                   { icon: <FiRotateCcw />, label: "Easy Returns" },
                   { icon: <FiShield />, label: "Secure Payment" },
                 ].map((item, i) => (

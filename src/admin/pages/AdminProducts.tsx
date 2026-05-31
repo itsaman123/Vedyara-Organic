@@ -93,7 +93,7 @@ export default function AdminProducts() {
       <div className="admin-page-header">
         <div>
           <h1 className="admin-page-title">Product Management</h1>
-          <p className="admin-page-subtitle">Manage your organic product inventory and listings.</p>
+          <p className="admin-page-subtitle">Manage your natural product inventory and listings.</p>
         </div>
         <div className="admin-header-actions" style={{ display: "flex", gap: "12px" }}>
           <button className="admin-btn admin-btn-outline" onClick={handleExport}>

@@ -159,7 +159,7 @@ const contactItems = [
     label: "Sourced From",
     value: "UP | Uttarakhand | Bihar",
     href: undefined,
-    desc: "Direct from organic farms",
+    desc: "Direct from partner farms",
     color: "#D4AF37",
   },
 ];
@@ -175,7 +175,7 @@ const socialLinks = [
   {
     icon: FaInstagram,
     label: "Instagram",
-    href: "https://www.instagram.com/vedyara.organic",
+    href: "https://www.instagram.com/vedyara.agro",
     color: "#E1306C",
     bg: "rgba(225,48,108,0.08)",
   },
@@ -184,14 +184,14 @@ const socialLinks = [
 const faqs = [
   {
     q: "Where are your products sourced from?",
-    a: "All our products are sourced directly from certified organic farms across India — including Uttar Pradesh, Uttarakhand, and Bihar.",
+    a: "All our products are sourced directly from trusted farms across India — including Uttar Pradesh, Uttarakhand, and Bihar.",
   },
   {
     q: "Where can I buy Vedyara products?",
     a: "Our products will soon be available exclusively on Amazon India.",
   },
   {
-    q: "Are your products certified organic?",
+    q: "Are your products lab-tested and certified?",
     a: "Yes. All products are FSSAI certified and lab-tested for purity, quality, and safety before being packaged and dispatched.",
   },
   {
@@ -351,7 +351,7 @@ export default function Contact() {
               className="text-lg text-gray-600 max-w-xl mx-auto"
             >
               Have a question about our products, want to place a bulk order, or just want to share
-              your organic journey? We'd love to hear from you.
+              your wellness journey? We'd love to hear from you.
             </motion.p>
           </motion.div>
         </div>

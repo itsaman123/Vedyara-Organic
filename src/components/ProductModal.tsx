@@ -19,9 +19,7 @@ const badgeConfig: Record<string, { bg: string; color: string; emoji: string }> 
 
 const categoryLabels: Record<string, string> = {
   honey:   "🍯 Honey",
-  millets: "🌾 Millets",
-  jaggery: "🟫 Jaggery",
-  grains:  "🌿 Grains",
+  spices:  "✨ Spices & Powders",
 };
 
 function StarRating({ rating }: { rating: number }) {

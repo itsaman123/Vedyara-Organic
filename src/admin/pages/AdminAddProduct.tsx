@@ -175,7 +175,7 @@ export default function AdminAddProduct() {
               <input
                 type="text"
                 className="admin-input"
-                placeholder="e.g. Organic Lavender Calming Serum"
+                placeholder="e.g. Pure Natural Honey"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
               />
@@ -391,7 +391,7 @@ export default function AdminAddProduct() {
               <label className="admin-label">Category</label>
               <input
                 className="admin-input"
-                placeholder="e.g. spices, honey, jaggery"
+                placeholder="e.g. honey, spices"
                 value={category}
                 onChange={(event) => setCategory(event.target.value)}
               />

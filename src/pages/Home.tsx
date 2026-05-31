@@ -19,9 +19,27 @@ import {
   testimonials,
   whyChooseUs,
   stats,
-  categories,
-  type Product,
 } from "../data/products";
+
+interface CardProduct {
+  id: string | number;
+  _id?: string;
+  slug?: string;
+  name: string;
+  category: string;
+  price: string;
+  originalPrice?: string;
+  badge?: string;
+  image: string;
+  description: string;
+  shortDesc: string;
+  benefits: string[];
+  weight?: string;
+  rating?: number;
+  reviews?: number;
+  limited?: boolean;
+  featured?: boolean;
+}
 import { fadeUp, staggerContainer } from "../utils/animations";
 
 /* ═══════════════════════════════════════════════════════════
@@ -32,9 +50,9 @@ const ProductShowcaseCard = ({
   index,
   onView,
 }: {
-  product: Product;
+  product: CardProduct;
   index: number;
-  onView: (p: Product) => void;
+  onView: (p: CardProduct) => void;
 }) => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -106,65 +124,18 @@ const ProductShowcaseCard = ({
               </button>
 
               <button
-                onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
+                onClick={(e) => { e.stopPropagation(); toggleWishlist(product as unknown as ApiProduct); }}
                 className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors duration-200 shadow-sm"
                 style={{
-                  background: isInWishlist(product.id as string) ? "#c0392b" : "rgba(62,47,28,0.05)",
-                  color: isInWishlist(product.id as string) ? "#fff" : "rgba(62,47,28,0.5)",
+                  background: isInWishlist(String(product.id)) ? "#c0392b" : "rgba(62,47,28,0.05)",
+                  color: isInWishlist(String(product.id)) ? "#fff" : "rgba(62,47,28,0.5)",
                   border: "1px solid rgba(62,47,28,0.05)",
                 }}
               >
-                <FiHeart size={20} fill={isInWishlist(product.id as string) ? "#fff" : "transparent"} />
+                <FiHeart size={20} fill={isInWishlist(String(product.id)) ? "#fff" : "transparent"} />
               </button>
             </div>
           </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-/* ═══════════════════════════════════════════════════════════
-   CATEGORY CARD
-═══════════════════════════════════════════════════════════ */
-const CategoryCard = ({
-  category,
-  index,
-}: {
-  category: { id: string; label: string; emoji: string };
-  index: number;
-}) => {
-  const icons: Record<string, React.ReactNode> = {
-    all: <FaLeaf size={28} />,
-    honey: <span className="text-3xl">🍯</span>,
-    millets: <span className="text-3xl">🌾</span>,
-    jaggery: <span className="text-3xl">🟫</span>,
-    grains: <FiPackage size={28} />,
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.07, duration: 0.4, ease: "easeOut" }}
-      className="group cursor-pointer"
-    >
-      <div
-        className="relative p-8 rounded-3xl bg-white shadow-lg overflow-hidden transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1"
-        style={{ background: "linear-gradient(145deg, #ffffff 0%, #faf9f7 100%)" }}
-      >
-        <div className="relative z-10 text-center space-y-4">
-          <div
-            className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-            style={{
-              background: "linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05))",
-              border: "1px solid rgba(212,175,55,0.2)",
-            }}
-          >
-            <span className="text-2xl">{icons[category.id]}</span>
-          </div>
-          <h3 className="font-serif font-bold text-lg text-brand-brown">{category.label}</h3>
         </div>
       </div>
     </motion.div>
@@ -214,44 +185,47 @@ const TestimonialCard = ({
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ delay: index * 0.1, duration: 0.5, ease: "easeOut" }}
-    className="bg-white rounded-3xl p-6 shadow-lg shadow-black/5 relative overflow-hidden group transition-transform duration-300 hover:-translate-y-2"
+    className="bg-white rounded-3xl p-6 shadow-lg shadow-black/5 flex flex-col gap-4 transition-transform duration-300 hover:-translate-y-2"
   >
-    <div
-      className="absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center opacity-20"
-      style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)" }}
-    >
-      <FaQuoteLeft className="text-brand-brown" size={16} />
+    {/* Stars + quote icon row */}
+    <div className="flex items-center justify-between">
+      <div className="flex gap-1">
+        {[...Array(5)].map((_, i) => (
+          <FaStar key={i} size={14} style={{ color: i < testimonial.rating ? "#D4AF37" : "#e5e7eb" }} />
+        ))}
+      </div>
+      <FaQuoteLeft size={16} style={{ color: "rgba(212,175,55,0.35)" }} />
     </div>
 
-    <div className="flex gap-1 mb-4">
-      {[...Array(5)].map((_, i) => (
-        <FaStar key={i} size={14} style={{ color: i < testimonial.rating ? "#D4AF37" : "#ddd" }} />
-      ))}
-    </div>
+    {/* Review text */}
+    <p className="text-gray-600 text-sm leading-relaxed italic flex-1">
+      "{testimonial.review}"
+    </p>
 
-    <p className="text-gray-600 text-sm leading-relaxed mb-6 italic">"{testimonial.review}"</p>
+    {/* Divider */}
+    <div className="h-px w-full" style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.3), transparent)" }} />
 
-    <div className="h-px w-full mb-4" style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.3), transparent)" }} />
-
+    {/* Author row */}
     <div className="flex items-center gap-3">
       <div
-        className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm"
+        className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0"
         style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)", color: "#3E2F1C" }}
       >
         {testimonial.avatar}
       </div>
-      <div>
-        <p className="font-semibold text-brand-brown">{testimonial.name}</p>
-        <p className="text-xs text-gray-400">{testimonial.location} · {testimonial.date}</p>
+      <div className="min-w-0">
+        <p className="font-semibold text-sm text-brand-brown truncate">{testimonial.name}</p>
+        <p className="text-xs text-gray-400 truncate">{testimonial.location} · {testimonial.date}</p>
       </div>
     </div>
 
-    <div
-      className="absolute bottom-4 right-4 px-3 py-1 rounded-full text-xs font-medium"
+    {/* Product tag — separate row, no overlap */}
+    <span
+      className="self-start px-2.5 py-1 rounded-full text-[11px] font-medium"
       style={{ background: "rgba(107,142,35,0.1)", color: "#506a1a" }}
     >
       {testimonial.product}
-    </div>
+    </span>
   </motion.div>
 );
 
@@ -263,17 +237,19 @@ export default function Home() {
 
   const { data, isLoading } = useProducts({ featured: "true", limit: 4 });
 
-  const mapProduct = (p: ApiProduct) => ({
+  const mapProduct = (p: ApiProduct): CardProduct => ({
     id: p.slug,
+    _id: p._id,
+    slug: p.slug,
     name: p.name,
     category: p.category,
     price: `₹${p.discountedPrice !== null ? p.discountedPrice : p.price}`,
     originalPrice: p.discountedPrice !== null ? `₹${p.price}` : undefined,
     badge: p.featured ? "Best Seller" : "Natural",
-    image: p.images[0] || "https://via.placeholder.com/400",
+    image: p.images[0] || "",
     description: p.description,
     shortDesc: p.shortDescription || p.description.slice(0, 100),
-    benefits: p.tags && p.tags.length > 0 ? p.tags : ["100% Natural", "Pure"],
+    benefits: p.tags?.length ? p.tags : ["100% Natural", "Pure"],
     weight: p.unit,
     rating: 4.8,
     reviews: 124,
@@ -286,7 +262,7 @@ export default function Home() {
     return data.items.map(mapProduct);
   }, [data]);
 
-  const handleQuickView = (product: { id: string }) => navigate(`/product/${product.id}`);
+  const handleQuickView = (product: CardProduct) => navigate(`/product/${product.slug ?? product.id}`);
 
   const heroFeatures = [
     {
@@ -311,11 +287,38 @@ export default function Home() {
     },
   ];
 
+  const productBenefits = [
+    {
+      icon: "🍯",
+      name: "Honey",
+      tagline: "Liquid Gold",
+      color: "from-amber-50 to-yellow-50",
+      border: "border-amber-100",
+      perks: ["Boosts Immunity", "Rich Antioxidants", "Natural Sweetener", "Aids Digestion"],
+    },
+    {
+      icon: "✨",
+      name: "Turmeric Powder",
+      tagline: "Golden Spice",
+      color: "from-orange-50 to-amber-50",
+      border: "border-orange-100",
+      perks: ["High Curcumin", "Anti-inflammatory", "Immunity Booster", "Daily Wellness"],
+    },
+    {
+      icon: "🌿",
+      name: "Coriander Powder",
+      tagline: "Aromatic Purity",
+      color: "from-green-50 to-emerald-50",
+      border: "border-green-100",
+      perks: ["Digestive Aid", "Rich Aroma", "Pure & Fresh", "Enhances Flavour"],
+    },
+  ];
+
   return (
     <main className="relative overflow-x-hidden bg-[#faf9f7]">
 
       {/* ════════════════════════════════════════════════════
-          1. HERO SECTION — full-bleed background image
+          1. HERO SECTION
       ════════════════════════════════════════════════════ */}
       <section
         className="relative overflow-hidden"
@@ -327,7 +330,6 @@ export default function Home() {
           minHeight: "92vh",
         }}
       >
-        {/* Cream gradient — full opacity left → transparent right */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -336,12 +338,10 @@ export default function Home() {
           }}
         />
 
-        {/* Text content */}
         <div className="relative z-10 flex items-center min-h-[92vh]">
           <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-24 pb-36">
             <div style={{ maxWidth: "520px" }}>
 
-              {/* Badge */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -361,7 +361,6 @@ export default function Home() {
                 </span>
               </motion.div>
 
-              {/* Heading */}
               <motion.h1
                 initial={{ opacity: 0, y: 22 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -369,12 +368,11 @@ export default function Home() {
                 className="font-serif font-bold mb-5"
                 style={{ fontSize: "clamp(2.6rem, 5vw, 4.6rem)", lineHeight: 1.1 }}
               >
-                <span style={{ color: "#0f0a05" }}>Pure by Nature,</span>
+                <span style={{ color: "#0f0a05" }}>Pure Goodness</span>
                 <br />
-                <span style={{ color: "#2D4A1E" }}>Made for You.</span>
+                <span style={{ color: "#2D4A1E" }}>From Nature.</span>
               </motion.h1>
 
-              {/* Subtitle */}
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -383,10 +381,9 @@ export default function Home() {
                 style={{ color: "rgba(15,10,5,0.58)", fontSize: "0.975rem", lineHeight: 1.7 }}
               >
                 Thoughtfully crafted products inspired by timeless
-                traditions and the purity of nature.
+                traditions and the purity of nature. Honey, Turmeric & Coriander — unprocessed, lab-tested, and pure.
               </motion.p>
 
-              {/* CTA Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -413,7 +410,7 @@ export default function Home() {
                       fontSize: "0.875rem",
                     }}
                   >
-                    Explore Collections
+                    Explore Products
                   </button>
                 </Link>
               </motion.div>
@@ -422,7 +419,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Feature strip — white floating card anchored at bottom */}
+        {/* Feature strip */}
         <div className="absolute bottom-0 left-0 right-0 z-10 px-4 sm:px-8 lg:px-12">
           <div
             className="max-w-[1200px] mx-auto rounded-t-3xl"
@@ -478,37 +475,9 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════
-          3. CATEGORIES SECTION
+          3. FEATURED PRODUCTS
       ════════════════════════════════════════════════════ */}
-      <section className="relative py-20 overflow-hidden bg-[#faf9f7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-14"
-          >
-            <motion.span variants={fadeUp} custom={0} className="inline-block text-sm font-semibold text-amber-600 uppercase tracking-widest mb-4">
-              Explore
-            </motion.span>
-            <motion.h2 variants={fadeUp} custom={0.1} className="font-serif font-bold text-brand-brown" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
-              Shop by Category
-            </motion.h2>
-          </motion.div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-            {categories.map((cat, i) => (
-              <CategoryCard key={cat.id} category={cat} index={i} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════
-          4. FEATURED PRODUCTS
-      ════════════════════════════════════════════════════ */}
-      <section className="relative py-20 bg-white overflow-hidden">
+      <section className="relative py-20 bg-[#faf9f7] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial="hidden"
@@ -524,7 +493,7 @@ export default function Home() {
               Featured Products
             </motion.h2>
             <motion.p variants={fadeUp} custom={0.2} className="max-w-2xl mx-auto text-gray-500">
-              Handpicked organic essentials — from pure Himalayan honey to farm-fresh jaggery. Every product tells a story of purity.
+              Handpicked wellness essentials — from pure Himalayan honey to farm-fresh spices. Every product tells a story of purity.
             </motion.p>
           </motion.div>
 
@@ -558,6 +527,69 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════
+          4. PRODUCT BENEFITS
+      ════════════════════════════════════════════════════ */}
+      <section className="relative py-24 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-14"
+          >
+            <motion.span variants={fadeUp} custom={0} className="inline-block text-sm font-semibold text-amber-600 uppercase tracking-widest mb-4">
+              Nature's Best
+            </motion.span>
+            <motion.h2 variants={fadeUp} custom={0.1} className="font-serif font-bold text-brand-brown" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+              The Power of Each Product
+            </motion.h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {productBenefits.map((item, i) => (
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
+                className={`relative p-8 rounded-3xl bg-gradient-to-br ${item.color} border ${item.border} group transition-all duration-300 hover:-translate-y-2 hover:shadow-xl`}
+              >
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "#2D4A1E" }}>
+                  {item.tagline}
+                </p>
+                <h3 className="font-serif font-bold text-xl mb-5" style={{ color: "#0f0a05" }}>
+                  {item.name}
+                </h3>
+                <ul className="space-y-2.5">
+                  {item.perks.map((perk) => (
+                    <li key={perk} className="flex items-center gap-2.5 text-sm" style={{ color: "rgba(15,10,5,0.65)" }}>
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ background: "rgba(45,74,30,0.12)" }}>
+                        <span style={{ color: "#2D4A1E", fontSize: "0.6rem", fontWeight: 800 }}>✓</span>
+                      </div>
+                      {perk}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/products">
+                  <button
+                    className="mt-6 flex items-center gap-2 text-sm font-semibold transition-all duration-200 hover:gap-3"
+                    style={{ color: "#2D4A1E" }}
+                  >
+                    Shop {item.name}
+                    <FiArrowRight size={14} />
+                  </button>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════
           5. OUR STORY
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 overflow-hidden" style={{ background: "#F4EDE0" }}>
@@ -578,17 +610,15 @@ export default function Home() {
                   alt="Our Farm"
                   className="w-full h-full object-cover"
                 />
-                {/* Overlay badge */}
                 <div
                   className="absolute bottom-6 left-6 right-6 px-5 py-4 rounded-2xl"
                   style={{ background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)" }}
                 >
                   <p className="font-serif font-bold text-lg mb-0.5" style={{ color: "#0f0a05" }}>Est. 2020</p>
-                  <p className="text-sm" style={{ color: "rgba(15,10,5,0.55)" }}>From the heart of India's organic farms</p>
+                  <p className="text-sm" style={{ color: "rgba(15,10,5,0.55)" }}>From the heart of India's farms</p>
                 </div>
               </div>
 
-              {/* Floating stat card */}
               <div
                 className="absolute -top-5 -right-5 px-5 py-4 rounded-2xl shadow-xl"
                 style={{ background: "#2D4A1E" }}
@@ -624,14 +654,13 @@ export default function Home() {
 
               <div className="space-y-4 mb-8">
                 <p className="leading-relaxed" style={{ color: "rgba(15,10,5,0.65)", fontSize: "0.95rem" }}>
-                  Vedyara was born from a simple belief — that the purest food is grown with care, harvested with respect, and delivered without compromise. Rooted in the ancient traditions of Ayurvedic wisdom, we bridge the gap between India's organic farms and modern kitchens.
+                  Vedyara was born from a simple belief — that the purest food is grown with care, harvested with respect, and delivered without compromise. Rooted in the ancient traditions of Ayurvedic wisdom, we bridge the gap between India's farms and modern kitchens.
                 </p>
                 <p className="leading-relaxed" style={{ color: "rgba(15,10,5,0.65)", fontSize: "0.95rem" }}>
-                  Every jar of our golden honey, every packet of stone-ground millet, and every block of organic jaggery carries the story of the farmers who tend the land with generations of inherited knowledge — and our promise to bring that purity to you, unchanged.
+                  Every jar of our golden honey, every packet of stone-ground turmeric, and every pouch of aromatic coriander carries the story of the farmers who tend the land with generations of inherited knowledge — and our promise to bring that purity to you, unchanged.
                 </p>
               </div>
 
-              {/* Key values */}
               <div className="grid grid-cols-2 gap-4 mb-8">
                 {[
                   { label: "Farm-Direct Sourcing", icon: "🌾" },
@@ -776,13 +805,13 @@ export default function Home() {
               className="font-serif font-bold mb-6 leading-tight"
               style={{ fontSize: "clamp(2.2rem, 5vw, 3.8rem)", color: "#0f0a05" }}
             >
-              Switch to Natural.
+              Tradition. Purity.
               <br />
-              <span style={{ color: "#2D4A1E" }}>Live Healthier.</span>
+              <span style={{ color: "#2D4A1E" }}>Wellness.</span>
             </motion.h2>
 
             <motion.p variants={fadeUp} custom={0.2} className="text-base mb-10 max-w-xl mx-auto" style={{ color: "rgba(15,10,5,0.55)", lineHeight: 1.7 }}>
-              Join 1000+ families who have made the switch to purer, healthier organic living with Vedyara.
+              Join 1000+ families who have made the switch to purer, healthier living with Vedyara.
             </motion.p>
 
             <motion.div variants={fadeUp} custom={0.3} className="flex flex-wrap justify-center gap-4">

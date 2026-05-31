@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,7 +8,6 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Loader from "./components/Loader";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import About from "./pages/About";
@@ -342,17 +341,9 @@ function AppShell() {
    ROOT APP
 ═══════════════════════════════════════════════════════════ */
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 2800);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <Router>
       <RouteScrollToTop />
-      <Loader isLoading={isLoading} />
       <AppShell />
     </Router>
   );

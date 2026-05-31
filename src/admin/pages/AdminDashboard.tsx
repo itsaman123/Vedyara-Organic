@@ -81,7 +81,7 @@ export default function AdminDashboard() {
           </div>
           <div>
             <h3 className="admin-quick-action-title">Add New Product</h3>
-            <p className="admin-quick-action-desc">Create a new organic offering for the shop</p>
+            <p className="admin-quick-action-desc">Create a new product listing for the shop</p>
           </div>
           {/* Decorative leaf */}
           <svg className="admin-quick-action-leaf" width="60" height="60" viewBox="0 0 60 60" fill="none">

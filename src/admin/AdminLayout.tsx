@@ -184,7 +184,7 @@ export default function AdminLayout() {
             </div>
             <div>
               <h1 className="admin-brand-title">Vedyara Admin</h1>
-              <p className="admin-brand-sub">Premium Organic Wellness</p>
+              <p className="admin-brand-sub">Premium Natural Wellness</p>
             </div>
 
           </div>

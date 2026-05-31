@@ -131,7 +131,7 @@ const values = [
   {
     icon: "🌿",
     title: "Purity First",
-    description: "Every product is certified organic, free from synthetic pesticides, chemicals, or artificial additives.",
+    description: "Every product is 100% natural, free from synthetic pesticides, chemicals, or artificial additives.",
     color: "rgba(107,142,35,0.12)",
   },
   {
@@ -155,21 +155,21 @@ const values = [
   {
     icon: "🏡",
     title: "Community Driven",
-    description: "Every purchase supports small-scale organic farmers, women's cooperatives, and rural livelihoods.",
+    description: "Every purchase supports small-scale farmers, women's cooperatives, and rural livelihoods.",
     color: "rgba(212,175,55,0.08)",
   },
   {
     icon: "💛",
     title: "Trusted by Families",
-    description: "Over 1000 families across India choose Vedyara for their daily nutrition.",
+    description: "Over 1000 families across India trust Vedyara for pure honey, turmeric, and coriander every day.",
     color: "rgba(62,47,28,0.06)",
   },
 ];
 
 const milestones = [
-  { year: "2022", event: "First products launched - Pure Honey & Jaggery" },
+  { year: "2022", event: "First products launched — Pure Honey & Turmeric Powder" },
   { year: "2024", event: "Expanded to 50+ farmer partnerships across India" },
-  { year: "2026", event: "Moving online with Amazon India launch" },
+  { year: "2026", event: "Going national — online & Amazon India launch" },
 ];
 
 /* ═══════════════════════════════════════════════════════════
@@ -244,7 +244,7 @@ export default function About() {
                 className="text-lg text-gray-600 max-w-lg"
               >
                 Born from a deep belief that every Indian family deserves food that is truly pure —
-                grown without chemicals, processed without shortcuts.
+                grown without chemicals, processed without shortcuts, and delivered with integrity.
               </motion.p>
 
               <motion.div
@@ -368,7 +368,7 @@ export default function About() {
               custom={0.2}
               className="text-lg text-gray-600 max-w-2xl mx-auto"
             >
-              We believe organic food shouldn't be a luxury. With direct farm partnerships and
+              We believe pure food shouldn't be a luxury. With direct farm partnerships and
               a no-middleman model, we keep prices fair while quality stays uncompromisingly high.
             </motion.p>
 
@@ -461,13 +461,13 @@ export default function About() {
 
               <motion.p variants={fadeUp} custom={0.2} className="text-base text-gray-600 mb-5">
                 It began with a simple question: why is it so hard to find food that's genuinely pure?
-                In 2022, we launched with just two products — Himalayan wild honey and stone-ground
-                jaggery powder. Both sold out in weeks.
+                In 2022, we launched with just two products — Himalayan wild honey and premium turmeric powder.
+                Both sold out in weeks.
               </motion.p>
 
               <motion.p variants={fadeUp} custom={0.3} className="text-base text-gray-600 mb-8">
                 The response confirmed what we believed: people were hungry for something real.
-                Today, we work with 200+ organic farms across India.
+                Today, we offer honey, turmeric, and coriander — each sourced directly from trusted farms across India.
               </motion.p>
 
               <motion.div variants={staggerContainer} className="space-y-4">
@@ -555,12 +555,13 @@ export default function About() {
 
               <motion.p variants={fadeUp} custom={0.2} className="text-base text-gray-300 mb-5">
                 Vedyara has always been more than a food brand. Our mission is intertwined
-                with the people who grow our food — India's small-scale, organic farmers.
+                with the people who grow our food — India's small-scale farmers who farm
+                with care, tradition, and integrity.
               </motion.p>
 
               <motion.div variants={staggerContainer} className="space-y-3 mb-8">
                 {[
-                  "Free organic farming workshops in 10 states",
+                  "Free natural farming workshops in 10 states",
                   "Soil health testing & regenerative farming support",
                   "Scholarships for children of farmer partners",
                   "Women-led farming cooperative empowerment",
@@ -664,8 +665,8 @@ export default function About() {
               </span>
             </motion.h2>
             <motion.p variants={fadeUp} custom={0.2} className="text-lg text-gray-600 mb-10 max-w-xl mx-auto">
-              Every purchase supports organic farmers, funds rural education, and brings us closer to a
-              healthier, more honest food ecosystem.
+              Every purchase supports our partner farmers, funds rural education, and brings us closer to a
+              healthier, more honest food ecosystem for every Indian family.
             </motion.p>
             <motion.div variants={fadeUp} custom={0.3} className="flex flex-wrap justify-center gap-4">
               <Link
