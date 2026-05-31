@@ -55,12 +55,12 @@ export default function Checkout() {
         image: directProduct.image,
       }];
     }
-    return cart.items;
-  }, [isDirectBuy, directProduct, directQuantity, cart.items]);
+    return cart?.items ?? [];
+  }, [isDirectBuy, directProduct, directQuantity, cart?.items]);
 
   const totalAmount = isDirectBuy
     ? parseInt(directProduct.price.toString().replace(/\D/g, "")) * directQuantity
-    : cart.totalAmount;
+    : cart?.totalAmount ?? 0;
 
   useEffect(() => {
     const savedDetails = localStorage.getItem("checkoutDetails");
@@ -185,7 +185,7 @@ export default function Checkout() {
 
       // Clear cart if not a direct buy
       if (!isDirectBuy) {
-        for (const item of cart.items) {
+        for (const item of cart?.items ?? []) {
           await removeFromCart(item.productId);
         }
       }

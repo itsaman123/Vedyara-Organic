@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiTrash2, FiPlus, FiMinus, FiArrowRight, FiShoppingBag, FiShield } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
-import { toast } from "react-hot-toast";
 
 const Cart: React.FC = () => {
   const { cart, updateQuantity, removeFromCart, isLoading } = useCart();

@@ -43,7 +43,7 @@ const ContactCard = ({
       transition={{ delay: index * 0.1 }}
       whileHover={{ x: 8 }}
       className="flex items-start gap-4 p-5 rounded-2xl bg-white shadow-lg transition-all duration-300"
-      style={{ border: "1px solid rgba(62,47,28,0.06)" }}
+      style={{ border: "1px solid rgba(62,47,28,0.06)", marginTop: "0.5rem" }}
     >
       <motion.div
         className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"

@@ -125,6 +125,7 @@ const ProductShowcaseCard = ({
 
               <button
                 onClick={(e) => { e.stopPropagation(); toggleWishlist(product as unknown as ApiProduct); }}
+                aria-label={isInWishlist(String(product.id)) ? "Remove from wishlist" : "Add to wishlist"}
                 className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors duration-200 shadow-sm"
                 style={{
                   background: isInWishlist(String(product.id)) ? "#c0392b" : "rgba(62,47,28,0.05)",
@@ -322,23 +323,30 @@ export default function Home() {
       ════════════════════════════════════════════════════ */}
       <section
         className="relative overflow-hidden"
-        style={{
-          backgroundImage: `url(${HeroBanner})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center right",
-          backgroundColor: "#F4EDE0",
-          minHeight: "92vh",
-        }}
+        style={{ backgroundColor: "#F4EDE0", minHeight: "92vh" }}
       >
+        {/* LCP image — real <img> so browser can prioritise it */}
+        <img
+          src={HeroBanner}
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover object-right pointer-events-none"
+          style={{ zIndex: 0 }}
+        />
+
+        {/* Gradient overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
               "linear-gradient(to right, #F4EDE0 0%, #F4EDE0 28%, rgba(244,237,224,0.92) 42%, rgba(244,237,224,0.55) 58%, rgba(244,237,224,0.1) 75%, transparent 88%)",
+            zIndex: 1,
           }}
         />
 
-        <div className="relative z-10 flex items-center min-h-[92vh]">
+        <div className="relative flex items-center min-h-[92vh]" style={{ zIndex: 2 }}>
           <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-24 pb-36">
             <div style={{ maxWidth: "520px" }}>
 
@@ -420,7 +428,7 @@ export default function Home() {
         </div>
 
         {/* Feature strip */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 px-4 sm:px-8 lg:px-12">
+        <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 lg:px-12" style={{ zIndex: 2 }}>
           <div
             className="max-w-[1200px] mx-auto rounded-t-3xl"
             style={{

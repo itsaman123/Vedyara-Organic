@@ -106,22 +106,7 @@ function LogoSVGFallback({
         Vedyara
       </text>
 
-      {/* ── "ORGANIC" label ── */}
-      <text
-        x="210" y="188"
-        textAnchor="middle"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontSize="19"
-        fontWeight="600"
-        fill={textColor}
-        letterSpacing="7"
-      >
-        ORGANIC
-      </text>
-
-      {/* ── Decorative gold lines ── */}
-      <line x1="62" y1="181" x2="128" y2="181" stroke={goldColor} strokeWidth="1.8" strokeLinecap="round" />
-      <line x1="292" y1="181" x2="358" y2="181" stroke={goldColor} strokeWidth="1.8" strokeLinecap="round" />
+       
     </svg>
   );
 }
@@ -156,7 +141,7 @@ export default function LogoBrand({
 
   return (
     <img
-      src="/vedyara-logo.webp"
+      src="/vedyara-logo.png"
       alt="Vedyara"
       width={pngWidth}
       height={height}
