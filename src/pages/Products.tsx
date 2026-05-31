@@ -1,6 +1,6 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiSearch, FiX, FiFilter, FiGrid, FiList, FiShoppingBag, FiHeart } from "react-icons/fi";
 import { FaStar, FaLeaf } from "react-icons/fa";
 import { useProducts, type Product as ApiProduct } from "../api/productApi";
@@ -13,43 +13,12 @@ import { loadRazorpayScript } from "../utils/payment";
 import { toast } from "react-hot-toast";
 
 /* ═══════════════════════════════════════════════════════════
-   MORPHING BLOB
+   DECORATIVE BLOB — static, no animation
 ═══════════════════════════════════════════════════════════ */
-const MorphingBlob = ({ color, className }: { color: string; className?: string }) => (
-  <motion.div
-    className={`absolute rounded-full blur-3xl ${className}`}
+const Blob = ({ color, className }: { color: string; className?: string }) => (
+  <div
+    className={`absolute rounded-full blur-2xl pointer-events-none ${className}`}
     style={{ background: color }}
-    animate={{
-      borderRadius: [
-        "60% 40% 30% 70% / 60% 30% 70% 40%",
-        "30% 60% 70% 40% / 50% 60% 30% 60%",
-        "60% 40% 30% 70% / 60% 30% 70% 40%",
-      ],
-      scale: [1, 1.08, 0.95, 1],
-    }}
-    transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-  />
-);
-
-/* ═══════════════════════════════════════════════════════════
-   FLOATING PARTICLES
-═══════════════════════════════════════════════════════════ */
-const FloatingParticle = ({ delay, x, size }: { delay: number; x: number; size: number }) => (
-  <motion.div
-    className="absolute rounded-full pointer-events-none"
-    style={{
-      left: `${x}%`,
-      top: "100%",
-      width: size,
-      height: size,
-      background: "linear-gradient(135deg, #D4AF37, #6B8E23)",
-    }}
-    animate={{
-      y: [-200, -500, -200],
-      opacity: [0, 0.5, 0],
-      scale: [0.5, 1, 0.5],
-    }}
-    transition={{ duration: 7, delay, repeat: Infinity, ease: "easeInOut" }}
   />
 );
 
@@ -69,28 +38,24 @@ const AnimatedProductCard = ({
   onBuyNow: (p: any) => void;
   viewMode: "grid" | "list";
 }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
   if (viewMode === "list") {
     return (
       <motion.div
-        ref={ref}
-        initial={{ opacity: 0, x: -30 }}
-        animate={isInView ? { opacity: 1, x: 0 } : {}}
-        transition={{ delay: index * 0.08, duration: 0.5 }}
-        whileHover={{ x: 8, scale: 1.01 }}
-        className="bg-white rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-lg shadow-black/5 cursor-pointer group"
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ delay: index * 0.06, duration: 0.4, ease: "easeOut" }}
+        className="bg-white rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-lg shadow-black/5 cursor-pointer group transition-transform duration-300 hover:translate-x-1"
         onClick={() => onView(product)}
       >
         <div className="relative w-full sm:w-48 h-48 flex-shrink-0 overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50">
-          <motion.img
+          <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
-            whileHover={{ scale: 1.1 }}
+            className="w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-105"
           />
           {product.featured && (
             <div
@@ -148,30 +113,23 @@ const AnimatedProductCard = ({
               <span className="text-xs text-gray-400">(124)</span>
             </div>
             <div className="flex items-center gap-2">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              <button
                 onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
-                className="p-2 rounded-xl transition-all duration-300"
-                style={{ 
+                className="p-2 rounded-xl transition-colors duration-200"
+                style={{
                   background: isInWishlist(product._id) ? "#c0392b" : "rgba(62,47,28,0.05)",
-                  color: isInWishlist(product._id) ? "#fff" : "rgba(62,47,28,0.5)"
+                  color: isInWishlist(product._id) ? "#fff" : "rgba(62,47,28,0.5)",
                 }}
               >
                 <FiHeart size={16} fill={isInWishlist(product._id) ? "#fff" : "transparent"} />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              </button>
+              <button
                 onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-                className="flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md"
-                style={{
-                  background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-                  color: "#3E2F1C",
-                }}
+                className="flex items-center justify-center w-10 h-10 rounded-xl shadow-sm transition-transform duration-150 active:scale-95"
+                style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)", color: "#3E2F1C" }}
               >
                 <FiShoppingBag size={18} />
-              </motion.button>
+              </button>
             </div>
           </div>
         </div>
@@ -181,60 +139,31 @@ const AnimatedProductCard = ({
 
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 60, scale: 0.9 }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{
-        delay: index * 0.1,
-        duration: 0.6,
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-      }}
-      whileHover={{ y: -10, scale: 1.02 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ delay: index * 0.06, duration: 0.4, ease: "easeOut" }}
       className="group cursor-pointer h-full flex flex-col"
       onClick={() => onView(product)}
     >
-      <div
-        className="relative bg-white rounded-3xl overflow-hidden shadow-lg shadow-black/5 transition-all duration-500 group-hover:shadow-xl group-hover:shadow-amber-900/10 flex flex-col h-full"
-      >
+      <div className="relative bg-white rounded-3xl overflow-hidden shadow-lg shadow-black/5 transition-shadow duration-300 group-hover:shadow-xl flex flex-col h-full">
 
-{
-  product.badge && (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: index * 0.1 + 0.3 }}
-      className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full text-xs font-bold"
-      style={{
-        background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-        color: "#3E2F1C",
-      }}
-    >
-      {product.badge}
-    </motion.div>
-  )
-}
+        {product.badge && (
+          <div
+            className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full text-xs font-bold"
+            style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)", color: "#3E2F1C" }}
+          >
+            {product.badge}
+          </div>
+        )}
 
-
-<motion.div
-  className="relative flex-shrink-0 h-56 flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-amber-50"
-  whileHover={{ scale: 1.05 }}
-  transition={{ duration: 0.4 }}
->
-  <div
-    className="absolute inset-0 opacity-20"
-    style={{
-      background: "radial-gradient(circle at center, rgba(212,175,55,0.4) 0%, transparent 70%)",
-    }}
-  />
-  <img
-    src={product.image}
-    alt={product.name}
-    className="relative z-10 w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-110"
-    style={{ filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.1))" }}
-  />
-</motion.div>
+        <div className="relative flex-shrink-0 h-56 flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-amber-50">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-contain p-6 transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
 
 <div className="p-6 flex flex-col flex-1">
   <p
@@ -283,74 +212,41 @@ const AnimatedProductCard = ({
 
     <div className="flex flex-col gap-2">
       <div className="flex gap-2">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={(e) => {
-            e.stopPropagation();
-            addToCart(product);
-          }}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all duration-300"
-          style={{
-            background: "rgba(62,47,28,0.05)",
-            color: "#3E2F1C",
-            border: "1px solid rgba(62,47,28,0.1)"
-          }}
+        <button
+          onClick={(e) => { e.stopPropagation(); addToCart(product); }}
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-transform duration-150 active:scale-95"
+          style={{ background: "rgba(62,47,28,0.05)", color: "#3E2F1C", border: "1px solid rgba(62,47,28,0.1)" }}
         >
           <FiShoppingBag size={16} />
           Add to Cart
-        </motion.button>
+        </button>
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleWishlist(product);
-          }}
-          className="w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300"
+        <button
+          onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
+          className="w-10 h-10 flex items-center justify-center rounded-xl transition-colors duration-200"
           style={{
             background: isInWishlist(product.id as string) ? "#c0392b" : "rgba(62,47,28,0.05)",
             color: isInWishlist(product.id as string) ? "#fff" : "rgba(62,47,28,0.5)",
-            border: "1px solid rgba(62,47,28,0.05)"
+            border: "1px solid rgba(62,47,28,0.05)",
           }}
         >
-          <FiHeart
-            size={18}
-            fill={isInWishlist(product.id as string) ? "#fff" : "transparent"}
-          />
-        </motion.button>
+          <FiHeart size={18} fill={isInWishlist(product.id as string) ? "#fff" : "transparent"} />
+        </button>
       </div>
 
-      <motion.button
-        whileHover={{ scale: 1.02, y: -2 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={(e) => {
-          e.stopPropagation();
-          onBuyNow(product);
-        }}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm shadow-lg shadow-amber-200 transition-all duration-300"
-        style={{
-          background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-          color: "#3E2F1C",
-        }}
+      <button
+        onClick={(e) => { e.stopPropagation(); onBuyNow(product); }}
+        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm shadow-lg shadow-amber-200 transition-transform duration-150 hover:-translate-y-0.5 active:scale-95"
+        style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)", color: "#3E2F1C" }}
       >
         Buy Now
-      </motion.button>
+      </button>
     </div>
   </div>
 </div>
 
-<motion.div
-  className="absolute inset-0 rounded-3xl pointer-events-none"
-  initial={{ opacity: 0 }}
-  whileHover={{ opacity: 1 }}
-  style={{
-    background: "linear-gradient(to top, rgba(212,175,55,0.08) 0%, transparent 50%)",
-  }}
-/>
-      </div >
-    </motion.div >
+      </div>
+    </motion.div>
   );
 };
 
@@ -465,14 +361,8 @@ export default function Products() {
         className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-24 pb-16"
         style={{ background: "linear-gradient(135deg, #fef9f3 0%, #f5f0e8 50%, #ebe6d9 100%)" }}
       >
-        {/* Animated Blobs */}
-        <MorphingBlob color="rgba(212,175,55,0.2)" className="w-[500px] h-[500px] -top-32 -left-32" />
-        <MorphingBlob color="rgba(107,142,35,0.15)" className="w-[400px] h-[400px] -bottom-20 -right-20" />
-
-        {/* Floating Particles */}
-        {[...Array(6)].map((_, i) => (
-          <FloatingParticle key={i} delay={i * 0.7} x={10 + i * 15} size={5 + (i % 3) * 2} />
-        ))}
+        <Blob color="rgba(212,175,55,0.2)" className="w-[400px] h-[400px] -top-32 -left-32" />
+        <Blob color="rgba(107,142,35,0.15)" className="w-[350px] h-[350px] -bottom-20 -right-20" />
 
         {/* Grid Pattern */}
         <div
@@ -581,25 +471,11 @@ export default function Products() {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="relative"
             >
-              <div
-                className="absolute inset-0 rounded-full blur-3xl"
-                style={{
-                  background: "radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 70%)",
-                  transform: "scale(1.2)",
-                }}
+              <img
+                src={filteredProducts[0]?.image || "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg"}
+                alt="Featured Product"
+                className="w-full max-w-md mx-auto drop-shadow-xl"
               />
-              <motion.div
-                animate={{ y: [0, -15, 0], rotate: [-2, 2, -2] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="relative"
-              >
-                <img
-                  src={filteredProducts[0]?.image || "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg"}
-                  alt="Featured Product"
-                  className="w-full max-w-md mx-auto drop-shadow-2xl"
-                  style={{ filter: "drop-shadow(0 25px 50px rgba(0,0,0,0.15))" }}
-                />
-              </motion.div>
             </motion.div>
           </div>
         </div>
@@ -619,8 +495,8 @@ export default function Products() {
         className="sticky top-16 z-30 py-5 px-4"
         style={{
           background: "rgba(250,249,247,0.95)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
           borderBottom: "1px solid rgba(62,47,28,0.08)",
           boxShadow: "0 4px 20px rgba(62,47,28,0.06)",
         }}
@@ -790,13 +666,7 @@ export default function Products() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center py-24 text-center"
             >
-              <motion.div
-                animate={{ y: [0, -10, 0], rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="text-7xl mb-6"
-              >
-                🌿
-              </motion.div>
+              <div className="text-7xl mb-6">🌿</div>
               <h3 className="font-serif font-bold mb-3" style={{ fontSize: "1.5rem", color: "#3E2F1C" }}>
                 No Products Found
               </h3>

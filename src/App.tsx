@@ -9,7 +9,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Loader from "./components/Loader";
-import FloatingLeaves from "./components/FloatingLeaves";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import About from "./pages/About";

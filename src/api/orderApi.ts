@@ -85,6 +85,30 @@ export const verifyOtp = async (data: { email: string; otp: string; name?: strin
   return payload.data;
 };
 
+export const createCodOrder = async (data: {
+  items: { productId: string; quantity: number }[];
+  customerName: string;
+  customerEmail: string;
+  shippingAddress: {
+    name: string;
+    phone: string;
+    address: string;
+    city: string;
+    pincode: string;
+  };
+}) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/orders/create-cod`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  const payload = (await response.json()) as ApiResponse<{ orderId: string }>;
+  if (!response.ok || !payload.success) {
+    throw new Error(payload.message || "Failed to place order");
+  }
+  return payload.data;
+};
+
 export const getMyOrders = async () => {
   const response = await fetch(`${API_BASE_URL}/api/v1/orders/myorders`, {
     method: "GET",

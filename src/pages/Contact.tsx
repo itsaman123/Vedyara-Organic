@@ -13,41 +13,12 @@ import { FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { fadeUp, staggerContainer } from "../utils/animations";
 
 /* ═══════════════════════════════════════════════════════════
-   MORPHING BLOB
+   DECORATIVE BLOB — static, no animation
 ═══════════════════════════════════════════════════════════ */
-const MorphingBlob = ({ color, className }: { color: string; className?: string }) => (
-  <motion.div
-    className={`absolute rounded-full blur-3xl ${className}`}
+const Blob = ({ color, className }: { color: string; className?: string }) => (
+  <div
+    className={`absolute rounded-full blur-2xl pointer-events-none ${className}`}
     style={{ background: color }}
-    animate={{
-      borderRadius: [
-        "60% 40% 30% 70% / 60% 30% 70% 40%",
-        "30% 60% 70% 40% / 50% 60% 30% 60%",
-        "60% 40% 30% 70% / 60% 30% 70% 40%",
-      ],
-    }}
-    transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-  />
-);
-
-/* ═══════════════════════════════════════════════════════════
-   FLOATING PARTICLES
-═══════════════════════════════════════════════════════════ */
-const FloatingParticle = ({ delay, x, size }: { delay: number; x: number; size: number }) => (
-  <motion.div
-    className="absolute rounded-full pointer-events-none"
-    style={{
-      left: `${x}%`,
-      top: "100%",
-      width: size,
-      height: size,
-      background: "linear-gradient(135deg, #D4AF37, #6B8E23)",
-    }}
-    animate={{
-      y: [-200, -500, -200],
-      opacity: [0, 0.5, 0],
-    }}
-    transition={{ duration: 8, delay, repeat: Infinity, ease: "easeInOut" }}
   />
 );
 
@@ -317,12 +288,9 @@ export default function Contact() {
         className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-24 pb-16"
         style={{ background: "linear-gradient(135deg, #fef9f3 0%, #f5f0e8 50%, #ebe6d9 100%)" }}
       >
-        <MorphingBlob color="rgba(212,175,55,0.2)" className="w-[500px] h-[500px] -top-32 -left-32" />
-        <MorphingBlob color="rgba(107,142,35,0.15)" className="w-[400px] h-[400px] -bottom-20 -right-20" />
+        <Blob color="rgba(212,175,55,0.2)" className="w-[500px] h-[500px] -top-32 -left-32" />
+        <Blob color="rgba(107,142,35,0.15)" className="w-[400px] h-[400px] -bottom-20 -right-20" />
 
-        {[...Array(6)].map((_, i) => (
-          <FloatingParticle key={i} delay={i * 0.7} x={10 + i * 15} size={5 + (i % 3) * 2} />
-        ))}
 
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none"
