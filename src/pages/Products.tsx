@@ -15,7 +15,7 @@ import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 
 /* ═══════════════════════════════════════════════════════════
-   PRODUCT CARD — premium grid card
+   PRODUCT CARD — reference design
 ═══════════════════════════════════════════════════════════ */
 const ProductCard = ({
   product,
@@ -48,137 +48,102 @@ const ProductCard = ({
     >
       <div
         className="relative bg-white rounded-2xl overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:shadow-2xl group-hover:-translate-y-1"
-        style={{ boxShadow: "0 2px 16px rgba(62,47,28,0.07)" }}
+        style={{ boxShadow: "0 2px 20px rgba(62,47,28,0.08)" }}
       >
-        {/* Badges */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
-          {product.featured && (
+        {/* ── Image area ── */}
+        <div className="relative flex-shrink-0 overflow-hidden" style={{ height: "260px", background: "#faf8f5" }}>
+          <img
+            src={product.images[0]}
+            alt={product.name}
+            loading="lazy"
+            className="w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-105"
+          />
+
+          {/* Badge top-left */}
+          {savings !== null && savings > 0 ? (
             <span
-              className="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide"
+              className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide"
+              style={{ background: "linear-gradient(135deg, #2D4A1E, #3d6b2a)", color: "#fff" }}
+            >
+              {savings}% off
+            </span>
+          ) : product.featured ? (
+            <span
+              className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide"
               style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)", color: "#3E2F1C" }}
             >
               Best Seller
             </span>
-          )}
-          {savings !== null && savings > 0 && (
-            <span
-              className="px-2.5 py-1 rounded-full text-[11px] font-bold"
-              style={{ background: "rgba(45,74,30,0.9)", color: "#fff" }}
-            >
-              {savings}% off
-            </span>
-          )}
-        </div>
+          ) : null}
 
-        {/* Wishlist btn */}
-        <button
-          onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
-          className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full transition-all duration-200"
-          style={{
-            background: wishlisted ? "#c0392b" : "rgba(255,255,255,0.9)",
-            backdropFilter: "blur(4px)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-          }}
-        >
-          <FiHeart
-            size={14}
-            style={{ color: wishlisted ? "#fff" : "rgba(62,47,28,0.5)" }}
-            fill={wishlisted ? "#fff" : "transparent"}
-          />
-        </button>
-
-        {/* Image area */}
-        <div
-          className="relative flex-shrink-0 flex items-center justify-center overflow-hidden"
-          style={{ height: "220px", background: "linear-gradient(145deg, #fdf9f4 0%, #f5efe6 100%)" }}
-        >
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            className="w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-108"
-            style={{ transition: "transform 0.5s cubic-bezier(0.4,0,0.2,1)" }}
-            loading="lazy"
-          />
-        </div>
-
-        {/* Content */}
-        <div className="flex flex-col flex-1 p-5">
-          <p
-            className="text-[10px] font-semibold uppercase tracking-widest mb-1"
-            style={{ color: "#6B8E23" }}
+          {/* Wishlist top-right */}
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full transition-all duration-200"
+            style={{
+              background: wishlisted ? "#c0392b" : "rgba(255,255,255,0.9)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            }}
           >
+            <FiHeart size={14} style={{ color: wishlisted ? "#fff" : "rgba(62,47,28,0.5)" }} fill={wishlisted ? "#fff" : "transparent"} />
+          </button>
+        </div>
+
+        {/* ── Content ── */}
+        <div className="flex flex-col flex-1 px-5 pt-4 pb-5">
+          <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: "#6B8E23" }}>
             {product.category === "honey" ? "Honey" : "Spices & Powders"}
           </p>
 
-          <h3
-            className="font-serif font-bold text-base mb-1.5 leading-snug"
-            style={{ color: "#1a0f05" }}
-          >
+          <h3 className="font-serif font-bold leading-snug mb-1" style={{ fontSize: "1.05rem", color: "#1a0f05" }}>
             {product.name}
           </h3>
 
-          <p className="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-2">
+          <p className="text-xs leading-relaxed mb-4 line-clamp-2" style={{ color: "rgba(26,15,5,0.5)" }}>
             {product.shortDescription || product.description.slice(0, 80)}
           </p>
 
-          {/* Tags */}
-          {product.tags?.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {product.tags.slice(0, 2).map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2.5 py-0.5 rounded-full text-[11px] font-medium"
-                  style={{ background: "rgba(107,142,35,0.1)", color: "#3d6b1a" }}
+          {/* Price + unit + actions */}
+          <div className="mt-auto pt-3 border-t border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-bold text-lg" style={{ color: "#1a0f05" }}>₹{displayPrice}</span>
+                {product.discountedPrice !== null && (
+                  <span className="ml-1.5 text-xs text-gray-400 line-through">₹{product.price}</span>
+                )}
+                <p className="text-[11px] text-gray-400 mt-0.5">{product.unit}</p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* Buy Now */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); onBuyNow(product); }}
+                  aria-label={`Buy ${product.name} now`}
+                  className="h-9 px-4 rounded-xl font-semibold text-xs transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
+                  style={{
+                    background: "rgba(62,47,28,0.06)",
+                    color: "#3E2F1C",
+                    border: "1px solid rgba(62,47,28,0.1)",
+                  }}
                 >
-                  {tag}
-                </span>
-              ))}
+                  Buy Now
+                </button>
+                {/* Add to cart icon */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); addToCart(product); }}
+                  aria-label={`Add ${product.name} to cart`}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 active:scale-90"
+                  style={{
+                    background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                    color: "#3E2F1C",
+                    boxShadow: "0 4px 12px rgba(212,175,55,0.35)",
+                  }}
+                >
+                  <FiShoppingBag size={15} strokeWidth={2.2} />
+                </button>
+              </div>
             </div>
-          )}
-
-          {/* Price + rating */}
-          <div className="flex items-end justify-between mt-auto mb-4">
-            <div>
-              <span className="text-xl font-bold" style={{ color: "#1a0f05" }}>
-                ₹{displayPrice}
-              </span>
-              {product.discountedPrice !== null && (
-                <span className="ml-1.5 text-xs text-gray-400 line-through">₹{product.price}</span>
-              )}
-              <p className="text-[11px] text-gray-400 mt-0.5">{product.unit}</p>
-            </div>
-            <div className="flex items-center gap-1">
-              <FaStar size={12} style={{ color: "#D4AF37" }} />
-              <span className="text-sm font-semibold" style={{ color: "#1a0f05" }}>4.8</span>
-              <span className="text-xs text-gray-400">(124)</span>
-            </div>
-          </div>
-
-          {/* CTA buttons */}
-          <div className="flex flex-col gap-2">
-            <button
-              onClick={(e) => { e.stopPropagation(); onBuyNow(product); }}
-              className="w-full py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
-              style={{
-                background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
-                color: "#3E2F1C",
-                boxShadow: "0 4px 14px rgba(212,175,55,0.3)",
-              }}
-            >
-              Buy Now
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-              className="w-full py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:bg-stone-100 active:scale-95 flex items-center justify-center gap-2"
-              style={{
-                background: "rgba(62,47,28,0.05)",
-                color: "#3E2F1C",
-                border: "1px solid rgba(62,47,28,0.1)",
-              }}
-            >
-              <FiShoppingBag size={14} />
-              Add to Cart
-            </button>
           </div>
         </div>
       </div>
@@ -740,11 +705,11 @@ export default function Products() {
               exit={{ opacity: 0 }}
               className={
                 viewMode === "grid"
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                   : "flex flex-col gap-4"
               }
             >
-              {[...Array(4)].map((_, i) => (
+              {[...Array(3)].map((_, i) => (
                 <div
                   key={i}
                   className="bg-white rounded-2xl animate-pulse"
@@ -783,7 +748,7 @@ export default function Products() {
               transition={{ duration: 0.3 }}
               className={
                 viewMode === "grid"
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                   : "flex flex-col gap-4"
               }
             >

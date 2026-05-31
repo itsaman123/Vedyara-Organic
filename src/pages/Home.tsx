@@ -43,7 +43,7 @@ interface CardProduct {
 import { fadeUp, staggerContainer } from "../utils/animations";
 
 /* ═══════════════════════════════════════════════════════════
-   PRODUCT SHOWCASE CARD
+   PRODUCT SHOWCASE CARD — reference design
 ═══════════════════════════════════════════════════════════ */
 const ProductShowcaseCard = ({
   product,
@@ -56,86 +56,95 @@ const ProductShowcaseCard = ({
 }) => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const wishlisted = isInWishlist(String(product.id));
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: "easeOut" }}
-      className="group relative cursor-pointer h-full flex flex-col"
+      transition={{ duration: 0.45, delay: index * 0.08, ease: "easeOut" }}
+      className="group cursor-pointer flex flex-col h-full"
       onClick={() => onView(product)}
     >
-      <div className="relative bg-white rounded-3xl p-6 shadow-lg shadow-black/5 overflow-hidden transition-shadow duration-300 group-hover:shadow-xl flex flex-col h-full">
-        {product.badge && (
-          <div
-            className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full text-xs font-bold"
-            style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)", color: "#3E2F1C" }}
-          >
-            {product.badge}
-          </div>
-        )}
-
-        <div className="relative flex-shrink-0 h-48 flex items-center justify-center mb-6 overflow-hidden">
+      <div
+        className="relative bg-white rounded-2xl overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:shadow-2xl group-hover:-translate-y-1"
+        style={{ boxShadow: "0 2px 20px rgba(62,47,28,0.08)" }}
+      >
+        {/* ── Image area ── */}
+        <div className="relative flex-shrink-0 overflow-hidden" style={{ height: "260px", background: "#faf8f5" }}>
           <img
             src={product.image}
             alt={product.name}
-            className="relative z-10 w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            className="w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-105"
           />
+
+          {/* Badge top-left */}
+          {product.badge && (
+            <span
+              className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide"
+              style={{
+                background: product.badge === "Sale"
+                  ? "linear-gradient(135deg, #2D4A1E, #3d6b2a)"
+                  : "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                color: product.badge === "Sale" ? "#fff" : "#3E2F1C",
+              }}
+            >
+              {product.badge}
+            </span>
+          )}
+
+          {/* Wishlist top-right */}
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleWishlist(product as unknown as ApiProduct); }}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full transition-all duration-200"
+            style={{
+              background: wishlisted ? "#c0392b" : "rgba(255,255,255,0.9)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <FiHeart size={14} style={{ color: wishlisted ? "#fff" : "rgba(62,47,28,0.5)" }} fill={wishlisted ? "#fff" : "transparent"} />
+          </button>
         </div>
 
-        <div className="flex flex-col flex-1">
-          <h3 className="font-serif font-bold text-lg text-brand-brown mb-2">{product.name}</h3>
-          <p className="text-sm text-gray-500 leading-relaxed mb-3">{product.shortDesc}</p>
+        {/* ── Content ── */}
+        <div className="flex flex-col flex-1 px-5 pt-4 pb-5">
+          <h3
+            className="font-serif font-bold leading-snug mb-1"
+            style={{ fontSize: "1.05rem", color: "#1a0f05" }}
+          >
+            {product.name}
+          </h3>
 
-          <div className="flex flex-wrap gap-2 mb-3">
-            {product.benefits.slice(0, 2).map((benefit) => (
-              <span
-                key={benefit}
-                className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-100"
-              >
-                {benefit}
+          <p className="text-xs leading-relaxed mb-4" style={{ color: "rgba(26,15,5,0.5)" }}>
+            {product.shortDesc}
+          </p>
+
+          {/* Price + cart */}
+          <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
+            <div>
+              <span className="font-bold text-lg" style={{ color: "#1a0f05" }}>
+                {product.price}
               </span>
-            ))}
-          </div>
-
-          <div className="pt-4 border-t border-gray-100 mt-auto flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-2xl font-bold text-brand-brown">{product.price}</span>
-                {product.originalPrice && (
-                  <span className="ml-2 text-sm text-gray-400 line-through">{product.originalPrice}</span>
-                )}
-              </div>
-              <div className="flex items-center gap-1.5">
-                <FaStar size={14} style={{ color: "#D4AF37" }} />
-                <span className="text-sm font-semibold text-brand-brown">{product.rating || "4.8"}</span>
-              </div>
+              {product.originalPrice && (
+                <span className="ml-1.5 text-xs text-gray-400 line-through">{product.originalPrice}</span>
+              )}
             </div>
 
-            <div className="flex gap-2">
-              <button
-                onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm shadow-sm transition-transform duration-150 active:scale-95"
-                style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)", color: "#3E2F1C" }}
-              >
-                <FiShoppingBag size={18} />
-                Add to Cart
-              </button>
-
-              <button
-                onClick={(e) => { e.stopPropagation(); toggleWishlist(product as unknown as ApiProduct); }}
-                aria-label={isInWishlist(String(product.id)) ? "Remove from wishlist" : "Add to wishlist"}
-                className="w-12 h-12 flex items-center justify-center rounded-xl transition-colors duration-200 shadow-sm"
-                style={{
-                  background: isInWishlist(String(product.id)) ? "#c0392b" : "rgba(62,47,28,0.05)",
-                  color: isInWishlist(String(product.id)) ? "#fff" : "rgba(62,47,28,0.5)",
-                  border: "1px solid rgba(62,47,28,0.05)",
-                }}
-              >
-                <FiHeart size={20} fill={isInWishlist(String(product.id)) ? "#fff" : "transparent"} />
-              </button>
-            </div>
+            <button
+              onClick={(e) => { e.stopPropagation(); addToCart(product); }}
+              aria-label={`Add ${product.name} to cart`}
+              className="w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 active:scale-90"
+              style={{
+                background: "linear-gradient(135deg, #D4AF37, #e8c84a)",
+                color: "#3E2F1C",
+                boxShadow: "0 4px 12px rgba(212,175,55,0.35)",
+              }}
+            >
+              <FiShoppingBag size={15} strokeWidth={2.2} />
+            </button>
           </div>
         </div>
       </div>
@@ -236,7 +245,7 @@ const TestimonialCard = ({
 export default function Home() {
   const navigate = useNavigate();
 
-  const { data, isLoading } = useProducts({ featured: "true", limit: 4 });
+  const { data, isLoading } = useProducts({ limit: 3 });
 
   const mapProduct = (p: ApiProduct): CardProduct => ({
     id: p.slug,
@@ -246,7 +255,7 @@ export default function Home() {
     category: p.category,
     price: `₹${p.discountedPrice !== null ? p.discountedPrice : p.price}`,
     originalPrice: p.discountedPrice !== null ? `₹${p.price}` : undefined,
-    badge: p.featured ? "Best Seller" : "Natural",
+    badge: p.discountedPrice !== null ? "Sale" : "Natural",
     image: p.images[0] || "",
     description: p.description,
     shortDesc: p.shortDescription || p.description.slice(0, 100),
@@ -483,7 +492,7 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════
-          3. FEATURED PRODUCTS
+          3. ALL PRODUCTS
       ════════════════════════════════════════════════════ */}
       <section className="relative py-20 bg-[#faf9f7] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -495,19 +504,19 @@ export default function Home() {
             className="text-center mb-14"
           >
             <motion.span variants={fadeUp} custom={0} className="inline-block text-sm font-semibold text-amber-600 uppercase tracking-widest mb-4">
-              Our Bestsellers
+              Our Collection
             </motion.span>
             <motion.h2 variants={fadeUp} custom={0.1} className="font-serif font-bold text-brand-brown mb-4" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
-              Featured Products
+              Shop Our Products
             </motion.h2>
             <motion.p variants={fadeUp} custom={0.2} className="max-w-2xl mx-auto text-gray-500">
-              Handpicked wellness essentials — from pure Himalayan honey to farm-fresh spices. Every product tells a story of purity.
+              Pure Himalayan honey, stone-ground turmeric, and aromatic coriander — each product tells a story of purity.
             </motion.p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {isLoading
-              ? [...Array(4)].map((_, i) => <div key={i} className="h-80 bg-gray-50 rounded-3xl animate-pulse" />)
+              ? [...Array(3)].map((_, i) => <div key={i} className="h-96 bg-gray-50 rounded-2xl animate-pulse" />)
               : featuredProducts.map((product, i) => (
                   <ProductShowcaseCard key={product.id} product={product} index={i} onView={handleQuickView} />
                 ))}
