@@ -303,7 +303,7 @@ export default function Contact() {
           }}
         />
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10 text-center">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -366,7 +366,7 @@ export default function Contact() {
       {/* ════════════════════════════════════════════════════
           MAIN CONTENT
       ════════════════════════════════════════════════════ */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
           {/* LEFT COLUMN */}
           <motion.div
@@ -704,7 +704,7 @@ export default function Contact() {
           FAQ SECTION
       ════════════════════════════════════════════════════ */}
       <section className="py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

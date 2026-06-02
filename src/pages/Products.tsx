@@ -378,7 +378,7 @@ export default function Products() {
           style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.6), transparent)" }}
         />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
             {/* ── Left: Text ── */}
@@ -572,7 +572,7 @@ export default function Products() {
           STICKY FILTERS
       ════════════════════════════════════════════════════ */}
       <div
-        className="sticky top-16 z-30 py-4 px-4"
+        className="sticky top-16 z-30 py-4 px-5 sm:px-8 lg:px-12"
         style={{
           background: "rgba(250,249,247,0.96)",
           backdropFilter: "blur(12px)",
@@ -581,7 +581,7 @@ export default function Products() {
           boxShadow: "0 2px 16px rgba(62,47,28,0.05)",
         }}
       >
-        <div className="max-w-7xl mx-auto">
+        <div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-3">
 
             {/* Search */}
@@ -695,7 +695,7 @@ export default function Products() {
       {/* ════════════════════════════════════════════════════
           PRODUCT GRID / LIST
       ════════════════════════════════════════════════════ */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 py-10">
         <AnimatePresence mode="wait">
           {isLoading ? (
             <motion.div

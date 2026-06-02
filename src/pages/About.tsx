@@ -200,7 +200,7 @@ export default function About() {
           }}
         />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div
               variants={staggerContainer}
@@ -337,7 +337,7 @@ export default function About() {
           MISSION SECTION
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 overflow-hidden bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 text-center">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -404,7 +404,7 @@ export default function About() {
       <section className="relative py-24 bg-[#faf9f7] overflow-hidden">
         <Blob color="rgba(212,175,55,0.1)" className="w-[400px] h-[400px] top-0 right-0" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -498,7 +498,7 @@ export default function About() {
           style={{ background: "radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 70%)" }}
         />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -533,7 +533,7 @@ export default function About() {
         <Blob color="rgba(212,175,55,0.08)" className="w-[500px] h-[500px] top-0 right-0" />
         <Blob color="rgba(107,142,35,0.06)" className="w-[400px] h-[400px] bottom-0 left-0" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div
               variants={staggerContainer}
@@ -602,7 +602,7 @@ export default function About() {
           CERTIFICATIONS
       ════════════════════════════════════════════════════ */}
       <section className="relative py-16 bg-[#faf9f7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -645,7 +645,7 @@ export default function About() {
       <section className="relative py-24 overflow-hidden" style={{ background: "linear-gradient(135deg, #fef9f3 0%, #f5f0e8 100%)" }}>
         <Blob color="rgba(212,175,55,0.15)" className="w-[500px] h-[500px] -top-32 -left-32" />
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 text-center relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"

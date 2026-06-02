@@ -63,24 +63,24 @@ export default function Navbar() {
         style={
           isScrolled
             ? {
-                background: "rgba(248,245,240,0.97)",
+                background: "rgba(255,255,255,0.97)",
                 backdropFilter: "blur(20px)",
                 WebkitBackdropFilter: "blur(20px)",
-                boxShadow: "0 4px 30px rgba(62,47,28,0.1), 0 1px 0 rgba(212,175,55,0.18)",
+                boxShadow: "0 1px 0 rgba(212,175,55,0.2), 0 4px 24px rgba(62,47,28,0.07)",
               }
             : {
-                background: "rgba(248,245,240,0.88)",
-                backdropFilter: "blur(14px)",
-                WebkitBackdropFilter: "blur(14px)",
-                boxShadow: "0 1px 0 rgba(212,175,55,0.14)",
+                background: "rgba(255,255,255,0.97)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                boxShadow: "0 1px 0 rgba(212,175,55,0.18)",
               }
         }
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="px-5 sm:px-8 lg:px-12">
           <div
             className="flex items-center justify-between"
             style={{
-              height: isScrolled ? "66px" : "78px",
+              height: isScrolled ? "62px" : "68px",
               transition: "height 0.4s ease",
             }}
           >

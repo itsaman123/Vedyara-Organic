@@ -156,7 +156,7 @@ export default function Footer() {
       {/* ════════════════════════════════════════════════════
           MAIN FOOTER GRID
       ════════════════════════════════════════════════════ */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 py-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
 
           {/* ── Col 1: Brand ── */}
@@ -478,7 +478,7 @@ export default function Footer() {
         className="border-t"
         style={{ borderColor: "rgba(255,255,255,0.06)" }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 py-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
             <p style={{ color: "rgba(248,245,240,0.27)" }}>
               © {currentYear}{" "}
