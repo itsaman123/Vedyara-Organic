@@ -341,23 +341,33 @@ export default function Home() {
           aria-hidden="true"
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 w-full h-full object-cover object-right pointer-events-none"
-          style={{ zIndex: 0 }}
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          style={{ zIndex: 0, objectPosition: "60% center" }}
         />
 
-        {/* Gradient overlay */}
+        {/* Desktop gradient — left-to-right cream fade (md+) */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none hidden md:block"
           style={{
             background:
-              "linear-gradient(to right, #F4EDE0 0%, #F4EDE0 28%, rgba(244,237,224,0.92) 42%, rgba(244,237,224,0.55) 58%, rgba(244,237,224,0.1) 75%, transparent 88%)",
+              "linear-gradient(to right, #F4EDE0 0%, #F4EDE0 22%, rgba(244,237,224,0.88) 36%, rgba(244,237,224,0.45) 52%, rgba(244,237,224,0.08) 68%, transparent 80%)",
             zIndex: 1,
           }}
         />
 
-        <div className="relative flex items-center min-h-[92vh]" style={{ zIndex: 2 }}>
-          <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-24 pb-36">
-            <div style={{ maxWidth: "520px" }}>
+        {/* Mobile gradient — bottom-to-top cream fade so products show above text */}
+        <div
+          className="absolute inset-0 pointer-events-none md:hidden"
+          style={{
+            background:
+              "linear-gradient(to top, #F4EDE0 0%, #F4EDE0 42%, rgba(244,237,224,0.82) 60%, rgba(244,237,224,0.3) 80%, transparent 100%)",
+            zIndex: 1,
+          }}
+        />
+
+        <div className="relative flex items-end md:items-center min-h-[92vh]" style={{ zIndex: 2 }}>
+          <div className="w-full px-5 sm:px-8 lg:px-14 xl:px-20 pt-24 pb-44 md:pb-36">
+            <div className="max-w-[500px]">
 
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
@@ -437,9 +447,9 @@ export default function Home() {
         </div>
 
         {/* Feature strip */}
-        <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 lg:px-12" style={{ zIndex: 2 }}>
+        <div className="absolute bottom-0 left-0 right-0 px-5 sm:px-8 lg:px-14 xl:px-20" style={{ zIndex: 2 }}>
           <div
-            className="max-w-[1200px] mx-auto rounded-t-3xl"
+            className="rounded-t-3xl"
             style={{
               background: "#ffffff",
               boxShadow: "0 -4px 30px rgba(0,0,0,0.06)",
@@ -452,7 +462,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + i * 0.07, duration: 0.4, ease: "easeOut" }}
-                  className="flex items-start gap-4 px-6 py-6"
+                  className={`flex items-start gap-3 px-4 py-5 md:px-6 md:py-6 ${i >= 2 ? "hidden md:flex" : ""}`}
                 >
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
@@ -482,7 +492,7 @@ export default function Home() {
           className="absolute top-0 left-0 right-0 h-0.5"
           style={{ background: "linear-gradient(to right, transparent, #D4AF37, #6B8E23, #D4AF37, transparent)" }}
         />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
             {stats.map((stat, i) => (
               <StatCounter key={stat.id} value={stat.value} label={stat.label} index={i} />
@@ -495,7 +505,7 @@ export default function Home() {
           3. ALL PRODUCTS
       ════════════════════════════════════════════════════ */}
       <section className="relative py-20 bg-[#faf9f7] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -514,7 +524,7 @@ export default function Home() {
             </motion.p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {isLoading
               ? [...Array(3)].map((_, i) => <div key={i} className="h-96 bg-gray-50 rounded-2xl animate-pulse" />)
               : featuredProducts.map((product, i) => (
@@ -547,7 +557,7 @@ export default function Home() {
           4. PRODUCT BENEFITS
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -610,7 +620,7 @@ export default function Home() {
           5. OUR STORY
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 overflow-hidden" style={{ background: "#F4EDE0" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
             {/* Image side */}
@@ -714,7 +724,7 @@ export default function Home() {
         className="relative py-24 overflow-hidden"
         style={{ background: "linear-gradient(135deg, #1a2e10 0%, #2D4A1E 50%, #1a2e10 100%)" }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -777,7 +787,7 @@ export default function Home() {
           7. TESTIMONIALS
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 bg-[#faf9f7] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -805,7 +815,7 @@ export default function Home() {
           8. CTA SECTION
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 overflow-hidden" style={{ background: "#F4EDE0" }}>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 text-center relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"

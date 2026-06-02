@@ -49,7 +49,7 @@ const Wishlist: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-[#faf9f7]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12">
         <h1 className="font-serif font-bold text-4xl text-brand-brown mb-10">My Wishlist</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
