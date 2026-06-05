@@ -122,10 +122,9 @@ export default function ProductCard({
       <div
         style={{
           position: "relative",
-          height: "210px",
+          height: "240px",
           overflow: "hidden",
-          background:
-            "linear-gradient(135deg,rgba(212,175,55,0.08),rgba(107,142,35,0.08))",
+          background: "#fff",
         }}
       >
         {/* Product image */}
@@ -139,8 +138,9 @@ export default function ProductCard({
               width: "100%",
               height: "100%",
               objectFit: "cover",
+              objectPosition: "center",
               display: "block",
-              transform: hovered ? "scale(1.07)" : "scale(1)",
+              transform: hovered ? "scale(1.05)" : "scale(1)",
               transition: "transform 0.65s cubic-bezier(0.4,0,0.2,1)",
             }}
           />
@@ -174,13 +174,15 @@ export default function ProductCard({
           </div>
         )}
 
-        {/* Bottom scrim */}
+        {/* Subtle bottom fade */}
         <div
           style={{
             position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(to bottom,transparent 45%,rgba(20,12,4,0.32) 100%)",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "40px",
+            background: "linear-gradient(to bottom,transparent,rgba(255,255,255,0.18))",
             pointerEvents: "none",
           }}
         />

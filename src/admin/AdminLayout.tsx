@@ -13,6 +13,7 @@ import {
   FiBell,
   FiHelpCircle,
   FiExternalLink,
+  FiMenu,
 } from "react-icons/fi";
 import {
   clearAdminToken,
@@ -225,12 +226,12 @@ export default function AdminLayout() {
         {/* Top Header */}
         <header className="admin-header">
           <div className="admin-header-left">
-            {/* <button
+            <button
               className="admin-hamburger"
-              onClick={() => setSidebarOpen(true)}
+              onClick={() => setSidebarOpen((v) => !v)}
             >
-              <FiMenu size={22} />
-            </button> */}
+              <FiMenu size={20} />
+            </button>
             {/* <div className="admin-search-bar">
               <FiSearch size={16} className="admin-search-icon" />
               <input

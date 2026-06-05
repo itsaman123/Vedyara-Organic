@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiCheck, FiArrowRight, FiShield, FiLock, FiAlertCircle, FiTruck, FiPackage } from "react-icons/fi";
+import { FiCheck, FiArrowRight, FiShield, FiLock, FiAlertCircle, FiTruck } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { useCart } from "../context/CartContext";
 import * as orderApi from "../api/orderApi";
@@ -29,7 +29,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, removeFromCart } = useCart();
-  const [step, setStep] = useState<"details" | "otp" | "placing" | "success">("details");
+  const [step, setStep] = useState<"details" | "otp" | "placing">("details");
   const [formData, setFormData] = useState<CheckoutFormData>({
     name: "", email: "", phone: "", address: "", city: "", pincode: "",
   });
@@ -39,7 +39,6 @@ export default function Checkout() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState<number>(-1);
   const [showAddressForm, setShowAddressForm] = useState(false);
-  const [placedOrderId, setPlacedOrderId] = useState<string>("");
 
   const isDirectBuy = location.state?.isDirectBuy;
   const directProduct = location.state?.product;
@@ -181,8 +180,6 @@ export default function Checkout() {
         shippingAddress,
       });
 
-      setPlacedOrderId(data?.orderId || "");
-
       // Clear cart if not a direct buy
       if (!isDirectBuy) {
         for (const item of cart?.items ?? []) {
@@ -190,7 +187,23 @@ export default function Checkout() {
         }
       }
 
-      setStep("success");
+      navigate("/order-confirmation", {
+        replace: true,
+        state: {
+          orderId: data?.orderId || "",
+          orderNumber: data?.orderNumber || "",
+          customerName: formData.name,
+          customerEmail: formData.email,
+          shippingAddress,
+          items: orderItems.map(item => ({
+            name: item.name || "Product",
+            image: item.image,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+          totalAmount,
+        },
+      });
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Failed to place order. Please try again.";
       toast.error(msg);
@@ -207,21 +220,19 @@ export default function Checkout() {
           <div className="bg-white rounded-3xl p-8 shadow-sm">
 
             {/* COD-only notice banner */}
-            {step !== "success" && (
-              <div
-                className="flex items-start gap-3 px-4 py-3 rounded-xl mb-6 text-sm"
-                style={{ background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.3)" }}
-              >
-                <FiAlertCircle size={18} className="flex-shrink-0 mt-0.5" style={{ color: "#b8941f" }} />
-                <div>
-                  <span className="font-semibold" style={{ color: "#3E2F1C" }}>Online payments are temporarily unavailable.</span>
-                  <span className="ml-1" style={{ color: "rgba(62,47,28,0.65)" }}>We currently accept Cash on Delivery (COD) only.</span>
-                </div>
+            <div
+              className="flex items-start gap-3 px-4 py-3 rounded-xl mb-6 text-sm"
+              style={{ background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.3)" }}
+            >
+              <FiAlertCircle size={18} className="flex-shrink-0 mt-0.5" style={{ color: "#b8941f" }} />
+              <div>
+                <span className="font-semibold" style={{ color: "#3E2F1C" }}>Online payments are temporarily unavailable.</span>
+                <span className="ml-1" style={{ color: "rgba(62,47,28,0.65)" }}>We currently accept Cash on Delivery (COD) only.</span>
               </div>
-            )}
+            </div>
 
             <h1 className="font-serif font-bold text-3xl text-brand-brown mb-8">
-              {step === "success" ? "Order Confirmed!" : "Checkout"}
+              Checkout
             </h1>
 
             <AnimatePresence mode="wait">
@@ -433,87 +444,12 @@ export default function Checkout() {
                 </motion.div>
               )}
 
-              {/* ── SUCCESS ── */}
-              {step === "success" && (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="flex flex-col items-center text-center py-10"
-                >
-                  <div
-                    className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
-                    style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)" }}
-                  >
-                    <FiCheck size={36} strokeWidth={2.5} style={{ color: "#3E2F1C" }} />
-                  </div>
-
-                  <h2 className="text-2xl font-bold text-[#3E2F1C] mb-2">Order Placed Successfully!</h2>
-                  <p className="text-stone-500 mb-1">
-                    Thank you for your order. We'll get it to you soon.
-                  </p>
-                  {placedOrderId && (
-                    <p className="text-xs text-stone-400 mb-6">
-                      Order ID: <span className="font-mono font-semibold text-stone-500">{placedOrderId}</span>
-                    </p>
-                  )}
-
-                  {/* COD reminder */}
-                  <div
-                    className="flex items-start gap-3 p-4 rounded-xl mb-8 text-left w-full max-w-sm"
-                    style={{ background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.25)" }}
-                  >
-                    <FiTruck size={20} className="flex-shrink-0 mt-0.5" style={{ color: "#b8941f" }} />
-                    <div>
-                      <p className="font-semibold text-sm" style={{ color: "#3E2F1C" }}>Cash on Delivery</p>
-                      <p className="text-xs mt-0.5" style={{ color: "rgba(62,47,28,0.65)" }}>
-                        Please keep the exact amount ready when your order arrives.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Delivery details */}
-                  <div className="w-full max-w-sm space-y-3 mb-8">
-                    {[
-                      { icon: <FiPackage size={16} />, text: "Order being processed" },
-                      { icon: <FiTruck size={16} />, text: "Delivered within 3–7 business days" },
-                      { icon: <FiShield size={16} />, text: "Easy returns within 7 days" },
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 text-sm text-stone-600">
-                        <span className="text-[#D4AF37]">{item.icon}</span>
-                        {item.text}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
-                    {localStorage.getItem("token") && (
-                      <button
-                        onClick={() => navigate("/orders")}
-                        className="flex-1 py-3 rounded-xl font-bold text-sm border-2 border-[#3E2F1C] text-[#3E2F1C] hover:bg-stone-50 transition-colors"
-                      >
-                        View My Orders
-                      </button>
-                    )}
-                    <button
-                      onClick={() => navigate("/products")}
-                      className="flex-1 py-3 rounded-xl font-bold text-sm text-white transition-colors"
-                      style={{ background: "linear-gradient(135deg, #D4AF37, #e8c84a)", color: "#3E2F1C" }}
-                    >
-                      Continue Shopping
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-
             </AnimatePresence>
           </div>
         </div>
 
         {/* Right: Order Summary */}
-        {step !== "success" && (
-          <div className="lg:w-[380px]">
+        <div className="lg:w-[380px]">
             <div className="bg-white rounded-3xl p-8 shadow-sm sticky top-32">
               <h2 className="font-bold text-xl text-brand-brown mb-6">Order Summary</h2>
 
@@ -567,7 +503,6 @@ export default function Checkout() {
               </div>
             </div>
           </div>
-        )}
 
       </div>
     </div>

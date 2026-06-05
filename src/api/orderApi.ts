@@ -102,7 +102,7 @@ export const createCodOrder = async (data: {
     headers: getHeaders(),
     body: JSON.stringify(data),
   });
-  const payload = (await response.json()) as ApiResponse<{ orderId: string }>;
+  const payload = (await response.json()) as ApiResponse<{ orderId: string; orderNumber: string }>;
   if (!response.ok || !payload.success) {
     throw new Error(payload.message || "Failed to place order");
   }
