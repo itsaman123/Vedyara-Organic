@@ -5,6 +5,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
+import { initGA, trackPageView } from "./analytics";
 import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -21,7 +22,8 @@ const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Cart        = lazy(() => import("./pages/Cart"));
 const Wishlist    = lazy(() => import("./pages/Wishlist"));
 const Checkout    = lazy(() => import("./pages/Checkout"));
-const Profile     = lazy(() => import("./pages/Profile"));
+const Profile             = lazy(() => import("./pages/Profile"));
+const OrderConfirmation   = lazy(() => import("./pages/OrderConfirmation"));
 
 /* ── Admin chunk (large, rarely visited) ── */
 import "./admin/admin.css";
@@ -82,7 +84,8 @@ function AnimatedRoutes() {
         <Route path="/product/:id" element={<PageWrap><Suspense fallback={<PageSkeleton />}><ProductDetail /></Suspense></PageWrap>} />
         <Route path="/cart"       element={<PageWrap><Suspense fallback={<PageSkeleton />}><Cart /></Suspense></PageWrap>} />
         <Route path="/wishlist"   element={<PageWrap><Suspense fallback={<PageSkeleton />}><Wishlist /></Suspense></PageWrap>} />
-        <Route path="/checkout"   element={<PageWrap><Suspense fallback={<PageSkeleton />}><Checkout /></Suspense></PageWrap>} />
+        <Route path="/checkout"              element={<PageWrap><Suspense fallback={<PageSkeleton />}><Checkout /></Suspense></PageWrap>} />
+        <Route path="/order-confirmation"    element={<PageWrap><Suspense fallback={<PageSkeleton />}><OrderConfirmation /></Suspense></PageWrap>} />
         <Route path="/orders"     element={<PageWrap><Suspense fallback={<PageSkeleton />}><Profile /></Suspense></PageWrap>} />
         <Route path="/profile"    element={<PageWrap><Suspense fallback={<PageSkeleton />}><Profile /></Suspense></PageWrap>} />
         <Route path="*"           element={<PageWrap><NotFound /></PageWrap>} />
@@ -148,13 +151,14 @@ function NotFound() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Scroll restoration
+   Scroll restoration + Analytics page view tracking
 ───────────────────────────────────────────────────────────── */
 function RouteScrollToTop() {
   const location = useLocation();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, [location.pathname]);
+    trackPageView(location.pathname + location.search);
+  }, [location.pathname, location.search]);
   return null;
 }
 
@@ -197,6 +201,8 @@ function AppShell() {
    ROOT APP
 ═══════════════════════════════════════════════════════════ */
 export default function App() {
+  useEffect(() => { initGA(); }, []);
+
   return (
     <Router>
       <RouteScrollToTop />
