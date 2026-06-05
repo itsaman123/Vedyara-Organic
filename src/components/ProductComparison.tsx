@@ -94,7 +94,7 @@ export default function ProductComparison() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 divide-x" style={{ divideColor: "rgba(62,47,28,0.06)" }}>
+              <div className="grid grid-cols-2 divide-x divide-[rgba(62,47,28,0.06)]">
                 {/* Vedyara */}
                 <div className="px-3 py-3 flex flex-col gap-1.5" style={{ background: "rgba(45,74,30,0.03)" }}>
                   <div className="flex items-center gap-1.5">
