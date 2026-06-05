@@ -14,19 +14,33 @@ import {
   useAdminProducts,
   useDeleteAdminProduct,
   useDeleteAdminProducts,
+  type AdminProduct,
 } from "./apiCalls";
+import { useDebounce } from "../useDebounce";
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 10;
+
+const STATUS_OPTIONS: { label: string; value: AdminProduct["status"] | "" }[] = [
+  { label: "All Status", value: "" },
+  { label: "Active", value: "active" },
+  { label: "Inactive", value: "inactive" },
+  { label: "Draft", value: "draft" },
+  { label: "Out of Stock", value: "out_of_stock" },
+];
 
 export default function AdminProducts() {
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [statusFilter, setStatusFilter] = useState<AdminProduct["status"] | "">("");
+  const debouncedSearch = useDebounce(searchInput, 400);
   const navigate = useNavigate();
+
   const productsQuery = useAdminProducts({
     page,
     limit: ITEMS_PER_PAGE,
-    search: searchQuery,
+    search: debouncedSearch,
+    status: statusFilter || undefined,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
@@ -38,24 +52,28 @@ export default function AdminProducts() {
   const totalProducts = pagination?.total ?? 0;
 
   useEffect(() => {
+    setPage(1);
     setSelectedIds([]);
-  }, [page, searchQuery]);
+  }, [debouncedSearch, statusFilter]);
 
-  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedIds(event.target.checked ? products.map((p) => p._id) : []);
+  useEffect(() => {
+    setSelectedIds([]);
+  }, [page]);
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedIds(e.target.checked ? products.map((p) => p._id) : []);
   };
 
   const handleSelectOne = (id: string) => {
-    setSelectedIds((current) =>
-      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
+    setSelectedIds((cur) =>
+      cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id],
     );
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
+    if (window.confirm("Delete this product?")) {
       deleteProduct.mutate(id, {
-        onSuccess: () =>
-          setSelectedIds((current) => current.filter((item) => item !== id)),
+        onSuccess: () => setSelectedIds((cur) => cur.filter((x) => x !== id)),
       });
     }
   };
@@ -63,22 +81,19 @@ export default function AdminProducts() {
   const handleDeleteSelected = () => {
     if (
       selectedIds.length > 0 &&
-      window.confirm(`Delete ${selectedIds.length} selected product(s)?`)
+      window.confirm(`Delete ${selectedIds.length} product(s)?`)
     ) {
-      deleteProducts.mutate(selectedIds, {
-        onSuccess: () => setSelectedIds([]),
-      });
+      deleteProducts.mutate(selectedIds, { onSuccess: () => setSelectedIds([]) });
     }
   };
 
   const handleExport = () => {
-    const data = JSON.stringify(products, null, 2);
-    const blob = new Blob([data], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(products, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "vedyara-products.json";
-    link.click();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "vedyara-products.json";
+    a.click();
     URL.revokeObjectURL(url);
   };
 
@@ -95,63 +110,56 @@ export default function AdminProducts() {
           <h1 className="admin-page-title">Product Management</h1>
           <p className="admin-page-subtitle">Manage your natural product inventory and listings.</p>
         </div>
-        <div className="admin-header-actions" style={{ display: "flex", gap: "12px" }}>
+        <div className="admin-header-actions">
           <button className="admin-btn admin-btn-outline" onClick={handleExport}>
-            <FiDownload size={14} /> Export JSON
+            <FiDownload size={13} /> Export
           </button>
           <button className="admin-btn admin-btn-primary" onClick={() => navigate("/admin/add-product")}>
-            <FiPlus size={16} /> Add New Product
+            <FiPlus size={14} /> Add Product
           </button>
         </div>
       </div>
 
-      <div
-        className="admin-table-toolbar"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-          background: "#fff",
-          padding: "16px 24px",
-          borderRadius: "16px",
-          border: "1px solid rgba(0,0,0,0.05)",
-        }}
-      >
-        <div className="admin-search-wrap" style={{ position: "relative", width: "300px" }}>
-          <FiSearch style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#999" }} />
+      <div className="admin-toolbar">
+        <div className="admin-toolbar-search">
+          <FiSearch size={14} className="admin-toolbar-search-icon" />
           <input
             type="text"
             placeholder="Search products..."
             className="admin-input"
-            style={{ paddingLeft: "40px", background: "#f9f9f9" }}
-            value={searchQuery}
-            onChange={(event) => {
-              setSearchQuery(event.target.value);
-              setPage(1);
-            }}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
           />
         </div>
         <div className="admin-toolbar-right">
+          <select
+            className="admin-filter-select"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as AdminProduct["status"] | "")}
+          >
+            {STATUS_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
           {selectedIds.length > 0 && (
             <button
               className="admin-btn admin-btn-outline"
               onClick={handleDeleteSelected}
               disabled={deleteProducts.isPending}
-              style={{ color: "#e74c3c", borderColor: "#fce8e6" }}
+              style={{ color: "#d93025", borderColor: "#fce8e6" }}
             >
-              <FiTrash2 size={14} /> Delete Selected ({selectedIds.length})
+              <FiTrash2 size={13} /> Delete ({selectedIds.length})
             </button>
           )}
         </div>
       </div>
 
-      <motion.div className="admin-card" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div className="admin-card" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <div className="admin-table-wrap">
           <table className="admin-table admin-product-table">
             <thead>
               <tr>
-                <th style={{ width: 40 }}>
+                <th style={{ width: 36 }}>
                   <input
                     type="checkbox"
                     className="admin-checkbox"
@@ -170,10 +178,9 @@ export default function AdminProducts() {
             <tbody>
               <AnimatePresence mode="popLayout">
                 {products.map((product) => {
-                  const stockNum = product.stock;
-                  const isInStock = stockNum > 0;
                   const isSelected = selectedIds.includes(product._id);
                   const price = product.discountedPrice ?? product.price;
+                  const isInStock = product.stock > 0;
 
                   return (
                     <motion.tr
@@ -182,8 +189,7 @@ export default function AdminProducts() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className={isSelected ? "selected-row" : ""}
-                      style={{ background: isSelected ? "rgba(212, 175, 55, 0.03)" : "transparent" }}
+                      style={{ background: isSelected ? "rgba(212,175,55,0.04)" : undefined }}
                     >
                       <td>
                         <input
@@ -199,10 +205,12 @@ export default function AdminProducts() {
                             {product.images[0] ? (
                               <img src={product.images[0]} alt={product.name} />
                             ) : (
-                              <span>{product.name.charAt(0).toUpperCase()}</span>
+                              <span style={{ fontSize: "0.9rem", color: "#aaa" }}>
+                                {product.name.charAt(0).toUpperCase()}
+                              </span>
                             )}
                           </div>
-                          <div>
+                          <div style={{ minWidth: 0 }}>
                             <p className="admin-product-cell-name">{product.name}</p>
                             <p className="admin-product-cell-sku">SKU: {product.sku}</p>
                           </div>
@@ -211,22 +219,24 @@ export default function AdminProducts() {
                       <td className="admin-table-cat">{product.category}</td>
                       <td className="admin-table-amount">₹{price}</td>
                       <td>
-                        <span className={stockNum === 0 ? "admin-stock-zero" : ""}>{stockNum}</span>
+                        <span className={product.stock === 0 ? "admin-stock-zero" : ""}>
+                          {product.stock}
+                        </span>
                       </td>
                       <td>
                         <span className={`admin-stock-badge ${isInStock ? "in-stock" : "out-of-stock"}`}>
                           <span className="admin-stock-dot" />
-                          {isInStock ? "IN STOCK" : "OUT OF STOCK"}
+                          {isInStock ? "In Stock" : "Out of Stock"}
                         </span>
                       </td>
                       <td style={{ textAlign: "right" }}>
-                        <div className="admin-actions" style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+                        <div style={{ display: "flex", justifyContent: "flex-end", gap: "4px" }}>
                           <button
                             className="admin-action-btn-round"
                             title="Edit"
                             onClick={() => navigate(`/admin/add-product?edit=${product._id}`)}
                           >
-                            <FiEdit2 size={14} />
+                            <FiEdit2 size={13} />
                           </button>
                           <button
                             className="admin-action-btn-round admin-action-delete"
@@ -234,7 +244,7 @@ export default function AdminProducts() {
                             onClick={() => handleDelete(product._id)}
                             disabled={deleteProduct.isPending}
                           >
-                            <FiTrash2 size={14} />
+                            <FiTrash2 size={13} />
                           </button>
                         </div>
                       </td>
@@ -244,8 +254,8 @@ export default function AdminProducts() {
               </AnimatePresence>
               {products.length === 0 && (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: "center", padding: "48px", color: "#888" }}>
-                    {productsQuery.isLoading ? "Loading products..." : "No products found matching your search."}
+                  <td colSpan={7} style={{ textAlign: "center", padding: "40px", color: "#aaa", fontSize: "0.85rem" }}>
+                    {productsQuery.isLoading ? "Loading…" : "No products found."}
                   </td>
                 </tr>
               )}
@@ -256,11 +266,11 @@ export default function AdminProducts() {
         {totalPages > 1 && (
           <div className="admin-pagination">
             <span className="admin-pagination-info">
-              Showing <strong>{(page - 1) * ITEMS_PER_PAGE + 1}-{Math.min(page * ITEMS_PER_PAGE, totalProducts)}</strong> of <strong>{totalProducts}</strong> products
+              {(page - 1) * ITEMS_PER_PAGE + 1}–{Math.min(page * ITEMS_PER_PAGE, totalProducts)} of {totalProducts}
             </span>
             <div className="admin-pagination-controls">
               <button className="admin-page-btn" disabled={page === 1} onClick={() => setPage(page - 1)}>
-                <FiChevronLeft size={16} />
+                <FiChevronLeft size={14} />
               </button>
               {Array.from({ length: totalPages }).map((_, i) => (
                 <button
@@ -272,7 +282,7 @@ export default function AdminProducts() {
                 </button>
               ))}
               <button className="admin-page-btn" disabled={page === totalPages} onClick={() => setPage(page + 1)}>
-                <FiChevronRight size={16} />
+                <FiChevronRight size={14} />
               </button>
             </div>
           </div>

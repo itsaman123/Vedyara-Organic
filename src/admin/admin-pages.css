@@ -4,109 +4,129 @@
 
 .admin-page-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .admin-page-title {
   font-family: "Playfair Display", Georgia, serif;
-  font-size: 2.2rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
 }
 
 .admin-page-subtitle {
-  font-size: 1rem;
-  color: #666;
-  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 4px;
 }
 
 .admin-section-heading {
-  font-size: 1.1rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: #1a1a1a;
-  margin: 40px 0 20px;
+  margin: 20px 0 12px;
+}
+
+.admin-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 /* ── ADD PRODUCT GRID ── */
 .admin-add-product-grid {
   display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 32px;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
   align-items: start;
 }
 
 .admin-add-left {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 20px;
 }
 
 .admin-add-right {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 20px;
 }
 
 .admin-card-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .admin-card-hint {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #888;
   letter-spacing: 0.05em;
 }
 
 .admin-card-section-title {
-  font-size: 1.1rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: #1a1a1a;
 }
 
-/* ── OVERVIEW STATS (Dashboard) ── */
+.admin-card-body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── OVERVIEW STATS (Dashboard / Orders / Inventory) ── */
 .admin-overview-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .admin-overview-stat {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 20px;
-  padding: 32px;
+  border-radius: 14px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
 .admin-overview-stat-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
+  flex-shrink: 0;
 }
 
 .admin-overview-stat-label {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  color: #888;
-  letter-spacing: 0.05em;
-  margin-bottom: 12px;
+  color: #999;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
 }
 
 .admin-overview-stat-value {
-  font-size: 3rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: #1a1a1a;
   line-height: 1;
@@ -116,24 +136,24 @@
 .admin-quick-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 12px;
 }
 
 .admin-quick-action {
   position: relative;
-  border-radius: 20px;
-  padding: 40px;
+  border-radius: 14px;
+  padding: 20px;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   overflow: hidden;
 }
 
 .admin-quick-action:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .admin-quick-action-dark {
@@ -147,9 +167,9 @@
 }
 
 .admin-quick-action-icon-wrap {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
@@ -158,10 +178,10 @@
 }
 
 .admin-quick-action-icon-wrap-light {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.05);
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,25 +189,25 @@
 }
 
 .admin-quick-action-title {
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin: 0 0 4px 0;
+  margin: 0 0 3px 0;
 }
 
 .admin-quick-action-desc {
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.6);
   margin: 0;
 }
 
 .admin-quick-action-title-light {
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin: 0 0 4px 0;
+  margin: 0 0 3px 0;
 }
 
 .admin-quick-action-desc-light {
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   color: #666;
   margin: 0;
 }
@@ -202,9 +222,9 @@
 /* ── CURATION BANNER (Dashboard) ── */
 .admin-curation-banner {
   position: relative;
-  height: 280px;
-  border-radius: 24px;
-  margin-top: 40px;
+  height: 130px;
+  border-radius: 16px;
+  margin-top: 20px;
   overflow: hidden;
   background-image: url('https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&q=80&w=2070');
   background-size: cover;
@@ -214,61 +234,88 @@
 .admin-curation-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.7), transparent);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.72), transparent);
 }
 
 .admin-curation-content {
   position: relative;
   z-index: 1;
-  padding: 60px 48px;
+  padding: 20px 28px;
   color: #fff;
-  max-width: 500px;
+  max-width: 440px;
 }
 
 .admin-curation-title {
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin: 0 0 12px 0;
+  margin: 0 0 6px 0;
 }
 
 .admin-curation-desc {
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.8rem;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.8);
   margin: 0;
 }
 
 /* ── LISTING TIP ── */
 .admin-listing-tip {
-  background: #2b2118; /* Dark brown background from design */
-  border-radius: 20px;
-  padding: 32px;
+  background: #2b2118;
+  border-radius: 14px;
+  padding: 20px;
   color: #fff;
 }
 
 .admin-tip-title {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #fff;
+  text-transform: uppercase;
 }
 
 .admin-tip-text {
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.7);
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 1200px) {
+@media (max-width: 900px) {
   .admin-overview-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
+
   .admin-quick-actions {
     grid-template-columns: 1fr;
   }
+
   .admin-add-product-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-header-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-overview-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-page-title {
+    font-size: 1.2rem;
+  }
+
+  .admin-curation-banner {
+    height: 100px;
   }
 }

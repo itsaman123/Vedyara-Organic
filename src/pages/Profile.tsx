@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiPackage, FiLogOut, FiUser, FiClock, FiCheckCircle } from "react-icons/fi";
 import { getMyOrders } from "../api/orderApi";
+import { getProfile } from "../api/userApi";
 import { toast } from "react-hot-toast";
 
 interface OrderItem {
@@ -25,11 +26,21 @@ interface Order {
   items: OrderItem[];
 }
 
+interface UserProfile {
+  name: string;
+  email: string;
+}
+
 export default function Profile() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"profile" | "orders">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Seed from localStorage for instant render, then refresh from API
+  const stored = localStorage.getItem("user");
+  const storedUser: UserProfile | null = stored ? JSON.parse(stored) : null;
+  const [user, setUser] = useState<UserProfile | null>(storedUser);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -39,18 +50,25 @@ export default function Profile() {
       return;
     }
 
-    const fetchOrders = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getMyOrders();
-        setOrders(data);
+        const [ordersData, profileData] = await Promise.all([
+          getMyOrders(),
+          getProfile(),
+        ]);
+        setOrders(ordersData);
+        if (profileData?.user) {
+          setUser({ name: profileData.user.name, email: profileData.user.email });
+          localStorage.setItem("user", JSON.stringify(profileData.user));
+        }
       } catch (error: any) {
-        toast.error(error.message || "Failed to load orders");
+        toast.error(error.message || "Failed to load profile");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchOrders();
+    fetchData();
   }, [navigate]);
 
   const handleLogout = () => {
@@ -79,9 +97,10 @@ export default function Profile() {
           <div className="bg-white rounded-3xl p-6 shadow-sm sticky top-32">
             <div className="flex flex-col items-center mb-8">
               <div className="w-20 h-20 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center text-3xl font-serif font-bold mb-4">
-                V
+                {user?.name ? user.name.charAt(0).toUpperCase() : "?"}
               </div>
-              <h2 className="font-bold text-xl text-[#3E2F1C]">My Account</h2>
+              <h2 className="font-bold text-xl text-[#3E2F1C]">{user?.name || "My Account"}</h2>
+              <p className="text-sm text-stone-400 mt-1 truncate max-w-full px-2 text-center">{user?.email || ""}</p>
             </div>
             
             <nav className="flex flex-col gap-2">
@@ -200,15 +219,27 @@ export default function Profile() {
               <h1 className="font-serif font-bold text-3xl text-brand-brown mb-8">Profile Details</h1>
               <div className="space-y-6 max-w-md">
                 <div>
-                  <label className="block text-sm font-bold text-stone-500 mb-2">Name</label>
-                  <input type="text" disabled value="Vedyara Customer" className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-800 outline-none" />
+                  <label className="block text-sm font-bold text-stone-500 mb-2">Full Name</label>
+                  <input
+                    type="text"
+                    disabled
+                    value={user?.name || ""}
+                    placeholder={isLoading ? "Loading…" : "—"}
+                    className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-800 outline-none"
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-stone-500 mb-2">Email</label>
-                  <input type="email" disabled value="customer@vedyara.com" className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-800 outline-none" />
+                  <label className="block text-sm font-bold text-stone-500 mb-2">Email Address</label>
+                  <input
+                    type="email"
+                    disabled
+                    value={user?.email || ""}
+                    placeholder={isLoading ? "Loading…" : "—"}
+                    className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-800 outline-none"
+                  />
                 </div>
-                <p className="text-sm text-stone-400 mt-4">
-                  Profile editing will be available soon. For now, your details are managed during checkout.
+                <p className="text-sm text-stone-400">
+                  Profile editing will be available soon. Your details are managed during checkout.
                 </p>
               </div>
             </div>
