@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import HeroBanner from "../assets/hero-banner.png";
 import { motion, useInView } from "framer-motion";
@@ -10,6 +10,8 @@ import {
   FiShield,
   FiHeart,
   FiDroplet,
+  FiChevronLeft,
+  FiChevronRight,
 } from "react-icons/fi";
 import { FaStar, FaQuoteLeft, FaLeaf } from "react-icons/fa";
 import { useProducts, type Product as ApiProduct } from "../api/productApi";
@@ -20,6 +22,11 @@ import {
   whyChooseUs,
   stats,
 } from "../data/products";
+import TrustBanner from "../components/TrustBanner";
+import FarmToHome from "../components/FarmToHome";
+import ProductComparison from "../components/ProductComparison";
+import ComboPacks from "../components/ComboPacks";
+import EducationalSection from "../components/EducationalSection";
 
 interface CardProduct {
   id: string | number;
@@ -238,6 +245,94 @@ const TestimonialCard = ({
     </span>
   </motion.div>
 );
+
+/* ═══════════════════════════════════════════════════════════
+   TESTIMONIALS CAROUSEL
+═══════════════════════════════════════════════════════════ */
+function TestimonialsCarousel() {
+  const [current, setCurrent] = useState(0);
+  const perPage = 3;
+  const total = testimonials.length;
+  const maxIndex = Math.max(0, total - perPage);
+
+  const prev = () => setCurrent((c) => Math.max(0, c - 1));
+  const next = () => setCurrent((c) => Math.min(maxIndex, c + 1));
+
+  const visible = testimonials.slice(current, current + perPage);
+
+  return (
+    <section className="relative py-24 bg-[#faf9f7] overflow-hidden">
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+          className="flex items-end justify-between mb-12"
+        >
+          <div>
+            <motion.span variants={fadeUp} custom={0} className="inline-block text-sm font-semibold text-amber-600 uppercase tracking-widest mb-3">
+              Customer Love
+            </motion.span>
+            <motion.h2 variants={fadeUp} custom={0.1} className="font-serif font-bold text-brand-brown" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+              What Our Customers Say
+            </motion.h2>
+          </div>
+          {/* Nav arrows */}
+          <div className="hidden md:flex gap-3">
+            <button
+              onClick={prev}
+              disabled={current === 0}
+              className="w-11 h-11 rounded-full flex items-center justify-center border transition-all duration-200 disabled:opacity-30"
+              style={{ borderColor: "rgba(62,47,28,0.2)", color: "#0f0a05" }}
+            >
+              <FiChevronLeft size={18} />
+            </button>
+            <button
+              onClick={next}
+              disabled={current >= maxIndex}
+              className="w-11 h-11 rounded-full flex items-center justify-center border transition-all duration-200 disabled:opacity-30 hover:bg-[#2D4A1E] hover:text-white hover:border-[#2D4A1E]"
+              style={{ borderColor: "rgba(62,47,28,0.2)", color: "#0f0a05" }}
+            >
+              <FiChevronRight size={18} />
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Carousel track */}
+        <div className="overflow-hidden">
+          <motion.div
+            key={current}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {visible.map((t, i) => (
+              <TestimonialCard key={t.id} testimonial={t} index={i} />
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Dot indicators */}
+        <div className="flex justify-center gap-2 mt-8">
+          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className="rounded-full transition-all duration-200"
+              style={{
+                width: current === i ? "24px" : "8px",
+                height: "8px",
+                background: current === i ? "#2D4A1E" : "rgba(62,47,28,0.2)",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /* ═══════════════════════════════════════════════════════════
    HOME PAGE
@@ -485,7 +580,12 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════
-          2. STATS SECTION
+          2. TRUST BANNER
+      ════════════════════════════════════════════════════ */}
+      <TrustBanner />
+
+      {/* ════════════════════════════════════════════════════
+          3. STATS SECTION
       ════════════════════════════════════════════════════ */}
       <section className="relative py-16 bg-white overflow-hidden">
         <div
@@ -554,6 +654,11 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════
+          COMBO PACKS
+      ════════════════════════════════════════════════════ */}
+      <ComboPacks />
+
+      {/* ════════════════════════════════════════════════════
           4. PRODUCT BENEFITS
       ════════════════════════════════════════════════════ */}
       <section className="relative py-24 bg-white overflow-hidden">
@@ -615,6 +720,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════
+          PRODUCT COMPARISON
+      ════════════════════════════════════════════════════ */}
+      <ProductComparison />
 
       {/* ════════════════════════════════════════════════════
           5. OUR STORY
@@ -718,6 +828,11 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════
+          FARM TO HOME JOURNEY
+      ════════════════════════════════════════════════════ */}
+      <FarmToHome />
+
+      {/* ════════════════════════════════════════════════════
           6. WHY CHOOSE US
       ════════════════════════════════════════════════════ */}
       <section
@@ -784,32 +899,14 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════
-          7. TESTIMONIALS
+          EDUCATIONAL SECTION
       ════════════════════════════════════════════════════ */}
-      <section className="relative py-24 bg-[#faf9f7] overflow-hidden">
-        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-14"
-          >
-            <motion.span variants={fadeUp} custom={0} className="inline-block text-sm font-semibold text-amber-600 uppercase tracking-widest mb-4">
-              Customer Love
-            </motion.span>
-            <motion.h2 variants={fadeUp} custom={0.1} className="font-serif font-bold text-brand-brown mb-4" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
-              What Our Customers Say
-            </motion.h2>
-          </motion.div>
+      <EducationalSection />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {testimonials.map((t, i) => (
-              <TestimonialCard key={t.id} testimonial={t} index={i} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ════════════════════════════════════════════════════
+          7. TESTIMONIALS CAROUSEL
+      ════════════════════════════════════════════════════ */}
+      <TestimonialsCarousel />
 
       {/* ════════════════════════════════════════════════════
           8. CTA SECTION
