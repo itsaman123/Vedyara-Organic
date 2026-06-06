@@ -6,6 +6,11 @@ import {
   useLocation,
 } from "react-router-dom";
 import { initGA, trackPageView } from "./analytics";
+
+/* Initialize GA at module load — must run before any route-tracking
+   effect fires, otherwise the first page_view is silently dropped
+   (window.gtag wouldn't exist yet when child effects run on mount). */
+initGA();
 import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -201,8 +206,6 @@ function AppShell() {
    ROOT APP
 ═══════════════════════════════════════════════════════════ */
 export default function App() {
-  useEffect(() => { initGA(); }, []);
-
   return (
     <Router>
       <RouteScrollToTop />
